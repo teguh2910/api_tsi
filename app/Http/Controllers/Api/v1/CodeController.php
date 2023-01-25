@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers\Api\v1;
+
+use App\Http\Controllers\Controller;
+use App\Models\Code;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class CodeController extends Controller
+{
+    public function index()
+    {
+        $codes = Code::all();
+        if(empty($codes))
+        {
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ],404);
+        }else{
+            return response()->json([
+                'status_code'   => 200,
+                'message'       => 'success',
+                'content'       => $codes
+            ],200);
+        }
+
+    }
+    public function show($id)
+    {
+        $code = Code::where('code', $id)->first();
+        if(empty($code)){
+            return response()->json([
+                    'status_code'   => 404,
+                    'message'       => 'Not Found'
+                ]);
+        }else{
+            return response()->json([
+                'status_code'   => 200,
+                'message'       => 'success',
+                'content'       => [
+                    'code'      => $code->code,
+                    'system'    => $code->system,
+                    'display'   => $code->display
+                ]
+            ],200);
+        }
+    }
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code'      => 'required|unique:codes,code',
+            'system'    => 'required',
+            'display'   => 'required'
+        ]);
+        $input      = [
+            'code'      => $request->code,
+            'system'    => $request->system,
+            'display'   => $request->display
+        ];
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 203,
+                'message'       => 'Gagal validasi',
+                'errorrs'       => $validator->errors()
+            ]);
+        }else{
+            $code = new Code();
+            $create = $code->create($input);
+            if($create){
+                $data =[
+                    'status_code'   => 201,
+                    'message'       => 'success'
+                ];
+                return response()->json($data, 200);
+            }
+        }
+    }
+}

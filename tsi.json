@@ -1,0 +1,1022 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Tsi RestFulApi",
+        "description": "Tsi",
+        "version": "1.0.0",
+        "contact": {
+            "name": "kahiron",
+            "email": "Khaironbiz@gmail.com",
+            "url": "https://ppni.or.id"
+        }
+    },
+    "servers": [
+        {
+            "description": "TSI RESTFul API Server Utama",
+            "url": "https://{environment}.tsi.co.id/api/v1",
+            "variables": {
+                "environment": {
+                    "description": "Server Environment",
+                    "default": "dev",
+                    "enum": [
+                        "dev",
+                        "qa",
+                        "prod"
+                    ]
+                }
+            }
+        },
+        {
+            "description": "TSI RESTFul API Server Cadangan",
+            "url": "https://{environment}.tsi.or.id/api/v1",
+            "variables": {
+                "environment": {
+                    "description": "Server Environment",
+                    "default": "dev",
+                    "enum": [
+                        "dev",
+                        "qa",
+                        "prod"
+                    ]
+                }
+            }
+        }
+    ],
+
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "security": [
+                    {
+                        "TsiAuth": []
+                    }
+                ],
+                "tags": ["Auth"],
+                "summary": "Login user",
+                "description": "Login user menggunakan email dan password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            },
+                            "examples": {
+                                "khairon": {
+                                    "value": {
+                                        "username": "khaironbiz@gmail.com",
+                                        "password": "passwordrahasia"
+                                    }
+                                },
+                                "Anisa": {
+                                    "value": {
+                                        "username": "anisa.cantik@gmail.com",
+                                        "password": "anisacantikbanget"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenCreated"
+                                },
+                                "examples": {
+                                    "khairon": {
+                                        "description": "Khairon success login",
+                                        "value": {
+                                            "status_code":200,
+                                            "message":"Success",
+                                            "time": 12146531,
+                                            "token": {
+                                                "name": "auth/token",
+                                                "code": "qwqeeqqeeq|klsjfjsfjsfjs",
+                                                "type": "Bearer",
+                                                "user_id": "hahdkhadhahdihaid"
+                                            }
+                                        }
+                                    },
+                                    "Anisa Fitri Laila": {
+                                        "description": "Khairon success login",
+                                        "value": {
+                                            "status_code":200,
+                                            "message":"Success",
+                                            "time": 12146532,
+                                            "token": {
+                                                "name": "auth/token",
+                                                "code": "asrerefd|etetdfgsgfdyrty",
+                                                "type": "Bearer",
+                                                "user_id": "grewtretetrter"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not Authorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "Invalid Key": {
+                                        "description": "Invalid key input",
+                                        "value": {
+                                            "status_code": 401,
+                                            "message":"Invalid Key"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/user": {
+            "get": {
+                "security": [
+                    {
+                        "TsiAuth": []
+                    }
+                ],
+                "tags": ["Auth"],
+                "summary": "Get User Login",
+                "description": "Get User when user login success",
+                "responses": {
+                    "200": {
+                        "description": "Success Login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserList"
+                                },
+                                "examples": {
+                                    "Khairon": {
+                                        "description": "",
+                                        "value": {
+                                            "user_id"
+
+                                        }
+                                    },
+                                    "Anisa Fitri Laila": {
+
+                                    }
+
+                                }
+                            }
+                        }
+
+                    },
+                    "404": {
+
+                    },
+                    "301": {
+
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": ["User"],
+                "summary": "Get all users",
+                "description": "Get all users active by default",
+                "parameters": [
+                    {
+                        "name": "include_done",
+                        "in": "query",
+                        "required": false,
+                        "description": "Is include done users",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filter user by name",
+                        "schema": {
+                            "type": "string",
+                            "nullable": true,
+                            "minLength": 1,
+                            "maxLength": 100
+                        },
+                        "examples": {
+                            "java": {
+                                "description": "Example name Java",
+                                "value": "Java"
+                            },
+                            "php": {
+                                "description": "Example name PHP",
+                                "value": "PHP"
+                            }
+                        }
+                    }
+
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Example success get all users",
+                                        "value": [
+                                            {
+                                                "id": "1",
+                                                "name": "Java",
+                                                "priority": 3,
+                                                "tags": ["Java","Programming"]
+                                            },
+                                            {
+                                                "id": "2",
+                                                "name": "PHP",
+                                                "priority": 5,
+                                                "tags": ["PHP","Programming"]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            },
+            "post": {
+                "tags": ["User"],
+                "summary": "Create new User",
+                "description": "Create new user to database",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUser"
+                            },
+                            "examples": {
+                                "Khairon": {
+                                    "value": {
+                                        "nama_depan": "Khairon",
+                                        "nama_belakang": "Khairon",
+                                        "jenis_kelamin": {
+                                            "kode_gender": "001",
+                                            "text":"Laki-laki"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success get user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserList"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Example success get all todolist",
+                                        "value": {
+                                            "id": "1",
+                                            "nama_depan": "Anisa Fitri Laila",
+                                            "email": "anisa@gmail.com"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "example": {
+                                    "No Content": {
+                                        "description": "Example success get all todolist",
+                                        "value": [
+                                            {
+                                                "status_code": "204",
+                                                "message": "Not Content"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        },
+        "/user/{id}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update existing user",
+                "description": "Update existing user by user id in database",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "User Id for updated",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+
+                }
+            },
+
+            "delete": {
+                "tags": ["User"],
+                "summary": "Delete existing user",
+                "description": "Delete existing user by user id in database",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "User id for deleted",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+
+
+                }
+            }
+
+        },
+        "/observation": {
+            "get": {
+                "tags": ["Observation"],
+                "summary": "Get all observation",
+                "description": "Get all provinces from database, base on data kementerian dalam negeri tahun 2022",
+                "security": [
+                    {
+                        "UserAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all provinsi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProvinceList"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Get All provinsi seluruh indonesia",
+                                        "value": [
+                                            {
+                                                "kode_provinsi": "01",
+                                                "nama_provinsi": "Aceh",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            },
+                                            {
+                                                "kode_provinsi": "31",
+                                                "nama_provinsi": "DKI Jakarta",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            }
+                                        ]
+
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Data Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Data Not Found Response",
+                                        "value": {
+                                            "status_code": 204,
+                                            "message": "Data Not Found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "UnAuthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "Forbiden": {
+                                        "description": "UnAuthorized Response",
+                                        "value": {
+                                            "status_code": 404,
+                                            "message": "UnAuthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/provinces": {
+            "get": {
+                "tags": ["wilayah"],
+                "summary": "Get all provinces",
+                "description": "Get all provinces from database, base on data kementerian dalam negeri tahun 2022",
+                "security": [
+                    {
+                        "UserAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all provinsi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProvinceList"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Get All provinsi seluruh indonesia",
+                                        "value": [
+                                            {
+                                                "kode_provinsi": "01",
+                                                "nama_provinsi": "Aceh",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            },
+                                            {
+                                                "kode_provinsi": "31",
+                                                "nama_provinsi": "DKI Jakarta",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            }
+                                        ]
+
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Data Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Data Not Found Response",
+                                        "value": {
+                                            "status_code": 204,
+                                            "message": "Data Not Found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "UnAuthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "Forbiden": {
+                                        "description": "UnAuthorized Response",
+                                        "value": {
+                                            "status_code": 404,
+                                            "message": "UnAuthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/province": {
+            "post": {
+                "tags": ["wilayah"],
+                "summary": "Create new province",
+                "description": "Get all provinces from database, base on data kementerian dalam negeri tahun 2022",
+                "security": [
+                    {
+                        "UserAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all provinsi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProvinceList"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Get All provinsi seluruh indonesia",
+                                        "value": [
+                                            {
+                                                "kode_provinsi": "01",
+                                                "nama_provinsi": "Aceh",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            },
+                                            {
+                                                "kode_provinsi": "31",
+                                                "nama_provinsi": "DKI Jakarta",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            }
+                                        ]
+
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Data Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Data Not Found Response",
+                                        "value": {
+                                            "status_code": 204,
+                                            "message": "Data Not Found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "UnAuthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "Forbiden": {
+                                        "description": "UnAuthorized Response",
+                                        "value": {
+                                            "status_code": 404,
+                                            "message": "UnAuthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/province/{id}": {
+            "get": {
+                "tags": ["wilayah"],
+                "summary": "Show provinsi by id provinsi",
+                "description": "Get provinsi by id provinsi from database, base on data kementerian dalam negeri tahun 2022",
+                "security": [
+                    {
+                        "UserAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all provinsi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProvinceList"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Get All provinsi seluruh indonesia",
+                                        "value": [
+                                            {
+                                                "kode_provinsi": "01",
+                                                "nama_provinsi": "Aceh",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            },
+                                            {
+                                                "kode_provinsi": "31",
+                                                "nama_provinsi": "DKI Jakarta",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            }
+                                        ]
+
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Data Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Data Not Found Response",
+                                        "value": {
+                                            "status_code": 204,
+                                            "message": "Data Not Found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "UnAuthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "Forbiden": {
+                                        "description": "UnAuthorized Response",
+                                        "value": {
+                                            "status_code": 404,
+                                            "message": "UnAuthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["wilayah"],
+                "summary": "Update provinces by Id Provinsi",
+                "description": "Update data provinsi berdasarkan id provinsi",
+                "security": [
+                    {
+                        "UserAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all provinsi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProvinceList"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Get All provinsi seluruh indonesia",
+                                        "value": [
+                                            {
+                                                "kode_provinsi": "01",
+                                                "nama_provinsi": "Aceh",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            },
+                                            {
+                                                "kode_provinsi": "31",
+                                                "nama_provinsi": "DKI Jakarta",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            }
+                                        ]
+
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Data Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Data Not Found Response",
+                                        "value": {
+                                            "status_code": 204,
+                                            "message": "Data Not Found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "UnAuthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "Forbiden": {
+                                        "description": "UnAuthorized Response",
+                                        "value": {
+                                            "status_code": 404,
+                                            "message": "UnAuthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["wilayah"],
+                "summary": "Get all provinces",
+                "description": "Get all provinces from database, base on data kementerian dalam negeri tahun 2022",
+                "security": [
+                    {
+                        "UserAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all provinsi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProvinceList"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Get All provinsi seluruh indonesia",
+                                        "value": [
+                                            {
+                                                "kode_provinsi": "01",
+                                                "nama_provinsi": "Aceh",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            },
+                                            {
+                                                "kode_provinsi": "31",
+                                                "nama_provinsi": "DKI Jakarta",
+                                                "versi": "2022",
+                                                "source": "Kementerian Dalam Negeri 2022"
+                                            }
+                                        ]
+
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Data Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Data Not Found Response",
+                                        "value": {
+                                            "status_code": 204,
+                                            "message": "Data Not Found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "UnAuthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnSuccess"
+                                },
+                                "examples": {
+                                    "Forbiden": {
+                                        "description": "UnAuthorized Response",
+                                        "value": {
+                                            "status_code": 404,
+                                            "message": "UnAuthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "TsiAuth": {
+                "description": "Authentication for TSI RESTful API",
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-API-KEY"
+            },
+            "UserAuth": {
+                "description": "Auth yang mnggunakan login dengan username dan password",
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "parameters": {
+
+        },
+        "schemas": {
+            "ProvinceList": {
+                "type": "object",
+                "properties": {
+                    "kode_provinsi": {
+                        "type": "number"
+                    },
+                    "nama_provinsi": {
+                        "type": "string"
+                    },
+                    "versi": {
+                        "type": "string"
+                    },
+                    "source": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserList": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "nik": {
+                        "type": "integer"
+                    },
+                    "nama": {
+                        "type": "object",
+                        "properties": {
+                            "nama_depan": {
+                                "type": "string"
+                            },
+                            "nama_belakang": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "gelar": {
+                        "type": "object",
+                        "properties": {
+                            "gelar_depan": {
+                                "type": "string"
+                            },
+                            "gelar_belakang": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "kontak": {
+                        "type": "object"
+                    }
+                }
+            },
+            "CreateUser": {
+                "type": "object",
+                "properties": {
+
+                    "nama_depan": {
+                        "type": "string"
+                    },
+                    "nama_belakang": {
+                        "type": "string"
+                    },
+                    "jenis_kelamin": {
+                        "type": "string"
+
+                    },
+                    "tanggal_lahir": {
+                        "type": "number"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Login": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "TokenCreated": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "time": {
+                        "type": "integer"
+                    },
+                    "token": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "code": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "user_id": {
+                                "type": "string"
+                            }
+
+                        }
+                    }
+                }
+            },
+            "UnSuccess": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
