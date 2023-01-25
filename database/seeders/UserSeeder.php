@@ -40,36 +40,54 @@ class UserSeeder extends Seeder
                 'password'      => bcrypt(123456),
                 'active'        => true,
                 'address'       => [
-                    'provinsi'  => 'Jawa Barat',
-                    'kota'      => 'Kab. Bogor',
-                    'kecamatan' => 'Sukaraja',
-                    'kelurahan' => 'Cilebut Barat',
+                    'provinsi'  => [
+                        'id_provinsi'       => 31,
+                        'nama_provinsi'     => 'Jawa Barat'
+                    ],
+                    'kota'      => [
+                        'id_kota'           => '',
+                        'nama_kota'         => 'Kab. Bogor'
+                    ],
+                    'kecamatan' => [
+                        'id_kecamatan'      => '',
+                        'nama_kecamatan'    => 'Sukaraja'
+                    ],
+                    'kelurahan' => [
+                        'id_kelurahan'      => '',
+                        'nama_kelurahan'    => 'Cilebut Barat'
+                    ],
                     'kode_pos'  => 16710
                 ],
                 'pemeriksaan_kesehatan'=>[
                     'chol' =>[
-                        'value'    => 186.6,
-                        'unit'     => 'mg/dL'
+                        'value'     => 186.6,
+                        'unit'      => 'mg/dL',
+                        'time'      => ''
                     ],
                     'gluc' =>[
                         'value'    => 106.6,
-                        'unit'     => 'mg/dL'
+                        'unit'     => 'mg/dL',
+                        'time'      => ''
                     ],
                     'suhu' =>[
                         'value'    => 36.6,
-                        'unit'     => 'C'
+                        'unit'     => 'C',
+                        'time'      => ''
                     ],
                     'tb'   =>[
                         'value'    => 165,
-                        'unit'     => 'cm'
+                        'unit'     => 'cm',
+                        'time'      => ''
                     ],
                     'bb'   =>[
                         'value'    => 72.6,
-                        'unit'     => 'Kg'
+                        'unit'     => 'Kg',
+                        'time'      => ''
                     ],
                     'imt'  =>[
                         'value'    => 24,
-                        'unit'     => 'kg/m2'
+                        'unit'     => 'kg/m2',
+                        'time'      => ''
                     ]
                 ],
                 'wallet'       => [

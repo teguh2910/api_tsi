@@ -340,11 +340,23 @@ class AuthController extends Controller
     public function update_user(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "username"  => 'required',
+            "username"      => 'required',
             "nama_depan"    => 'required',
             "nama_belakang" => 'required',
             "email"         => 'required'
         ]);
+        $data_input = [
+            'nama'      => [
+                'nama_depan'        => $request->nama_depan,
+                'nama_belakang'     => $request->nama_belakang
+            ],
+            'gelar'     => [
+                'gelar_depan'       => $request->gelar_depan,
+                'gelar_belakang'    => $request->gelar_belakang
+            ],
+            ''
+
+        ];
 
         $user = Auth::user();
         if ($validator->fails()) {

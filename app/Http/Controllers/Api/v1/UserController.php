@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\user\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\City;
+use App\Models\Province;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -103,14 +106,48 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $data_user = [
+            'id'            => $user->id,
+            'nama_depan'    => $user->nama['nama_depan'],
+            'nama_belakang' => $user->nama['nama_belakang'],
+            'gelar_depan'   => $user->gelar['gelar_depan'],
+            'gelar_belakang'=> $user->gelar['gelar_belakang'],
+            'gende'         => $user->gender,
+            'tanggal_lahir' => $user->lahir['tanggal'],
+            'tempat_lahir'  => $user->lahir['tempat'],
+            'nik'           => $user->nik,
+            'email'         => $user->kontak['email'],
+            'nomor_telepon' => $user->kontak['nomor_telepon'],
+        ];
         $data = [
             "status"        => "success",
             "status_code"   => 200,
             "time"          => time(),
-            "data"          => $user
+            "data"          => $data_user
         ];
         return response()->json($data,200);
 
+    }
+    public function showNik($nik)
+    {
+        $user = User::where('nik', (int)$nik)->first();
+        $data_user = [
+            'id'            => $user->id,
+            'nama_depan'    => $user->nama['nama_depan'],
+            'nama_belakang' => $user->nama['nama_belakang'],
+            'tanggal_lahir' => $user->lahir['tanggal'],
+            'tempat_lahir'  => $user->lahir['tempat'],
+            'email'         => $user->kontak['email'],
+            'nomor_telepon' => $user->kontak['nomor_telepon'],
+        ];
+        if(empty($user))
+        {
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ]);
+        }
+        return response()->json($data_user, 200);
     }
 
     /**
@@ -120,15 +157,40 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $data_input = [
-            'email'             => 'required|email',
-            'nama_depan'        => 'required',
-            'nama_belakang'     => 'required',
-            'nomor_telepone'    => 'required'
+        $data_validasi = [
+            'nama_depan'            => 'required',
+            'nama_belakang'         => 'required',
+            'gelar_depan'           => 'required',
+            'gelar_belakang'        => 'required',
+            'gender'                => 'required',
+            'nik'                   => 'required|numeric|digits:16',
+            'nomor_telepon'         => 'required|numeric|digits_between:10,13',
+            'email'                 => 'required|email:rfc,dns',
+            'tanggal_lahir'         => 'required',
+            'tempat_lahir'          => 'required|date',
+            'status_menikah'        => 'required',
         ];
-        $validator = Validator::make($request->all(),$data_input);
+        $data_input     = [
+            'nama'              => [
+                'nama_depan'    => $request->nama_depan,
+                'nama_belakang' => $request->nama_belakang
+            ],
+            'gelar'             => [
+                'gelar_depan'    => $request->gelar_depan,
+                'gelar_belakang' => $request->gelar_belakang
+            ],
+            'gender'            => $request->gender,
+            'nik'               => $request->nik,
+            'kontak'            => [
+                'email'         => $request->email,
+                'nomor_telepon' => $request->nomor_telepon
+            ],
+            'status_menikah'    => $request->status_menikah
+        ];
+
+        $validator = Validator::make($request->all(),$data_validasi);
         if ($validator->fails()){
             return response()->json([
                 "error"     => $validator->errors(),
@@ -142,7 +204,7 @@ class UserController extends Controller
                 'code'      => 404
             ],404);
         }
-        $update = $user->update($request->all());
+        $update = $user->update($data_input);
         $data = [
             'message'   => 'Success',
             'code'      => 200,
@@ -150,6 +212,33 @@ class UserController extends Controller
             'data'      => User::find($user->id)
         ];
         return response()->json($data);
+    }
+    public function update_address(UpdateUserRequest $request, User $user)
+    {
+        $provinsi   = Province::where('id_provinsi', $request->id_provinsi)->first();
+        $kota       = City::where('city_id', $request->city_id)->first();
+        $user['address']= [
+            'provinsi'  => [
+                'id_provinsi'   => $provinsi->id_provinsi,
+                'nama_provinsi' => $provinsi->nama_provinsi
+            ],
+            'kota'  => [
+                'id_kota'       => $provinsi->id_kota,
+                'nama_kota'     => $provinsi->nama_kota
+            ],
+            'kecamatan'  => [
+                'id_kecamatan'      => $provinsi->id_kecamatan,
+                'nama_kecamatan'    => $provinsi->nama_kecamatan
+            ],
+            'kelurahan'  => [
+                'id_kelurahan'      => $provinsi->id_provinsi,
+                'nama_kelurahan'    => $provinsi->nama_kelurahan
+            ],
+            'kode_pos'  => ''
+
+        ];
+        $update = $user->update();
+
     }
 
     /**
