@@ -54,12 +54,20 @@ class ProfileController extends Controller
     public function update_username(Request $request)
     {
         $user       = Auth::user();
+        $time       = time();
         $user['update_username'] = [
             'username'  => $request->username,
             'otp'       => rand(1000,9999),
-            'created_at'=> time(),
-            'exp'       => time()+(5*60),
+            'created_at'=> $time,
+            'exp'       => $time+(5*60),
         ];
+        if(Auth::user()['update_username']['exp'] > $time){
+            return response()->json([
+                'status_code'   =>200,
+                'message'       => 'Gagal request',
+                'waiting'       => date('Y-m-d H:i:s', Auth::user()['update_username']['exp']),
+            ],200);
+        }
         $update     = $user->update();
         if($update){
             return response()->json([

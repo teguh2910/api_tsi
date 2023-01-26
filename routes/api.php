@@ -3,11 +3,11 @@
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EducationController;
 use App\Http\Controllers\Api\FileController;
-use App\Http\Controllers\Api\ObservationController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CodeController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
+use App\Http\Controllers\Api\v1\ObservationController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\UserController;
 use Illuminate\Http\Request;
@@ -49,7 +49,7 @@ Route::resource('/customers', CustomerController::class);
 Route::resource('/observations', ObservationController::class)->middleware('auth:sanctum');
 
 Route::post('/spo2/{id_pasien}',[HearthRateController::class,'store'])->middleware('auth:sanctum');
-Route::post('/bloodPressure/{id_pasien}',[ObservationController::class, 'bloodPressure'] )->middleware('auth:sanctum');
+Route::post('/v1/bloodPressure',[ObservationController::class, 'bloodPressure'] )->middleware('auth:sanctum');
 Route::post('/cholesterol/{id_pasien}',[ObservationController::class, 'cholesterol'] )->middleware('auth:sanctum');
 Route::post('/glucose/{id_pasien}',[ObservationController::class, 'glucose'] )->middleware('auth:sanctum');
 Route::post('/uricAcid/{id_pasien}',[ObservationController::class, 'uricAcid'] )->middleware('auth:sanctum');

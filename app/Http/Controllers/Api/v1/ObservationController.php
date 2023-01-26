@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Observation\StoreObservationRequest;
 use App\Http\Requests\Observation\UpdateObservationRequest;
+use App\Models\Code;
 use App\Models\Observation;
-use DateTime;
-use DateTimeZone;
-use http\Client\Response;
-use Illuminate\Auth\Events\Validated;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,9 +29,95 @@ class ObservationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function bloodPressure(Request $request)
     {
-        //
+        //mencari data observasi
+        $code_observasi = 'vital-signs';
+        $find_observasi = Code::find($code_observasi);
+        $category       = [
+            'code'      => $find_observasi->id,
+            'display'   => $find_observasi->display,
+            'system'    => $find_observasi->system
+        ];
+
+        //mencari data systolic dari DB
+        $code_systolic  = (string) '8480-6';
+        $find_systolic  = Code::find($code_systolic);
+
+        //mencari data diastolic dari db
+        $code_diastolic = (string) '8462-4';
+        $find_diastolic = Code::find($code_diastolic);
+
+        //mencari data HR
+        $code_HR        = '';
+        $find_HR        = Code::find($code_HR);
+
+        $validator      = Validator::make($request->all(), [
+            'id_user'       => 'required',
+            'systolic'      => 'required|numeric|min:40|max:300',
+            'diastolic'     => 'required|numeric|min:10|max:200',
+            'heart_rate'    => 'required|numeric|min:10|max:500'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 204,
+                'message'       => 'gagal validasi',
+                'content'       => $validator->errors()
+            ]);
+        }
+
+        $user = User::find($request->id_user);
+        if(empty($user)){
+            return response()->json([
+               'status_code'    => 404,
+               'message'        => 'user not found'
+            ],404);
+        }
+
+        $systolic   = [
+            'value'         => (int) $request->systolic,
+            'unit'          => 'mmHg',
+            'id_pasien'     => $request->id_user,
+            'id_petugas'    => Auth::id(),
+            'time'          => time(),
+            'coding'        => [
+                'code'      => $find_systolic->id,
+                'display'   => $find_systolic->display,
+                'system'    => $find_systolic->system
+            ],
+            'category'      => $category
+
+        ];
+        $diastolic   = [
+            'value'         => (int) $request->diastolic,
+            'unit'          => 'mmHg',
+            'id_pasien'     => $request->id_user,
+            'id_petugas'    => Auth::id(),
+            'time'          => time(),
+            'coding'        => [
+                'code'      => $find_diastolic->id,
+                'display'   => $find_diastolic->display,
+                'system'    => $find_diastolic->system
+            ],
+            'category'      => $category
+        ];
+        $HR         = [
+            'value'         => (int) $request->heart_rate,
+            'unit'          => [
+                "value"     => 80,
+                "unit"      => "beats/minute",
+                "system"    => "http://unitsofmeasure.org",
+                "code"      => "/min"
+            ]
+        ];
+
+        $observation = new Observation();
+        $create_systolic = $observation->create($systolic);
+        $create_diastolic   = $observation->create($diastolic);
+
+
+
     }
 
     /**

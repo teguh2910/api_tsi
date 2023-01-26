@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CodeResource;
 use App\Models\Code;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +12,7 @@ class CodeController extends Controller
 {
     public function index()
     {
-        $codes = Code::all();
+        $codes = CodeResource::collection(Code::all()) ;
         if(empty($codes))
         {
             return response()->json([
@@ -55,7 +56,7 @@ class CodeController extends Controller
             'display'   => 'required'
         ]);
         $input      = [
-            'code'      => $request->code,
+            '_id'       => $request->code,
             'system'    => $request->system,
             'display'   => $request->display
         ];
@@ -66,10 +67,10 @@ class CodeController extends Controller
                 'errorrs'       => $validator->errors()
             ]);
         }else{
-            $code = new Code();
-            $create = $code->create($input);
+            $code       = new Code();
+            $create     = $code->insert($input);
             if($create){
-                $data =[
+                $data   = [
                     'status_code'   => 201,
                     'message'       => 'success'
                 ];
