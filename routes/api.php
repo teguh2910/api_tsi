@@ -48,13 +48,13 @@ Route::get('/v1/user/{nik}', [UserController::class, 'showNik'])->middleware('au
 Route::resource('/customers', CustomerController::class);
 Route::resource('/observations', ObservationController::class)->middleware('auth:sanctum');
 
-Route::post('/spo2/{id_pasien}',[HearthRateController::class,'store'])->middleware('auth:sanctum');
 Route::post('/v1/bloodPressure',[ObservationController::class, 'bloodPressure'] )->middleware('auth:sanctum');
-Route::post('/cholesterol/{id_pasien}',[ObservationController::class, 'cholesterol'] )->middleware('auth:sanctum');
-Route::post('/glucose/{id_pasien}',[ObservationController::class, 'glucose'] )->middleware('auth:sanctum');
-Route::post('/uricAcid/{id_pasien}',[ObservationController::class, 'uricAcid'] )->middleware('auth:sanctum');
-Route::post('/weight/{id_pasien}',[ObservationController::class, 'weight'] )->middleware('auth:sanctum');
-Route::post('/height/{id_pasien}',[ObservationController::class, 'height'] )->middleware('auth:sanctum');
+Route::post('/v1/cholesterol',[ObservationController::class, 'cholesterol'] )->middleware('auth:sanctum');
+Route::post('/v1/uricAcid',[ObservationController::class, 'uricAcid'] )->middleware('auth:sanctum');
+Route::post('/v1/glucose',[ObservationController::class, 'glucose'] )->middleware('auth:sanctum');
+Route::post('/v1/weight',[ObservationController::class, 'weight'] )->middleware('auth:sanctum');
+Route::post('/v1/height',[ObservationController::class, 'height'] )->middleware('auth:sanctum');
+Route::post('/v1/spo2',[HearthRateController::class,'store'])->middleware('auth:sanctum');
 
 
 Route::post('v1/codes', [CodeController::class, 'store'])->middleware('auth:sanctum');

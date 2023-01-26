@@ -49,7 +49,7 @@ class ObservationController extends Controller
         $find_diastolic = Code::find($code_diastolic);
 
         //mencari data HR
-        $code_HR        = '';
+        $code_HR        = '8867-4';
         $find_HR        = Code::find($code_HR);
 
         $validator      = Validator::make($request->all(), [
@@ -104,20 +104,27 @@ class ObservationController extends Controller
         ];
         $HR         = [
             'value'         => (int) $request->heart_rate,
-            'unit'          => [
-                "value"     => 80,
-                "unit"      => "beats/minute",
-                "system"    => "http://unitsofmeasure.org",
-                "code"      => "/min"
-            ]
+            'unit'          => "beats/minute",
+            'id_pasien'     => $request->id_user,
+            'id_petugas'    => Auth::id(),
+            'time'          => time(),
+            'coding'        => [
+                'code'      => $find_HR->id,
+                'display'   => $find_HR->display,
+                'system'    => $find_HR->system
+            ],
+            'category'      => $category
         ];
-
-        $observation = new Observation();
-        $create_systolic = $observation->create($systolic);
+        $observation        = new Observation();
+        $create_systolic    = $observation->create($systolic);
         $create_diastolic   = $observation->create($diastolic);
-
-
-
+        $create_HR          = $observation->create($HR);
+        if($create_systolic && $create_diastolic && $create_HR){
+            return response()->json([
+                'status_code'   => 200,
+                'message'       => 'success'
+            ]);
+        }
     }
 
     /**
