@@ -15,47 +15,19 @@ use Illuminate\Support\Str;
 class FileController extends Controller
 {
     public function store(Request $request){
+        $filepath = public_path()."/".'suku.csv';
+        $filename = 'suku.csv';
+        Storage::disk('google')->put($filename, File::get($filepath));
 
-        if ($request->hasFile('myfile')) {
-            try {
-                $storage = new StorageClient([
-                    'keyFilePath' => base_path('/service-account.json'),
-                ]);
+        return response()->json([
+            'statsu_code'   => 404,
+            'message'       => 'false',
+            'content'       => [
+                'file'      => $filename,
+                'name'      => $request->nama,
 
-                $bucketName = env('GOOGLE_CLOUD_STORAGE_BUCKET');
-                $bucket = $storage->bucket($bucketName);
+            ]
+        ]);
 
-                //get filename with extension
-                $filenamewithextension = $request->file('myfile')->getClientOriginalName();
-
-                //get filename without extension
-                $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME);
-
-                //get file extension
-                $extension = $request->file('myfile')->getClientOriginalExtension();
-
-                //filename to store
-                $filenametostore = $filename.'_'.uniqid().'.'.$extension;
-
-                Storage::put('public/uploads/'. $filenametostore, fopen($request->file('myfile'), 'r+'));
-
-                $filepath = storage_path('app/public/uploads/'.$filenametostore);
-
-                $object = $bucket->upload(
-                    fopen($filepath, 'r'),
-                    [
-                        'predefinedAcl' => 'publicRead'
-                    ]
-                );
-
-                // delete file from local disk
-                Storage::delete('public/uploads/'. $filenametostore);
-
-                return redirect('upload')->with('success', "File is uploaded successfully. File path is: https://storage.googleapis.com/$bucketName/$filenametostore");
-
-            } catch(Exception $e) {
-                echo $e->getMessage();
-            }
-        }
     }
 }

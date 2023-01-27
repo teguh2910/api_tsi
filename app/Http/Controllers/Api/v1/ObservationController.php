@@ -15,14 +15,32 @@ class ObservationController extends Controller
 {
 
     /**
-     * Display a listing of the resource.
+     * Menghitung jumlah record yang telah dilakukan oleh petugas.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        dd('hallo');
+        $observation = Observation::all();
+        return response()->json([
+           'status_code'    => 200,
+           'message'        => 'success',
+           'content'        =>  $observation
+        ]);
+
+
     }
+    public function count()
+    {
+        $observation    = Observation::where('id_petugas', Auth::id())->count() ;
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'count'         => $observation
+
+        ]);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -53,7 +71,6 @@ class ObservationController extends Controller
         $find_HR        = Code::find($code_HR);
 
         $validator      = Validator::make($request->all(), [
-            'id_user'       => 'required',
             'systolic'      => 'required|numeric|min:40|max:300',
             'diastolic'     => 'required|numeric|min:10|max:200',
             'heart_rate'    => 'required|numeric|min:10|max:500'
@@ -66,8 +83,8 @@ class ObservationController extends Controller
                 'content'       => $validator->errors()
             ]);
         }
-
-        $user = User::find($request->id_user);
+        $id_user    = $request->header('id_user');
+        $user       = User::find($id_user);
         if(empty($user)){
             return response()->json([
                'status_code'    => 404,
@@ -78,7 +95,7 @@ class ObservationController extends Controller
         $systolic   = [
             'value'         => (int) $request->systolic,
             'unit'          => 'mmHg',
-            'id_pasien'     => $request->id_user,
+            'id_pasien'     => $id_user,
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
@@ -92,7 +109,7 @@ class ObservationController extends Controller
         $diastolic   = [
             'value'         => (int) $request->diastolic,
             'unit'          => 'mmHg',
-            'id_pasien'     => $request->id_user,
+            'id_pasien'     => $id_user,
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
@@ -105,7 +122,7 @@ class ObservationController extends Controller
         $HR         = [
             'value'         => (int) $request->heart_rate,
             'unit'          => "beats/minute",
-            'id_pasien'     => $request->id_user,
+            'id_pasien'     => $id_user,
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
@@ -127,58 +144,104 @@ class ObservationController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Observation\StoreObservationRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-
-    public function storeRespiratoryRate()
+    public function temperatur(Request $request)
     {
-        $data   = [
-            "status" => "final",
-            "category" => [
-                [
-                    "coding" => [
-                        [
-                            "system"    => "http://terminology.hl7.org/CodeSystem/observation-category",
-                            "code"      => "vital-signs",
-                            "display"   => "Vital Signs"
-                        ]
-                    ]
-                ],
-            ],
-            "code" =>[
-                "coding" => [
-                    [
-                        "system"    => "http://loinc.org",
-                        "code"      => "9279-1",
-                        "display"   => "Respiratory rate"
-                    ]
-                ]
-            ],
-            "subject" =>[
-                "reference" => "Patient/100000030009"
+        //mencari data observasi
+        $code_observasi = 'vital-signs';
+        $find_observasi = Code::find($code_observasi);
+        $category       = [
+            'code'      => $find_observasi->id,
+            'display'   => $find_observasi->display,
+            'system'    => $find_observasi->system
+        ];
+        $id_pasien      = $request->header('id_user');
+        $pasien         = User::find($id_pasien);
+        if(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'user not found'
+            ]);
 
+        }
+        //mencari data temperature dari DB
+        $code_suhu      = (string) '8310-5';
+        $find_suhu      = Code::find($code_suhu);
+        $validator      = Validator::make($request->all(), [
+            'suhu'  => 'required|numeric|min:35|max:45'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 204,
+                'message'       => 'Gagal Validasi',
+                'content'       => $validator->errors()
+            ]);
+        }
+        $suhu         = [
+            'value'         => (float) $request->suhu,
+            'unit'          => "C",
+            'id_pasien'     => $id_pasien,
+            'id_petugas'    => Auth::id(),
+            'time'          => time(),
+            'coding'        => [
+                "code"      => "8310-5",
+                "display"   => "Body temperature",
+                "system"    => "http://loinc.org"
             ],
-            "performer" => [
-                [
-                    "reference" => "Practitioner/N10000001"
-                ]
+            'category'      => $category
+        ];
+        $observation        = new Observation();
+        $create_suhu        = $observation->create($suhu);
+        if($create_suhu){
+            return response()->json([
+                'status_code'   => 201,
+                'message'       => 'success'
+            ], 201);
+        }
+    }
+
+    public function weight(Request $request)
+    {
+        $code_observasi = 'vital-signs';
+        $find_observasi = Code::find($code_observasi);
+        $category       = [
+            'code'      => $find_observasi->id,
+            'display'   => $find_observasi->display,
+            'system'    => $find_observasi->system
+        ];
+        $code_wight = "29463-7";
+        $find_wight = Code::find($code_wight);
+
+        $id_user    = $request->header('id_user');
+        $user       = User::find($id_user);
+        if(empty($user)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'User Not Found'
+            ]);
+        }
+        $validation = Validator::make($request->all(),[
+            'weight'    => 'required|numeric|min:1|max:300'
+        ]);
+        if($validation->fails())
+        {
+            return response()->json([
+                'status_code'   => 304,
+                'message'       => 'Gagal validasi',
+                'content'       => $validation->errors()
+            ]);
+        }
+        $data         = [
+            'value'         => (int) $request->weight,
+            'unit'          => "Kg",
+            'id_pasien'     => $id_user,
+            'id_petugas'    => Auth::id(),
+            'time'          => time(),
+            'coding'        => [
+                'code'      => $find_wight->id,
+                'display'   => $find_wight->display,
+                'system'    => $find_wight->system
             ],
-            "encounter" => [
-                "reference" => "Encounter/".md5(uniqid()),
-                "display" => "Pemeriksaan Fisik Nadi Budi Santoso di hari Selasa, 14 Juni 2022"
-            ],
-            "effectiveDateTime" => date('Y-m-d'),
-            "issued" => "2022-06-14T07:00:00+07:00",
-            "valueQuantity" => [
-                "value"     => 80,
-                "unit"      => "beats/minute",
-                "system"    => "http://unitsofmeasure.org",
-                "code"      => "/min"
-            ]
+            'category'      => $category
         ];
         $observation    = new Observation();
         $create         = $observation->create($data);
@@ -186,8 +249,8 @@ class ObservationController extends Controller
         {
             return response()->json([
                 'status_code'   => 201,
-                'message'       => 'success',
-                'time'          => date('Y-m-d H:i:s', 1555902242396)
+                'message'       => 'success'
+
             ]);
         }
 

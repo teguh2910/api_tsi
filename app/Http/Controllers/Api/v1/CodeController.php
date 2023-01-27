@@ -51,7 +51,7 @@ class CodeController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code'      => 'required|unique:codes,code',
+            'code'      => 'required|unique:codes,_id',
             'system'    => 'required',
             'display'   => 'required'
         ]);
