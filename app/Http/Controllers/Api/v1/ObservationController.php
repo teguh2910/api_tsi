@@ -70,6 +70,14 @@ class ObservationController extends Controller
         $code_HR        = '8867-4';
         $find_HR        = Code::find($code_HR);
 
+        if(empty($find_systolic) && empty($find_diastolic) && empty($find_HR)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ]);
+
+        }
+
         $validator      = Validator::make($request->all(), [
             'systolic'      => 'required|numeric|min:40|max:300',
             'diastolic'     => 'required|numeric|min:10|max:200',
