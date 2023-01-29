@@ -245,11 +245,19 @@ class AuthController extends Controller
      */
     public function forgot_password(ForgotPasswordRequest $request)
     {
-        $input = $request->validated();
-        $user = User::where([
+        $time   = time();
+        $input  = $request->validated();
+        $user   = User::where([
             'kontak.email'         => $request->email,
             'kontak.nomor_telepon' => $request->nomor_telepon
         ])->first();
+        $exp_di_DB = $user->forgot_password['exp'];
+        if($exp_di_DB>$time){
+            return response()->json([
+                'status_code'       => 200,
+                'message'           => 'Anda mempuntai token yang masih aktif'
+            ]);
+        }
         if(empty($user)){
             $data = [
                 'status_code'   => 404,
