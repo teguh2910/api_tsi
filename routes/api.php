@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EducationController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CodeController;
+use App\Http\Controllers\Api\v1\ConsultationController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
 use App\Http\Controllers\Api\v1\ObservationController;
@@ -65,3 +67,9 @@ Route::get('v1/code/{id}', [CodeController::class, 'show'])->middleware('auth:sa
 Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');
 Route::get('v1/maritalStatus', [MaritalStatusController::class, 'index'])->middleware('auth:sanctum');
 
+Route::get('v1/consultations', [ConsultationController::class, 'index'])->middleware('auth:sanctum');//melihat tansaksi konsultasi yang dimiliki oleh pasien
+Route::post('v1/consultations', [ConsultationController::class, 'store'])->middleware('auth:sanctum');// creating consultation by patient
+Route::put('v1/consultations/{id}', [ConsultationController::class, 'update'])->middleware('auth:sanctum');// creating consultation by patient
+
+Route::get('v1/chats', [ChatController::class,'index'])->middleware('auth:sanctum');
+Route::post('v1/chats', [ChatController::class,'store'])->middleware('auth:sanctum');

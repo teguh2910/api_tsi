@@ -122,34 +122,62 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(RegisterRequest $request)
+    public function register(Request $request)
     {
-        $time_start = microtime(true);
-        // Sleep for a while
-        usleep(100);
-        $input              = $request->validated();
-        $data_aktifasi      = [
-            'otp'   => rand(100000,999999),
-            'exp'   => time()+(24*60*60)
+        $validator = Validator::make($request->all(), [
+            'nama_depan'        => 'required',
+            'nama_belakang'     => 'required',
+            'gender'            => 'required',
+            'nik'               => 'required|integer|unique:users,nik',
+            'email'             => 'required|email:rfc,dns|unique:users,kontak.email',
+            'nomor_telepon'     => 'required|unique:users,kontak.nomor_telepon',
+            'tempat_lahir'      => 'required',
+            'tanggal_lahir'     => 'required|date'
+
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                $validator->errors()
+            ]);
+        }
+        $input = [
+            'nama'      => [
+                'nama_depan'    => $request->nama_depan,
+                'nama_belakang' => $request->nama_belakang
+            ],
+            'gender'            => $request->gender,
+            'nik'               => (int) $request->nik,
+            'lahir'     => [
+                'tempat'    => $request->tempat_lahir,
+                'tanggal'   => $request->tanggal_lahir
+            ],
+            'kontak'    => [
+                'email'         => $request->email,
+                'nomor_telepon' => $request->nomor_telepon
+            ],
+            'password'  => bcrypt($request->password),
+            'aktifasi'  => [
+                'otp'   => rand(100000,999999),
+                'exp'   => time()+(24*60*60)
+            ],
+            'active'    => false,
+            'level'     => 'user'
         ];
-        $input['password']  = bcrypt($request->password);
-        $input['active']    = false;
-        $input['level']     = 'user';
-        $input['aktifasi']  = $data_aktifasi;
+
         $user               = new User();
         $add                = $user->create($input);
         $data_email = [
             'content'=> $input
         ];
+
         $sending_mail = dispatch(new RegistrationNotificationJob($data_email));
         $time_end   = microtime(true);
-        $time       = $time_end - $time_start;
+
         if($add){
             $data           = [
                 "status_code"   => 201,
                 "message"       => "Success",
-                "user"          => $input,
-                "time"          => $time
+                "user"          => $input
             ];
             return response()->json($data, 201);
         }
