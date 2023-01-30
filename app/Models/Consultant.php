@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class Consultant extends Model
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens,SoftDeletes;
+    protected $connection   = 'mongodb';
+    protected $primaryKey   = '_id';
+    protected $dates        = ['deleted_at'];
+    protected $guarded      = [];
 }

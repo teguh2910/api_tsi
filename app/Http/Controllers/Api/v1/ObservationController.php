@@ -19,6 +19,19 @@ class ObservationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private function observasi()
+    {
+        //mencari data observasi
+        $code_observasi = 'vital-signs';
+        $find_observasi = Code::where('code', $code_observasi)->first();
+        $category       = [
+            'code'      => $find_observasi->code,
+            'display'   => $find_observasi->display,
+            'system'    => $find_observasi->system
+        ];
+        return $category;
+    }
+
     public function index()
     {
         $observation = Observation::all();
@@ -49,33 +62,21 @@ class ObservationController extends Controller
      */
     public function bloodPressure(Request $request)
     {
-        //mencari data observasi
-        $code_observasi = 'vital-signs';
-        $find_observasi = Code::find($code_observasi);
-        $category       = [
-            'code'      => $find_observasi->id,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
-        ];
-
+        $category       = $this->observasi();
         //mencari data systolic dari DB
         $code_systolic  = (string) '8480-6';
-        $find_systolic  = Code::find($code_systolic);
-
+        $find_systolic  = Code::where('code', $code_systolic)->first();
         //mencari data diastolic dari db
         $code_diastolic = (string) '8462-4';
-        $find_diastolic = Code::find($code_diastolic);
-
+        $find_diastolic = Code::where('code', $code_diastolic)->first();
         //mencari data HR
         $code_HR        = '8867-4';
-        $find_HR        = Code::find($code_HR);
-
+        $find_HR        = Code::where('code', $code_HR)->first();
         if(empty($find_systolic) && empty($find_diastolic) && empty($find_HR)){
             return response()->json([
                 'status_code'   => 404,
                 'message'       => 'Not Found'
             ]);
-
         }
 
         $validator      = Validator::make($request->all(), [
@@ -107,7 +108,7 @@ class ObservationController extends Controller
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
-                'code'      => $find_systolic->id,
+                'code'      => $find_systolic->code,
                 'display'   => $find_systolic->display,
                 'system'    => $find_systolic->system
             ],
@@ -121,7 +122,7 @@ class ObservationController extends Controller
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
-                'code'      => $find_diastolic->id,
+                'code'      => $find_diastolic->code,
                 'display'   => $find_diastolic->display,
                 'system'    => $find_diastolic->system
             ],
@@ -134,7 +135,7 @@ class ObservationController extends Controller
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
-                'code'      => $find_HR->id,
+                'code'      => $find_HR->code,
                 'display'   => $find_HR->display,
                 'system'    => $find_HR->system
             ],
@@ -155,13 +156,7 @@ class ObservationController extends Controller
     public function temperatur(Request $request)
     {
         //mencari data observasi
-        $code_observasi = 'vital-signs';
-        $find_observasi = Code::find($code_observasi);
-        $category       = [
-            'code'      => $find_observasi->id,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
-        ];
+        $category       = $this->observasi();
         $id_pasien      = $request->header('id_user');
         $pasien         = User::find($id_pasien);
         if(empty($pasien)){
@@ -169,7 +164,6 @@ class ObservationController extends Controller
                 'status_code'   => 404,
                 'message'       => 'user not found'
             ]);
-
         }
         //mencari data temperature dari DB
         $code_suhu      = (string) '8310-5';
@@ -209,13 +203,8 @@ class ObservationController extends Controller
 
     public function weight(Request $request)
     {
-        $code_observasi = 'vital-signs';
-        $find_observasi = Code::find($code_observasi);
-        $category       = [
-            'code'      => $find_observasi->id,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
-        ];
+
+        $category       = $this->observasi();
         $code_wight = "29463-7";
         $find_wight = Code::find($code_wight);
 
@@ -245,9 +234,65 @@ class ObservationController extends Controller
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
-                'code'      => $find_wight->id,
+                'code'      => $find_wight->code,
                 'display'   => $find_wight->display,
                 'system'    => $find_wight->system
+            ],
+            'category'      => $category
+        ];
+        $observation    = new Observation();
+        $create         = $observation->create($data);
+        if($create)
+        {
+            return response()->json([
+                'status_code'   => 201,
+                'message'       => 'success'
+
+            ]);
+        }
+
+    }
+    public function height(Request $request)
+    {
+        $code_observasi = 'vital-signs';
+        $find_observasi = Code::find($code_observasi);
+        $category       = [
+            'code'      => $find_observasi->code,
+            'display'   => $find_observasi->display,
+            'system'    => $find_observasi->system
+        ];
+        $code_height = "8302-2";
+        $find_height = Code::find($code_height);
+
+        $id_user    = $request->header('id_user');
+        $user       = User::find($id_user);
+        if(empty($user)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'User Not Found'
+            ]);
+        }
+        $validation = Validator::make($request->all(),[
+            'height'    => 'required|numeric|min:40|max:250'
+        ]);
+        if($validation->fails())
+        {
+            return response()->json([
+                'status_code'   => 304,
+                'message'       => 'Gagal validasi',
+                'content'       => $validation->errors()
+            ]);
+        }
+        $data         = [
+            'value'         => (int) $request->height,
+            'unit'          => "Kg",
+            'id_pasien'     => $id_user,
+            'id_petugas'    => Auth::id(),
+            'time'          => time(),
+            'coding'        => [
+                'code'      => $find_height->code,
+                'display'   => $find_height->display,
+                'system'    => $find_height->system
             ],
             'category'      => $category
         ];
