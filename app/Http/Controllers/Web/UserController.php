@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('nama', 'ASC')->get();
+        $users = User::orderBy('nama.nama_depan', 'ASC')->get();
         $data = [
             "title"     => "Daftar User",
             "class"     => "User",

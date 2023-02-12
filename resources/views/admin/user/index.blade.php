@@ -19,13 +19,26 @@
                                 <th>Aksi</th>
                                 </thead>
                                 <tbody>
+
                                 @foreach($users as $user)
+                                    <?php
+                                        // tanggal lahir
+                                        $tanggal = new DateTime($user->lahir['tanggal']);
+                                        // tanggal hari ini
+                                        $today = new DateTime('today');
+                                        // tahun
+                                        $y = $today->diff($tanggal)->y;
+                                        // bulan
+                                        $m = $today->diff($tanggal)->m;
+                                        // hari
+                                        $d = $today->diff($tanggal)->d;
+                                        ?>
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $user->nama }}</td>
-                                        <td>{{ date('d', strtotime($user->birth_date))."-".date('m', strtotime($user->birth_date))."-".date('y', strtotime($user->birth_date)) }}</td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>{{ $user->nomor_telepon }}</td>
+                                        <td>{{ $user->nama['nama_depan'] }}</td>
+                                        <td>{{  $y . " tahun " . $m . " bulan " . $d . " hari" }}</td>
+                                        <td>{{ $user->kontak['email'] }}</td>
+                                        <td>{{ $user->kontak['nomor_telepon'] }}</td>
                                         <td>
                                             <a href="{{ route('users.show', ['id' => $user->id]) }}" class="btn btn-sm btn-info">Detail</a>
                                         </td>
