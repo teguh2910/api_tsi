@@ -271,27 +271,59 @@ class AuthController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function forgot_password(ForgotPasswordRequest $request)
+    public function forgot_password(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email'     => 'required|email',
+            'nomor_telepon'  => 'required|numeric'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 203,
+                'message'       => 'Gagal validasi',
+                'errorrs'       => $validator->errors()
+            ]);
+        }
         $time   = time();
-        $input  = $request->validated();
+
         $user   = User::where([
             'kontak.email'         => $request->email,
             'kontak.nomor_telepon' => $request->nomor_telepon
         ])->first();
-        $exp_di_DB = $user->forgot_password['exp'];
-        if($exp_di_DB>$time){
-            return response()->json([
-                'status_code'       => 200,
-                'message'           => 'Anda mempuntai token yang masih aktif'
-            ]);
-        }
-        if(empty($user)){
-            $data = [
-                'status_code'   => 404,
-                'message'       => "Data Not Found"
-            ];
-            return response()->json($data, 404);
+
+        if(isset($user->forgot_password['exp'])){
+            $exp_di_DB = $user->forgot_password['exp'];
+
+            if($exp_di_DB > $time){
+                return response()->json([
+                    'status_code'       => 200,
+                    'message'           => 'Anda mempuntai token yang masih aktif'
+                ]);
+            }
+            if(empty($user)){
+                $data = [
+                    'status_code'   => 404,
+                    'message'       => "Data Not Found"
+                ];
+                return response()->json($data, 404);
+            }else{
+                $user['forgot_password'] = [
+                    'code'          => rand('100000', 999999),
+                    'created_at'    => time(),
+                    'exp'           => time()+(5*60)
+                ];
+                $data = [
+                    'status_code'   => 200,
+                    'message'       => 'Permohonan reset password telah dikirim ke alamat email terdaftar'
+                ];
+                $update     = $user->update();
+                $data_email = [
+                    "content"     => $user
+                ];
+                $sending_email = dispatch(new ForgotPasswordJob($data_email));
+                return response()->json($data, 200);
+            }
+
         }else{
             $user['forgot_password'] = [
                 'code'          => rand('100000', 999999),
@@ -309,6 +341,7 @@ class AuthController extends Controller
             $sending_email = dispatch(new ForgotPasswordJob($data_email));
             return response()->json($data, 200);
         }
+
 
     }
 
