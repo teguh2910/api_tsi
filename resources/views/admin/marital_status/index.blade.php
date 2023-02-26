@@ -30,9 +30,9 @@
                             <table class="table table-sm mt-2" id="example1">
                                 <thead>
                                 <th>#</th>
-                                <th>Kode</th>
-                                <th>Text</th>
-                                <th>Description</th>
+                                <th>Code</th>
+                                <th>Display</th>
+                                <th class="w-50">Definition</th>
                                 <th>Count</th>
                                 <th>Aksi</th>
                                 </thead>
@@ -41,8 +41,8 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->code }}</td>
-                                    <td>{{ $data->marital_status }}</td>
-                                    <td>{{ $data->description }}</td>
+                                    <td>{{ $data->display }}</td>
+                                    <td>{{ $data->definition }}</td>
                                     <td></td>
                                     <td><a href="{{ route('marital_status.show', ['id'=> $data->id]) }}" class="btn btn-sm btn-info">Detail</a></td>
                                 </tr>

@@ -20,12 +20,12 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             VillageSeeder::class,
             ReligionSeeder::class,
+            MaritalStatusSeeder::class,
             CustomerSeeder::class,
             UserSeeder::class,
             ProfesionSeeder::class,
             EducationSeeder::class,
             CodeSeeder::class
-
         ]);
 //
     }
