@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\CustomerController;
-use App\Http\Controllers\Api\EducationController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CodeController;
 use App\Http\Controllers\Api\v1\ConsultationController;
+use App\Http\Controllers\Api\v1\EducationController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
 use App\Http\Controllers\Api\v1\ObservationController;
@@ -42,8 +42,9 @@ Route::get('/v1/profile', [ProfileController::class, 'index'])->middleware('auth
 Route::post('/v1/profile/username', [ProfileController::class, 'update_username'])->middleware('auth:sanctum');
 
 Route::post('/v1/files', [FileController::class, 'store']);
+Route::post('/v1/files/save', [FileController::class, 'save']);
 
-Route::resource('/education', EducationController::class);
+Route::resource('/v1/education', EducationController::class);
 Route::resource('/users', UserController::class)->middleware('auth:sanctum');
 Route::get('/v1/user/{nik}', [UserController::class, 'showNik'])->middleware('auth:sanctum');
 
@@ -62,9 +63,9 @@ Route::post('/v1/spo2',[HearthRateController::class,'store'])->middleware('auth:
 Route::post('/v1/suhu',[ObservationController::class,'temperatur'])->middleware('auth:sanctum');
 
 
+Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/codes', [CodeController::class, 'store'])->middleware('auth:sanctum');
 Route::get('v1/code/{id}', [CodeController::class, 'show'])->middleware('auth:sanctum');
-Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');
 Route::get('v1/maritalStatus', [MaritalStatusController::class, 'index'])->middleware('auth:sanctum');
 
 Route::get('v1/consultations', [ConsultationController::class, 'index'])->middleware('auth:sanctum');//melihat tansaksi konsultasi yang dimiliki oleh pasien

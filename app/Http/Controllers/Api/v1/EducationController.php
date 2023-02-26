@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Education\StoreEducationRequest;
 use App\Http\Requests\Education\UpdateEducationRequest;
 use App\Http\Resources\EducationResource;
 use App\Models\Education;
-use App\Models\User;
 
 class EducationController extends Controller
 {

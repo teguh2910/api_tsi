@@ -16,7 +16,11 @@ class EducationResource extends JsonResource
     {
 //        return parent::toArray($request);
         return [
-            'id'    => $this->id
+            'id'            => $this->id,
+            'code'          => $this->kode,
+            'pendidikan'    => $this->pendidikan,
+            'level'         => $this->level,
+            'jenis'         => $this->jenis
         ];
     }
 }
