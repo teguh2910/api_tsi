@@ -19,7 +19,7 @@
                 <p>Time : {{ date('Y-m-d H:i:s') }}</p>
                 <p>Silahkan ganti password, jika kegiatan login ini tanpa otoritas dari pemilik akun.</p>
                 <p>Salam</p>
-                <p>Pengurus Pusat Himpunan Perawat Neurosains Indonesia</p>
+                <p>Tele Sehat Indonesia</p>
                 <h2 style="padding: 23px;background: #b3deb8a1;border-bottom: 6px green solid;">
                 </h2>
             </div>
