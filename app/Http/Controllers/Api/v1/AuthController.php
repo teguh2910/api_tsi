@@ -310,7 +310,7 @@ class AuthController extends Controller
                 $user['forgot_password'] = [
                     'code'          => rand('100000', 999999),
                     'created_at'    => time(),
-                    'exp'           => time()+(5*60)
+                    'exp'           => time()+(15*60)
                 ];
                 $data = [
                     'status_code'   => 200,

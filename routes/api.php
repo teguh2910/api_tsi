@@ -44,7 +44,7 @@ Route::post('/v1/profile/username', [ProfileController::class, 'update_username'
 Route::post('/v1/files', [FileController::class, 'store']);
 Route::post('/v1/files/save', [FileController::class, 'save']);
 
-Route::resource('/v1/education', EducationController::class);
+Route::resource('/v1/education', EducationController::class)->middleware('auth:sanctum');
 Route::resource('/users', UserController::class)->middleware('auth:sanctum');
 Route::get('/v1/user/{nik}', [UserController::class, 'showNik'])->middleware('auth:sanctum');
 
