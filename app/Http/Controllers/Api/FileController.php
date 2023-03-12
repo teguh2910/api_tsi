@@ -15,19 +15,28 @@ use Illuminate\Support\Str;
 class FileController extends Controller
 {
     public function store(Request $request){
-        $path       = $request->file('myfile')->store('avatars');
-        $file       = $request->file('myfile');
-        $filename   = $file->hashName(); // Generate a unique, random name...
-        $extension  = $file->extension();
+        $file = $request->file('file');
+        $file_meta = [
+            'name'      => $file->getClientOriginalName(),
+            'extention' => $file->getClientOriginalExtension(),
+            'mimeType'  => $file->getClientMimeType(),
+            'size'      => $file->getSize()
+        ];
+        $result = Storage::disk('s3')->putFileAs('image', $file, $file->hashName());
+        $url    = Storage::disk('s3')->url($result);
+        if(!empty($url)){
+            return response()->json([
+                'statsu_code'   => 201,
+                'message'       => 'false',
+                'content'       => [
+                    'file_meta' => $file_meta,
+                    'url'       => $url,
+                ]
+            ]);
 
-        return response()->json([
-            'statsu_code'   => 404,
-            'message'       => 'false',
-            'content'       => [
-                'file'      => $filename,
-                'name'      => $request->nama,
-            ]
-        ]);
+        }
+
+
 
     }
     public function save(Request $request){

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f3f57b2b7c566215d526ab18c67e1b7",
+    "content-hash": "30e866927e5862bb13ddcd478d1ac741",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -3167,21 +3167,21 @@
         },
         {
             "name": "league/flysystem-aws-s3-v3",
-            "version": "3.0.0",
+            "version": "3.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem-aws-s3-v3.git",
-                "reference": "f8ba6a92a5c1fdcbdd89dede009a1e6e1b93ba8c"
+                "reference": "645e14e4a80bd2da8b01e57388e7296a695a80c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-aws-s3-v3/zipball/f8ba6a92a5c1fdcbdd89dede009a1e6e1b93ba8c",
-                "reference": "f8ba6a92a5c1fdcbdd89dede009a1e6e1b93ba8c",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-aws-s3-v3/zipball/645e14e4a80bd2da8b01e57388e7296a695a80c2",
+                "reference": "645e14e4a80bd2da8b01e57388e7296a695a80c2",
                 "shasum": ""
             },
             "require": {
-                "aws/aws-sdk-php": "^3.132.4",
-                "league/flysystem": "^2.0.0 || ^3.0.0",
+                "aws/aws-sdk-php": "^3.220.0",
+                "league/flysystem": "^3.10.0",
                 "league/mime-type-detection": "^1.0.0",
                 "php": "^8.0.2"
             },
@@ -3217,9 +3217,23 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem-aws-s3-v3/issues",
-                "source": "https://github.com/thephpleague/flysystem-aws-s3-v3/tree/3.0.0"
+                "source": "https://github.com/thephpleague/flysystem-aws-s3-v3/tree/3.12.2"
             },
-            "time": "2022-01-13T21:11:49+00:00"
+            "funding": [
+                {
+                    "url": "https://ecologi.com/frankdejonge",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/league/flysystem",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-01-17T14:15:08+00:00"
         },
         {
             "name": "league/mime-type-detection",

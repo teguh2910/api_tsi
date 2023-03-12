@@ -155,6 +155,7 @@ class AuthController extends Controller
                 'email'         => $request->email,
                 'nomor_telepon' => $request->nomor_telepon
             ],
+            'username'  => $request->email,
             'password'  => bcrypt($request->password),
             'aktifasi'  => [
                 'otp'   => rand(100000,999999),
@@ -177,7 +178,6 @@ class AuthController extends Controller
             $data           = [
                 "status_code"   => 201,
                 "message"       => "Success",
-                "user"          => $input
             ];
             return response()->json($data, 201);
         }
@@ -232,9 +232,20 @@ class AuthController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function aktifasi_akun(ActivationRequest $request)
+    public function aktifasi_akun(Request $request)
     {
-        $input  = $request->validated();
+        $validator = Validator::make($request->all(), [
+            'email'     => 'required|email',
+            'otp'  => 'required|numeric'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 203,
+                'message'       => 'Gagal validasi',
+                'errorrs'       => $validator->errors()
+            ]);
+        }
+        
         $user   = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
         if(!empty($user)){
             $time = time();
