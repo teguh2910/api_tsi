@@ -305,10 +305,20 @@ class AuthController extends Controller
         }
         $time   = time();
 
-        $user   = User::where([
+        $user_data   = User::where([
             'kontak.email'         => $request->email,
             'kontak.nomor_telepon' => $request->nomor_telepon
-        ])->first();
+        ]);
+
+        $user_count = $user_data->count();
+        if($user_count < 1 ){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Data Not Found'
+            ]);
+        }
+
+        $user   = $user_data->first();
 
         if(isset($user->forgot_password['exp'])){
             $exp_di_DB = $user->forgot_password['exp'];

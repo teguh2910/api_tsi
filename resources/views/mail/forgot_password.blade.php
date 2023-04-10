@@ -10,6 +10,7 @@
 <div class="card">
     <div class="card-header">
         <h3>Halo, {{ $data_email['content']['nama']['nama_depan'] }}</h3>
+        <p>Anda baru saja mengajukan permohonan reset password, silahkan masukkan OTP pada laman reset password</p>
 
     </div>
     <div class="card-body">
