@@ -198,11 +198,19 @@ class AuthController extends Controller
                 'errorrs'       => $validator->errors()
             ]);
         }
-        $user = User::where([
+        $user_data = User::where([
             'kontak.email'  => $request->email,
             'kontak.nomor_telepon'  => $request->nomor_telepon,
 
-        ])->first();
+        ]);
+        $user_count = $user_data->count();
+        if($user_count <1){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ], 404);
+        }
+        $user = $user_data->first();
         if($user->active == true){
             return response()->json([
                 'status_code'   => 404,
@@ -245,7 +253,7 @@ class AuthController extends Controller
                 'errorrs'       => $validator->errors()
             ]);
         }
-        
+
         $user   = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
         if(!empty($user)){
             $time = time();
