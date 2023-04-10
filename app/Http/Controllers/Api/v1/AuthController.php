@@ -8,7 +8,7 @@ use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdatePasswordRequest;
 use App\Jobs\Auth\ActivationUserNotificationJob;
-use App\Jobs\Auth\ForgotPasswordJob;
+use App\Jobs\Auth\ForgetPasswordJob;
 use App\Jobs\Auth\LoginNotificationJob;
 use App\Jobs\Auth\RegistrationNotificationJob;
 use App\Jobs\Auth\RequestActivationCodeJob;
@@ -349,7 +349,7 @@ class AuthController extends Controller
                 $data_email = [
                     "content"     => $user
                 ];
-                $sending_email = dispatch(new ForgotPasswordJob($data_email));
+                $sending_email = dispatch(new ForgetPasswordJob($data_email));
                 return response()->json($data, 200);
             }
 
@@ -367,7 +367,7 @@ class AuthController extends Controller
             $data_email = [
                 "content"     => $user
             ];
-            $sending_email = dispatch(new ForgotPasswordJob($data_email));
+            $sending_email = dispatch(new ForgetPasswordJob($data_email));
             return response()->json($data, 200);
         }
 

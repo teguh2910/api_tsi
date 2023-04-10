@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Auth;
 
+use App\Mail\Auth\ForgetPasswordMail;
 use App\Mail\Auth\ForgotPasswordMail;
 use App\Mail\Auth\LoginNotificationMail;
 use Illuminate\Bus\Queueable;
@@ -12,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class ForgotPasswordJob implements ShouldQueue
+class ForgetPasswordJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $data_email;
@@ -35,7 +36,7 @@ class ForgotPasswordJob implements ShouldQueue
     public function handle()
     {
         $data_email = $this->data_email;
-        $email      = new ForgotPasswordMail($data_email);
+        $email      = new ForgetPasswordMail($data_email);
         Mail::to($data_email['content']['kontak']['email'])->send($email);
     }
 }
