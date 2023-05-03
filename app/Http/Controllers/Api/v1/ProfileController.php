@@ -63,7 +63,7 @@ class ProfileController extends Controller
         ];
         if(Auth::user()['update_username']['exp'] > $time){
             return response()->json([
-                'status_code'   =>200,
+                'status_code'   => 401,
                 'message'       => 'Gagal request',
                 'waiting'       => date('Y-m-d H:i:s', Auth::user()['update_username']['exp']),
             ],200);
