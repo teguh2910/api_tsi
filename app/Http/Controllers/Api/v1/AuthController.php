@@ -136,9 +136,15 @@ class AuthController extends Controller
 
         ]);
         if($validator->fails()){
-            return response()->json([
-                $validator->errors()
-            ]);
+            $status_code    = 422;
+            $data           = [
+                "status_code"   => $status_code,
+                "message"       => "gagal Validasi",
+                "data"          => [
+                    "errors"    => $validator->errors()
+                ]
+            ];
+            return response()->json($data, $status_code);
         }
         $input = [
             'nama'      => [
@@ -192,11 +198,12 @@ class AuthController extends Controller
             'nomor_telepon'  => 'required|numeric'
         ]);
         if($validator->fails()){
+            $status_code = 422;
             return response()->json([
-                'status_code'   => 203,
+                'status_code'   => $status_code,
                 'message'       => 'Gagal validasi',
                 'errorrs'       => $validator->errors()
-            ]);
+            ], $status_code);
         }
         $user_data = User::where([
             'kontak.email'  => $request->email,
@@ -211,11 +218,20 @@ class AuthController extends Controller
             ], 404);
         }
         $user = $user_data->first();
+        $now    = time();
         if($user->active == true){
+            $status_code = 400;
             return response()->json([
-                'status_code'   => 404,
+                'status_code'   => $status_code,
                 'message'       => 'Permohonan aktifasi ditolak, karena akun sudah aktif'
-            ], 404);
+            ], $status_code);
+        }elseif ($user['aktifasi']['exp'] > $now){
+            $status_code = 400;
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => 'Anda memiliki OTP yang masih aktif'
+            ], $status_code);
+
         }
         $user['aktifasi'] = [
             'otp'   => rand(100000,999999),
@@ -229,7 +245,7 @@ class AuthController extends Controller
             dispatch(new RequestActivationCodeJob($data_email));
             return response()->json([
                 'status_code'   => 200,
-                'message'       => 'Sukses'
+                'message'       => 'Sukses, OTP berhasil dikirim ke email yang terdaftar'
             ]);
         }
     }
