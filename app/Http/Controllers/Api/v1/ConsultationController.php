@@ -12,7 +12,16 @@ class ConsultationController extends Controller
 {
     public function index()
     {
-        $consultation = Consultation::where('id_pasien', Auth::id())->get();
+        $consultation_query = Consultation::where('id_pasien', Auth::id());
+        $count          = $consultation_query->count();
+        $consultation = $consultation_query->get();
+        if($count<1){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ], 404);
+        }
+
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
@@ -24,14 +33,14 @@ class ConsultationController extends Controller
         $consultation = new Consultation();
         $validator = Validator::make($request->all(),[
             'id_konsultan'      => 'required',
-
         ]);
         if($validator->fails()){
+            $starus_code = 422;
             return response()->json([
-               'status_code'    => 304,
+               'status_code'    => $starus_code,
                'message'        => 'Gagal validasi',
                'content'        => $validator->errors()
-            ]);
+            ], $starus_code);
         }
         $input = [
             'id_konsultan'  => $request->id_konsultan,
