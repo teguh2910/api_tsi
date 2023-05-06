@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Observation\UpdateObservationRequest;
-use App\Http\Resources\ObservationResource;
 use App\Models\Code;
 use App\Models\Observation;
 use App\Models\User;
@@ -12,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class ObservationController extends Controller
+class BloodPressure extends Controller
 {
 
     /**
@@ -35,7 +34,7 @@ class ObservationController extends Controller
 
     public function index()
     {
-        $observation = ObservationResource::collection(Observation::all()) ;
+        $observation = Observation::all();
         if(empty($observation)){
             return response()->json([
                 'status_code'    => 404,

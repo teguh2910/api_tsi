@@ -23,7 +23,9 @@ class CodeController extends Controller
             return response()->json([
                 'status_code'   => 200,
                 'message'       => 'success',
-                'content'       => $codes
+                'data'          => [
+                    "codes"     => $codes
+                ]
             ],200);
         }
 
@@ -35,12 +37,12 @@ class CodeController extends Controller
             return response()->json([
                     'status_code'   => 404,
                     'message'       => 'Not Found'
-                ]);
+                ],404);
         }else{
             return response()->json([
                 'status_code'   => 200,
                 'message'       => 'success',
-                'content'       => [
+                'data'       => [
                     'code'      => $code->code,
                     'system'    => $code->system,
                     'display'   => $code->display

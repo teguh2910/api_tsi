@@ -14,7 +14,9 @@ class MaritalStatusController extends Controller
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
-            'content'       => $marital_status
+            'data'          => [
+                "marital_status"    => $marital_status
+            ],
         ]);
     }
 }
