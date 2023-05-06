@@ -128,9 +128,52 @@ class UserController extends Controller
         return response()->json($data,200);
 
     }
+    public function find(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nik' => 'required|numeric'
+        ]);
+        $nik    = $request->nik;
+        $user   = User::where('nik', (int)$nik)->first();
+        if ($validator->fails()) {
+            $data = [
+                "status_code"   => 422,
+                "message"       => "Gagal validasi",
+                "data"          => [
+                    "errors" => $validator->errors(),
+                ],
+            ];
+            return response()->json($data, 422);
+        }elseif (empty($user)){
+            $data = [
+                "status_code"   => 404,
+                "message"       => "Not Found",
+
+            ];
+            return response()->json($data, 404);
+        }
+        $data = [
+            "status_code"   => 200,
+            "message"       => "Success",
+            "data"          => [
+                "user"      => $user
+            ]
+
+        ];
+        return response()->json($data, 404);
+
+    }
     public function showNik($nik)
     {
-        $user = User::where('nik', (int)$nik)->first();
+        $user_query = User::where('nik', (int)$nik);
+        $user = $user_query->first();
+        if(empty($user))
+        {
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ], 404);
+        }
         $data_user = [
             'id'            => $user->id,
             'nama_depan'    => $user->nama['nama_depan'],
@@ -140,14 +183,10 @@ class UserController extends Controller
             'email'         => $user->kontak['email'],
             'nomor_telepon' => $user->kontak['nomor_telepon'],
         ];
-        if(empty($user))
-        {
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'Not Found'
-            ]);
-        }
+
         return response()->json($data_user, 200);
+
+
     }
 
     /**

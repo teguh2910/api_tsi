@@ -45,8 +45,9 @@ Route::post('/v1/files', [FileController::class, 'store']);
 Route::post('/v1/files/save', [FileController::class, 'save']);
 
 Route::resource('/v1/education', EducationController::class)->middleware('auth:sanctum');
-Route::resource('/users', UserController::class)->middleware('auth:sanctum');
+Route::resource('/v1/users', UserController::class)->middleware('auth:sanctum');
 Route::get('/v1/user/{nik}', [UserController::class, 'showNik'])->middleware('auth:sanctum');
+Route::post('/v1/user/find', [UserController::class, 'find'])->middleware('auth:sanctum');
 
 Route::resource('/customers', CustomerController::class);
 Route::resource('/observations', ObservationController::class)->middleware('auth:sanctum');
