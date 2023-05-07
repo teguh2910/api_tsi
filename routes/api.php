@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\v1\BloodPressure;
 use App\Http\Controllers\Api\v1\CodeController;
 use App\Http\Controllers\Api\v1\ConsultationController;
 use App\Http\Controllers\Api\v1\EducationController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
 use App\Http\Controllers\Api\v1\ObservationController;
 use App\Http\Controllers\Api\v1\ProfileController;
+use App\Http\Controllers\Api\v1\SystoleController;
 use App\Http\Controllers\Api\v1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +64,8 @@ Route::post('/v1/weight',[ObservationController::class, 'weight'] )->middleware(
 Route::post('/v1/height',[ObservationController::class, 'height'] )->middleware('auth:sanctum');
 Route::post('/v1/spo2',[HearthRateController::class,'store'])->middleware('auth:sanctum');
 Route::post('/v1/suhu',[ObservationController::class,'temperatur'])->middleware('auth:sanctum');
+
+Route::get('/v1/observation/systole',[SystoleController::class, 'index'] )->middleware('auth:sanctum');
 
 
 Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');

@@ -64,10 +64,14 @@ class CodeController extends Controller
         ];
         if($validator->fails()){
             return response()->json([
-                'status_code'   => 203,
+                'status_code'   => 422,
                 'message'       => 'Gagal validasi',
-                'errorrs'       => $validator->errors()
-            ]);
+                'data'          =>[
+                    'errors'       => $validator->errors()
+
+                ]
+
+            ],422);
         }else{
             $code       = new Code();
             $create     = $code->insert($input);

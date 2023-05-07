@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Observation\UpdateObservationRequest;
+use App\Http\Resources\SystoleResource;
 use App\Models\Code;
 use App\Models\Observation;
 use App\Models\User;
@@ -11,33 +12,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class BloodPressure extends Controller
+class SystoleController extends Controller
 {
 
-    /**
-     * Menghitung jumlah record yang telah dilakukan oleh petugas.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    private function observasi()
-    {
-        //mencari data observasi
-        $code_observasi = 'vital-signs';
-        $find_observasi = Code::where('code', $code_observasi)->first();
-        $category       = [
-            'code'      => $find_observasi->code,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
-        ];
-        return $category;
-    }
 
     public function index()
     {
         $code_systolic = "8480-6";
         $observation = Observation::where('coding.code',$code_systolic);
         $data_count = $observation->count();
-        $data_observation = $observation->get();
+        $data_observation = SystoleResource::collection($observation->get()) ;
         if($data_count < 1){
             return response()->json([
                 'status_code'    => 404,
@@ -47,12 +31,34 @@ class BloodPressure extends Controller
         }
         return response()->json([
            'status_code'    => 200,
-           'message'        => 'success broooo',
+           'message'        => 'success',
            'data'           => [
-               'systolic' => $data_observation            ]
+               'systole'    => $data_observation
+           ]
         ]);
 
 
+    }
+    public function systole_pasien()
+    {
+        $code_systolic = "8480-6";
+        $observation = Observation::where('coding.code',$code_systolic);
+        $data_count = $observation->count();
+        $data_observation = SystoleResource::collection($observation->get()) ;
+        if($data_count < 1){
+            return response()->json([
+                'status_code'    => 404,
+                'message'        => 'Not Found'
+            ],404);
+
+        }
+        return response()->json([
+            'status_code'    => 200,
+            'message'        => 'success',
+            'data'           => [
+                'systole'    => $data_observation
+            ]
+        ]);
     }
     public function count()
     {

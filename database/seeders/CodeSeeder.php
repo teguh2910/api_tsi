@@ -192,6 +192,36 @@ class CodeSeeder extends Seeder
                 ]
             ],
             [
+                "code"      => "20564-1",
+                "display"   => "Oxygen saturation in Blood",
+                "system"    => "http://loinc.org",
+                "category"  => [
+                    "code"      => "vital-signs",
+                    "display"   => "Vital Signs",
+                    "system"    => "http://terminology.hl7.org/CodeSystem/observation-category"
+                ],
+                "unit"      => [
+                    "code"      => "%",
+                    "system"    => "http://unitsofmeasure.org",
+                    "unit"      => "%",
+                ]
+            ],
+            [
+                "code"      => "59408-5",
+                "display"   => "Oxygen saturation in Arterial blood by Pulse oximetry",
+                "system"    => "http://loinc.org",
+                "category"  => [
+                    "code"      => "vital-signs",
+                    "display"   => "Vital Signs",
+                    "system"    => "http://terminology.hl7.org/CodeSystem/observation-category"
+                ],
+                "unit"      => [
+                    "code"      => "%",
+                    "system"    => "http://unitsofmeasure.org",
+                    "unit"      => "%",
+                ]
+            ],
+            [
                 "code"      => "8280-0",
                 "display"   => "Waist Circumference at umbilicus by Tape measure",
                 "system"    => "http://loinc.org",

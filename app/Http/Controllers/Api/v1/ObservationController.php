@@ -97,7 +97,10 @@ class ObservationController extends Controller
             return response()->json([
                 'status_code'   => 422,
                 'message'       => 'gagal validasi',
-                'content'       => $validator->errors()
+                'data'          => [
+                    "errors"    => $validator->errors()
+                ]
+
             ],422);
         }
         $id_user    = $request->header('id_user');
@@ -155,9 +158,9 @@ class ObservationController extends Controller
         $create_HR          = $observation->create($HR);
         if($create_systolic && $create_diastolic && $create_HR){
             return response()->json([
-                'status_code'   => 200,
+                'status_code'   => 201,
                 'message'       => 'success'
-            ]);
+            ], 201);
         }
     }
 
