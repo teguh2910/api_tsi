@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\BloodPressure;
 use App\Http\Controllers\Api\v1\CodeController;
 use App\Http\Controllers\Api\v1\ConsultationController;
+use App\Http\Controllers\Api\v1\DiastoleController;
 use App\Http\Controllers\Api\v1\EducationController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
@@ -66,7 +67,17 @@ Route::post('/v1/spo2',[HearthRateController::class,'store'])->middleware('auth:
 Route::post('/v1/suhu',[ObservationController::class,'temperatur'])->middleware('auth:sanctum');
 
 Route::get('/v1/observation/systole',[SystoleController::class, 'index'] )->middleware('auth:sanctum');
+Route::post('/v1/observation/systole',[SystoleController::class, 'store'] )->middleware('auth:sanctum');
+Route::delete('/v1/observation/systole/{id}',[SystoleController::class, 'destroy'] )->middleware('auth:sanctum');
+Route::get('/v1/observation/systole/{id_systole}',[SystoleController::class, 'show'] )->middleware('auth:sanctum');
+Route::get('/v1/observation/mysystole',[SystoleController::class, 'mysystole'] )->middleware('auth:sanctum');
+Route::get('/v1/observation/systole/pasien/{id_pasien}',[SystoleController::class, 'systole_pasien'] )->middleware('auth:sanctum');
 
+Route::get('/v1/observation/diastole',[DiastoleController::class, 'index'] )->middleware('auth:sanctum');
+Route::post('/v1/observation/diastole',[DiastoleController::class, 'store'] )->middleware('auth:sanctum');
+Route::delete('/v1/observation/diastole/{id}',[DiastoleController::class, 'destroy'] )->middleware('auth:sanctum');
+Route::get('/v1/observation/diastole/pasien/{id_pasien}',[DiastoleController::class, 'ByIdPasien'] )->middleware('auth:sanctum');
+Route::get('/v1/observation/diastole/mine/show',[DiastoleController::class, 'mine'] )->middleware('auth:sanctum');
 
 Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/codes', [CodeController::class, 'store'])->middleware('auth:sanctum');

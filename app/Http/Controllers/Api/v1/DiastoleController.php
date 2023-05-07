@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class SystoleController extends Controller
+class DiastoleController extends Controller
 {
     private function observasi()
     {
@@ -30,8 +30,8 @@ class SystoleController extends Controller
 
     public function index()
     {
-        $code_systolic = "8480-6";
-        $observation = Observation::where('coding.code',$code_systolic);
+        $code = "8462-4";
+        $observation = Observation::where('coding.code',$code);
         $data_count = $observation->count();
         $data_observation = SystoleResource::collection($observation->get()) ;
         if($data_count < 1){
@@ -51,11 +51,11 @@ class SystoleController extends Controller
 
 
     }
-    public function systole_pasien($id_pasien)
+    public function ByIdPasien($id_pasien)
     {
-        $code_systolic = "8480-6";
+        $code= "8462-4";
         $observation = Observation::where([
-            'coding.code'   => $code_systolic,
+            'coding.code'   => $code,
             'id_pasien'     => $id_pasien
         ]);
         $data_count = $observation->count();
@@ -85,10 +85,10 @@ class SystoleController extends Controller
     {
         $category       = $this->observasi();
         //mencari data systolic dari DB
-        $code_systolic  = (string) '8480-6';
-        $find_systolic  = Code::where('code', $code_systolic)->first();
+        $code           = (string) '8462-4';
+        $find_diastole  = Code::where('code', $code)->first();
         //mencari data diastolic dari db
-        if(empty($find_systolic)){
+        if(empty($find_diastole)){
             return response()->json([
                 'status_code'   => 404,
                 'message'       => 'Not Found'
@@ -96,7 +96,7 @@ class SystoleController extends Controller
         }
 
         $validator      = Validator::make($request->all(), [
-            'systolic'      => 'required|numeric|min:40|max:300'
+            'diastolic'      => 'required|numeric|min:20|max:200'
 
         ]);
 
@@ -119,15 +119,15 @@ class SystoleController extends Controller
         }
 
         $systolic   = [
-            'value'         => (int) $request->systolic,
+            'value'         => (int) $request->diastolic,
             'unit'          => 'mmHg',
             'id_pasien'     => $id_user,
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
-                'code'      => $find_systolic->code,
-                'display'   => $find_systolic->display,
-                'system'    => $find_systolic->system
+                'code'      => $find_diastole->code,
+                'display'   => $find_diastole->display,
+                'system'    => $find_diastole->system
             ],
             'category'      => $category
 
@@ -141,7 +141,7 @@ class SystoleController extends Controller
                 'status_code'   => 201,
                 'message'       => 'success',
                 'data'          => [
-                    'systole'   => $systolic
+                    'diastole'   => $systolic
                 ]
             ],201);
         }
@@ -166,11 +166,17 @@ class SystoleController extends Controller
 
         ],200);
     }
-    public function mysystole()
+    public function mine()
     {
-        $systole = Observation::where('id_pasien', Auth::id())->get();
-        $data_systole = SystoleResource::collection($systole);
-        if(empty($systole)){
+        $code = "8462-4";
+        $systole_query = Observation::where([
+            'id_pasien'     => Auth::id(),
+            'coding.code'   => $code
+        ]);
+        $systole        = $systole_query->get();
+        $systole_count  = $systole_query->count();
+        $data_systole   = SystoleResource::collection($systole);
+        if($systole_count<1){
             return response()->json([
                 'status_code'   => 404,
                 'message'       => 'Not Found',
@@ -181,7 +187,7 @@ class SystoleController extends Controller
             'status_code'   => 200,
             'message'       => 'Success',
             'data'          => [
-                'systole'   => $data_systole
+                'diastole'   => $data_systole
             ]
         ],200);
     }
@@ -223,7 +229,7 @@ class SystoleController extends Controller
                 'status_code'   => 200,
                 'message'       => 'Success',
                 'data'          => [
-                    'systole'   => "Deleted"
+                    'diastole'   => "Deleted"
                 ]
             ],200);
         }
