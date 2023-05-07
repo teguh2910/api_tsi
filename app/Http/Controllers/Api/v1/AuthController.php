@@ -446,7 +446,10 @@ class AuthController extends Controller
                 'status_code'   => 404,
                 'message'       => 'OTP expired',
                 'time'          => $now,
-                'time_exp'      => $user->forgot_password['exp']
+                'data'          => [
+                    'otp'       => $user->forgot_password
+                ],
+                
             ];
             return response()->json($data, 404);
         }
