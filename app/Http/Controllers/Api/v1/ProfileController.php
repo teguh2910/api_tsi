@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -86,9 +88,75 @@ class ProfileController extends Controller
 
         }
     }
-    public function update_email()
+    public function update_alamat(Request $request)
     {
-        //
+        $user = Auth::user();
+        $validator      = Validator::make($request->all(), [
+            'id_provinsi'   => 'required|numeric|digits:2',
+            'id_kota'       => 'required|numeric|digits:4',
+            'id_kecamatan'  => 'required|numeric|digits:6',
+            'id_kelurahan'  => 'required|numeric|digits:10',
+            'jalan'         => 'required',
+            'rukun_warga'   => 'required|digits:3',
+            'rukun_tetangga'=> 'required|digits:3'
+
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'gagal validasi',
+                'data'          => [
+                    'errors' => $validator->errors()
+                ]
+            ],422);
+        }
+        $provinsi   = Wilayah::where('code',(string) $request->id_provinsi)->first();
+        $kota       = Wilayah::where('code',(string) $request->id_kota)->first();
+        $kecamatan  = Wilayah::where('code',(string) $request->id_kecamatan)->first();
+        $kelurahan  = Wilayah::where('code',(string) $request->id_kelurahan)->first();
+        $alamat     = [
+            'address'    =>[
+                'provinsi'  => [
+                    'id_provinsi'   => $provinsi->code,
+                    'nama_provinsi' => $provinsi->nama
+                ],
+                'kota'      => [
+                    'id_kota'       => $kota->code,
+                    'nama_kota'     => $kota->nama
+                ],
+                'kecamatan' => [
+                    'id_kecamatan'  => $kecamatan->code,
+                    'nama_kecamatan'=> $kecamatan->nama
+                ],
+                'kelurahan' => [
+                    'id_kelurahan'      => $kelurahan->code,
+                    'nama_kelurahan'    => $kelurahan->nama,
+                ],
+                'kode_pos'      => $request->kode_pos,
+                'rukun_warga'   => $request->rukun_warga,
+                'rukun_tetangga'=> $request->rukun_tetangga,
+                'jalan'         => $request->jalan,
+                'nomor_rumah'   => $request->nomor_rumah
+
+            ]
+
+        ];
+        $user = Auth::user();
+        $update_alamat = $user->update($alamat);
+        if($update_alamat){
+            return response()->json([
+                'status_code'   => 200,
+                'message'       => 'success',
+                'data'          => $alamat
+            ],200);
+        }
+        return response()->json([
+            'status_code'   => 401,
+            'message'       => 'Gagal Update',
+            'data'          => [
+                'alamat'    => $alamat
+            ]
+        ],401);
     }
     public function edit($id)
     {

@@ -19,10 +19,12 @@ class EducationController extends Controller
     {
         $educations = EducationResource::collection(Education::OrderBy('grade', 'ASC')->get()) ;
         $data   = [
-            "status"        => "success",
             "status_code"   => 200,
+            "message"       => "success",
             "time"          => time(),
-            "content"       => $educations
+            "data"          => [
+                'pendidikan'=>$educations
+            ]
         ];
         return response()->json($data,200);
     }
