@@ -30,7 +30,7 @@ class AuthController extends Controller
             'status_code'   => 401,
             'message'       => 'Not Authorized',
         ];
-        return response()->json($data,200);
+        return response()->json($data,401);
 
     }
     /**
@@ -406,12 +406,14 @@ class AuthController extends Controller
         ]);
         if ($validator->fails()){
             $data = [
-                "status_code"   => 301,
+                "status_code"   => 422,
                 "message"       => "Validation failed",
-                "error"         => $validator->errors(),
+                "data"          => [
+                    'errors'    => $validator->errors(),
+                ],
                 "time"          => time()
             ];
-            return response()->json($data,301);
+            return response()->json($data,422);
         }
         $user   = User::where([
             'forgot_password.code'  => $request->otp,
