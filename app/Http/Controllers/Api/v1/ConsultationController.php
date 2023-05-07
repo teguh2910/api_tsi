@@ -25,7 +25,9 @@ class ConsultationController extends Controller
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
-            'content'       => $consultation
+            'data'          => [
+                'consultation'  => $consultation
+            ]
         ]);
     }
     public function store(Request $request)
@@ -39,7 +41,9 @@ class ConsultationController extends Controller
             return response()->json([
                'status_code'    => $starus_code,
                'message'        => 'Gagal validasi',
-               'content'        => $validator->errors()
+               'data'           => [
+                   'errors'     => $validator->errors()
+               ]
             ], $starus_code);
         }
         $input = [
@@ -58,7 +62,9 @@ class ConsultationController extends Controller
             return response()->json([
                 'status_code'   => 201,
                 'message'       => 'Success',
-                'content'       => $input,
+                'data'          => [
+                    'consultation'  => $input
+                ],
             ]);
         }elseif($find_consultation->status == 'open'){
             return response()->json([
