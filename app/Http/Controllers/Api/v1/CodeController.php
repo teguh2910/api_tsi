@@ -58,7 +58,7 @@ class CodeController extends Controller
             'display'   => 'required'
         ]);
         $input      = [
-            '_id'       => $request->code,
+            'code'       => $request->code,
             'system'    => $request->system,
             'display'   => $request->display
         ];
@@ -68,7 +68,6 @@ class CodeController extends Controller
                 'message'       => 'Gagal validasi',
                 'data'          =>[
                     'errors'       => $validator->errors()
-
                 ]
 
             ],422);

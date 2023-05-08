@@ -33,22 +33,57 @@ class ObservationController extends Controller
         return $category;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $observation = ObservationResource::collection(Observation::all()) ;
-        if(empty($observation)){
-            return response()->json([
-                'status_code'    => 404,
-                'message'        => 'Not Found'
-            ],404);
-
+        $code               = $request->code;
+        $id_pasien          = $request->id_pasien;
+        $order_by           = $request->orderBy;
+        $sort               = $request->sort;
+        if(isset($request->orderBy) and isset($request->sort)){
+            $order_by           = $request->orderBy;
+            $sort               = $request->sort;
+        }else{
+            $order_by           = 'time';
+            $sort               = 'ASC';
         }
+//        data berdasarkan kode
+        if(!isset($request->code)){ //        jika tidak ada code maka ambil semua data observasi
+            $status_code    = 200;
+            $message        = 'datanya gak ada broo';
+            $query          = Observation::all();
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => [
+                    'observasi' => $query
+                ]
+            ],$status_code);
+        }else if(isset($request->id_pasien)){ // jika ada id pasien
+            $query_observasi    = Observation::where([
+                'coding.code'   => $code,
+                'id_pasien'     => $id_pasien
+            ]);
+        }else{
+            $query_observasi    = Observation::where([
+                'coding.code'   => $code,
+            ]);
+        }
+        $count = $query_observasi->count();
+        if($count < 1){
+            $status_code    = 204;
+            $message        = "Data tidak ditemukan";
+        }else{
+            $status_code    = 200;
+            $message        = "success";
+        }
+        $observation = ObservationResource::collection($query_observasi->orderBy($order_by, $sort)->get()) ;
         return response()->json([
-           'status_code'    => 200,
-           'message'        => 'success',
-           'content'        =>  $observation
-        ]);
-
+            'status_code'   => $status_code,
+            'message'       => $message,
+            'data'          => [
+                'observation'   => $observation
+            ]
+        ],$status_code);
 
     }
     public function count()
