@@ -83,10 +83,10 @@ class CodeController extends Controller
             }
         }
     }
-    public function update(Request $request, $code){
-        $codes = Code::where('code', $code)->first();
+    public function update(Request $request){
+        $codes = Code::where('code', $request->code)->first();
         $data_update = [
-            'code'      => $code,
+            'code'      => $request->code,
             'display'   => $request->display,
             'system'    => $request->system,
             'category'  => $request->category,

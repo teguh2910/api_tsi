@@ -83,7 +83,7 @@ Route::get('/v1/observation/diastole/mine/show',[DiastoleController::class, 'min
 Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/codes', [CodeController::class, 'store'])->middleware('auth:sanctum');
 Route::get('v1/code/{id}', [CodeController::class, 'show'])->middleware('auth:sanctum');
-Route::put('v1/codes/{code}', [CodeController::class, 'update'])->middleware('auth:sanctum');
+Route::put('v1/codes', [CodeController::class, 'update'])->middleware('auth:sanctum');
 
 Route::get('v1/maritalStatus', [MaritalStatusController::class, 'index'])->middleware('auth:sanctum');
 
