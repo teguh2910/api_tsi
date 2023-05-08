@@ -83,4 +83,34 @@ class CodeController extends Controller
             }
         }
     }
+    public function update(Request $request, $code){
+        $codes = Code::where('code', $code)->first();
+        $data_update = [
+            'code'      => $code,
+            'display'   => $request->display,
+            'system'    => $request->system,
+            'category'  => $request->category,
+            'unit'      => $request->unit,
+        ];
+        $update     = $codes->update($data_update);
+        if($update){
+            $status_code    = 200;
+            $message        = "Success";
+            $data           = [
+                'code'      => $data_update
+            ];
+        }else{
+            $status_code    = 400;
+            $message        = "Bad request";
+            $data           = [
+                'code'      => $data_update
+            ];
+        }
+        return response()->json([
+            'status_code'   => $status_code,
+            'message'       => $message,
+            'data'          => $data
+        ]);
+
+    }
 }
