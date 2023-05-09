@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\v1\ObservationController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\SystoleController;
 use App\Http\Controllers\Api\v1\UserController;
+use App\Http\Controllers\Api\v1\WilayahController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,12 @@ Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanct
 Route::post('v1/codes', [CodeController::class, 'store'])->middleware('auth:sanctum');
 Route::get('v1/code/{id}', [CodeController::class, 'show'])->middleware('auth:sanctum');
 Route::put('v1/codes', [CodeController::class, 'update'])->middleware('auth:sanctum');
+
+Route::get('v1/wilayah', [WilayahController::class, 'index'])->middleware('auth:sanctum');
+Route::get('v1/wilayah/provinsi', [WilayahController::class, 'provinsi'])->middleware('auth:sanctum');
+Route::get('v1/wilayah/kota', [WilayahController::class, 'kota'])->middleware('auth:sanctum');
+Route::get('v1/wilayah/kecamatan', [WilayahController::class, 'kecamatan'])->middleware('auth:sanctum');
+Route::get('v1/wilayah/kelurahan', [WilayahController::class, 'kelurahan'])->middleware('auth:sanctum');
 
 Route::get('v1/maritalStatus', [MaritalStatusController::class, 'index'])->middleware('auth:sanctum');
 
