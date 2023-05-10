@@ -341,9 +341,12 @@ class AuthController extends Controller
 
             if($exp_di_DB > $time){
                 return response()->json([
-                    'status_code'       => 200,
-                    'message'           => 'Anda mempuntai token yang masih aktif'
-                ]);
+                    'status_code'       => 400,
+                    'message'           => 'Anda mempuntai token yang masih aktif',
+                    'data'              => [
+                        'waktu_kadaluarsa'  => date('Y-m-d H:i:s', $user->forgot_password['exp'])
+                    ]
+                ],400);
             }
             if(empty($user)){
                 $data = [
@@ -355,7 +358,7 @@ class AuthController extends Controller
                 $user['forgot_password'] = [
                     'code'          => rand('100000', 999999),
                     'created_at'    => time(),
-                    'exp'           => time()+(15*60)
+                    'exp'           => time()+(5*60)
                 ];
                 $data = [
                     'status_code'   => 200,
@@ -449,7 +452,7 @@ class AuthController extends Controller
                 'data'          => [
                     'otp'       => $user->forgot_password
                 ],
-                
+
             ];
             return response()->json($data, 404);
         }
