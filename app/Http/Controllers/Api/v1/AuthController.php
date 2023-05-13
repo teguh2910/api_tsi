@@ -88,6 +88,62 @@ class AuthController extends Controller
                 ->json($data, 200);
         }
     }
+    public function login_petugas(Request $request)
+    {
+        if (!Auth::attempt($request->only('username', 'password')))
+        {
+            $data = [
+                "status_code"   => 401,
+                'message'       => 'Unauthorized',
+                'time'          => time()
+            ];
+            return response()->json($data, 401);
+
+        }else{
+            $token_name = 'auth_token';
+            $user       = User::where('username', $request['username'])->firstOrFail();
+            if($user->active == true){
+                $token      = $user->createToken($token_name)->plainTextToken;
+                $data       = [
+                    "status_code"   => 200,
+                    'message'       => 'Success',
+                    "token"         => [
+                        "name"      => $token_name,
+                        "code"      => $token,
+                        "type"      => 'Bearer',
+                        "user_id"   => $user->id
+                    ],
+                    'time'          => time()
+                ];
+                if($user->level != "petugas"){
+                    return response()->json([
+                        'status_code'   => 401,
+                        'message'       => 'Bukan Petugas'
+                    ], 401);
+                }
+                if(!empty($token)){
+                    $data_email = [
+                        'content'   => auth()->user(),
+                        'server'    => [
+                            'ip'        => $_SERVER['REMOTE_ADDR'],
+                            'browser'   => $_SERVER['HTTP_USER_AGENT'],
+                            'time'      => time()
+                        ]
+                    ];
+                    $sending_mail = dispatch(new LoginNotificationJob($data_email));
+                    return response()->json($data, 200);
+                }
+            }else{
+                $data       = [
+                    "status_code"   => 203,
+                    'message'       => 'Account is Not Active',
+                ];
+                return response()->json($data, 203);
+            }
+            return response()
+                ->json($data, 200);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.

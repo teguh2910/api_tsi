@@ -296,16 +296,28 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-
+        $user = User::find((string)$id);
+        if(empty($user)){
+            $data = [
+                'status_code'    => 404,
+                'message'        => 'Not Found',
+                'data'          => [
+                    'user'      => $user
+                ]
+            ];
+            return response()->json($data, 404);
+        }
         $delete=$user->delete();
         //jika sukses menghapus data
         if($delete){
             $data = [
-                'status'         => 'sccess',
                 'status_code'    => 200,
-                'data'           => $user
+                'message'        => 'sccess',
+                'data'           => [
+                    'user'      =>  $user
+                ]
             ];
             return response()->json($data);
         }
@@ -316,5 +328,22 @@ class UserController extends Controller
             'data'           => $user
         ];
         return response()->json($data);
+    }
+    public function restore(Request $request){
+        $id         = $request->header('id_user');
+        $user       = User::where('_id', $id);
+        $data_user  = $user->get();
+        $restore    = $user->withTrashed()->restore();
+
+        if($restore){
+            $data = [
+                'status_code'   => 200,
+                'message'       => 'sccess',
+                'data'          => [
+                    'user'      =>  $data_user
+                ]
+            ];
+            return response()->json($data);
+        }
     }
 }

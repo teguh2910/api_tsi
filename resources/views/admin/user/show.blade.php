@@ -15,7 +15,7 @@
                                                 <tr>
                                                     <th>Nama</th>
                                                     <td>:</td>
-                                                    <td>@if($users->gelar_depan !=''){{ $users->gelar_depan }}. @endif{{ $users->nama_depan }} {{ $users->nama_belakang }}@if($users->gelar_belakang !=''), {{ $users->gelar_belakang }}  @endif</td>
+                                                    <td>@if(isset($users->gelar['gelar_depan']) and $users->gelar['gelar_depan'] !=''){{ $users->gelar['gelar_depan'] }}. @endif{{ $users->nama['nama_depan'] }} {{ $users->nama['nama_belakang'] }}@if(isset($users->gelar['gelar_belakang']) and $users->gelar['gelar_belakang'] !=''), {{ $users->gelar['gelar_belakang'] }}  @endif</td>
                                                 </tr>
                                                 <tr>
                                                     <th>NIK</th>
@@ -30,18 +30,18 @@
                                                 <tr>
                                                     <th>TTL</th>
                                                     <td>:</td>
-                                                    <td>{{ $users->place_birth }}, {{ date('d-m-Y', strtotime($users->birth_date)) }}</td>
+                                                    <td>{{ $users->lahir['tempat'] }}, {{ date('d-m-Y', strtotime($users->lahir['tanggal'])) }}</td>
                                                 </tr>
 
                                                 <tr>
                                                     <th>Phone</th>
                                                     <td>:</td>
-                                                    <td>{{ $users->nomor_telepon }}</td>
+                                                    <td>{{ $users->kontak['nomor_telepon'] }}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Email</th>
                                                     <td>:</td>
-                                                    <td>{{ $users->email }}</td>
+                                                    <td>{{ $users->kontak['email'] }}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Status</th>

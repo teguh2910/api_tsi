@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::get('/notAuthorized',[AuthController::class,'notAuthorised'])->name('notAuthorised');
 Route::post('/v1/auth/login',[AuthController::class,'login']);
+Route::post('/v1/auth/login/petugas',[AuthController::class,'login_petugas']);
 Route::delete('/v1/auth/logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
 Route::post('/v1/auth/register',[AuthController::class,'register']);
 Route::post('/v1/auth/aktifasi',[AuthController::class,'activation_request']);
@@ -54,6 +55,8 @@ Route::resource('/v1/education', EducationController::class)->middleware('auth:s
 Route::resource('/v1/users', UserController::class)->middleware('auth:sanctum');
 Route::get('/v1/user/{nik}', [UserController::class, 'showNik'])->middleware('auth:sanctum');
 Route::post('/v1/user/find', [UserController::class, 'find'])->middleware('auth:sanctum');
+Route::delete('/v1/user/{id}', [UserController::class, 'destroy'])->middleware('auth:sanctum');
+Route::put('/v1/user/restored', [UserController::class, 'restore'])->middleware('auth:sanctum');
 
 Route::resource('/customers', CustomerController::class);
 Route::resource('/observations', ObservationController::class)->middleware('auth:sanctum');
