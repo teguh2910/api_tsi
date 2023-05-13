@@ -144,7 +144,7 @@ class ObservationController extends Controller
         if(empty($user)){
             return response()->json([
                'status_code'    => 404,
-               'message'        => 'user not found'
+               'message'        => 'pasien tidak terdaftar'
             ],404);
         }
 
