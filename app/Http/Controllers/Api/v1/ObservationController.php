@@ -125,7 +125,8 @@ class ObservationController extends Controller
         $validator      = Validator::make($request->all(), [
             'systolic'      => 'required|numeric|min:40|max:300',
             'diastolic'     => 'required|numeric|min:10|max:200',
-            'heart_rate'    => 'required|numeric|min:10|max:500'
+            'heart_rate'    => 'required|numeric|min:10|max:500',
+            'id_pasien'     => 'required'
         ]);
 
         if($validator->fails()){
@@ -138,7 +139,7 @@ class ObservationController extends Controller
 
             ],422);
         }
-        $id_user    = $request->header('id_user');
+        $id_user    = $request->id_pasien;
         $user       = User::find($id_user);
         if(empty($user)){
             return response()->json([
@@ -194,7 +195,14 @@ class ObservationController extends Controller
         if($create_systolic && $create_diastolic && $create_HR){
             return response()->json([
                 'status_code'   => 201,
-                'message'       => 'success'
+                'message'       => 'success',
+                'data'          => [
+                    'bloodpressure' => [
+                        'systolic'  => $systolic,
+                        'diastolic' => $diastolic,
+                        'heart_rate'=> $HR
+                    ]
+                ]
             ], 201);
         }
     }
