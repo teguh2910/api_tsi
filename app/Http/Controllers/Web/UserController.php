@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\user\StoreUserRequest;
 use App\Http\Requests\user\UpdateUserRequest;
+use App\Models\Marital_status;
 use App\Models\Province;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -37,13 +38,15 @@ class UserController extends Controller
      */
     public function create()
     {
-        $users = new User();
-        $provinces= Province::orderBy('nama')->get();
+        $marital_status = Marital_status::all();
+        $users      = new User();
+        $provinces  = Province::orderBy('nama')->get();
         $data = [
-            "title"     => "Detail User",
-            "class"     => "User",
-            "sub_class" => "Get All",
-            "content"   => "layout.admin",
+            "title"         => "Detail User",
+            "class"         => "User",
+            "sub_class"     => "Get All",
+            "content"       => "layout.admin",
+            "marital_status"=> $marital_status,
             "users"     => $users,
             "provinsi"  => $provinces
         ];

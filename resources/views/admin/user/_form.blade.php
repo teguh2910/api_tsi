@@ -120,10 +120,9 @@
                             <td>
                                 <select class="form-control form-control-sm" name="status_menikah">
                                     <option value="">---pilih---</option>
-                                    <option value="belum menikah">Belum Menikah</option>
-                                    <option value="menikah">Menikah</option>
-                                    <option value="cerai hidup">Cerai Hidup</option>
-                                    <option value="cerai mati">Cerai Mati</option>
+                                    @foreach($marital_status as $nikah)
+                                        <option value="{{ $nikah->code }}">{{ $nikah->code }} {{ $nikah->display }}</option>
+                                    @endforeach
                                 </select>
                             </td>
                         </tr>
