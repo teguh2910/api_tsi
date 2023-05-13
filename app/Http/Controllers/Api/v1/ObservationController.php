@@ -160,7 +160,10 @@ class ObservationController extends Controller
                 'system'    => $find_systolic->system
             ],
             'category'      => $category,
-            'base_line'     => [],
+            'base_line'     => [
+                'min'       => 100,
+                'max'       => 129
+            ],
             'interpretation'    => []
 
         ];
@@ -175,7 +178,12 @@ class ObservationController extends Controller
                 'display'   => $find_diastolic->display,
                 'system'    => $find_diastolic->system
             ],
-            'category'      => $category
+            'category'      => $category,
+            'base_line'     => [
+                'min'       => 70,
+                'max'       => 80
+            ],
+            'interpretation'    => []
         ];
         $HR         = [
             'value'         => (int) $request->heart_rate,
@@ -188,7 +196,12 @@ class ObservationController extends Controller
                 'display'   => $find_HR->display,
                 'system'    => $find_HR->system
             ],
-            'category'      => $category
+            'category'      => $category,
+            'base_line'     => [
+                'min'       => 60,
+                'max'       => 80
+            ],
+            'interpretation'    => []
         ];
         $observation        = new Observation();
         $create_systolic    = $observation->create($systolic);
