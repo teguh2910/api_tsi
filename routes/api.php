@@ -94,7 +94,9 @@ Route::get('v1/wilayah/kecamatan', [WilayahController::class, 'kecamatan'])->mid
 Route::get('v1/wilayah/kelurahan', [WilayahController::class, 'kelurahan'])->middleware('auth:sanctum');
 
 Route::get('v1/maritalStatus', [MaritalStatusController::class, 'index'])->middleware('auth:sanctum');
+
 Route::get('v1/religion', [ReligionController::class, 'index'])->middleware('auth:sanctum');
+Route::post('v1/religion', [ReligionController::class, 'store'])->middleware('auth:sanctum');
 
 Route::get('v1/consultations', [ConsultationController::class, 'index'])->middleware('auth:sanctum');//melihat tansaksi konsultasi yang dimiliki oleh pasien
 Route::post('v1/consultations', [ConsultationController::class, 'store'])->middleware('auth:sanctum');// creating consultation by patient
