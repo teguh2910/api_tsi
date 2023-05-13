@@ -39,41 +39,45 @@ class HearthRateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreObservationRequest $request, $id_pasien)
+    public function store(Request $request)
     {
-        $pasien         = User::find($id_pasien);
-        if(empty($pasien)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'Not Found'
-            ],404);
-        }
-
-        $code_db        = '8867-4';
-        $category_db    = 'vital-signs';
+        // validasi data yang masuk
         $validator      = Validator::make($request->all(), [
             'value'         => 'required|integer|min:25|max:500',
             'id_pasien'     => 'required'
         ]);
-        $input              = [
-            'category'      => '',
-            'code'          => '',
-            'value_quantity'=> [
-                'value'     => (int)$request->value,
-                'unit'      => 'beats/minute'
-            ],
-            'id_pasien'     => $request->header('id_pasien'),
-            'id_petugas'    => Auth()->id(),
-            'waktu_periksa' => time(),
-        ];
-        if ($validator->fails())
-        {
+        $id_pasien      = $request->id_pasien;
+        $pasien         = User::find($id_pasien);
+
+        if ($validator->fails()){
             $data = [
-                "error"     => $validator->errors(),
-                "created"   => time()
+                "status_code"   => 422,
+                "message"       => "Gagal Validasi",
+                "time"          => time(),
+                "data"          => [
+                    "errors"    => $validator->errors(),
+                ]
             ];
             return response()->json($data,203);
+        }elseif(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ],404);
         }else{
+            $code_db        = '8867-4';
+            $category_db    = 'vital-signs';
+            $input              = [
+                'category'      => '',
+                'code'          => '',
+                'value_quantity'=> [
+                    'value'     => (int)$request->value,
+                    'unit'      => 'beats/minute'
+                ],
+                'id_pasien'     => $id_pasien,
+                'id_petugas'    => Auth()->id(),
+                'waktu_periksa' => time(),
+            ];
             $observation    = new Observation();
             $create         = $observation->create($input );
             if($create)
@@ -81,8 +85,10 @@ class HearthRateController extends Controller
                 return response()->json([
                     'status_code'   => 201,
                     'message'       => 'success',
-                    'content'       => $input
-                ]);
+                    'data'          => [
+                        'hearth_rate'   => $input
+                    ]
+                ],201);
             }
         }
     }

@@ -70,7 +70,7 @@ Route::post('/v1/glucose',[ObservationController::class, 'glucose'] )->middlewar
 Route::post('/v1/weight',[ObservationController::class, 'weight'] )->middleware('auth:sanctum');
 Route::post('/v1/height',[ObservationController::class, 'height'] )->middleware('auth:sanctum');
 Route::post('/v1/spo2',[HearthRateController::class,'store'])->middleware('auth:sanctum');
-Route::post('/v1/suhu',[ObservationController::class,'temperatur'])->middleware('auth:sanctum');
+Route::post('/v1/suhu',[ObservationController::class,'temperature'])->middleware('auth:sanctum');
 
 Route::get('/v1/observation/systole',[SystoleController::class, 'index'] )->middleware('auth:sanctum');
 Route::post('/v1/observation/systole',[SystoleController::class, 'store'] )->middleware('auth:sanctum');
@@ -84,6 +84,9 @@ Route::post('/v1/observation/diastole',[DiastoleController::class, 'store'] )->m
 Route::delete('/v1/observation/diastole/{id}',[DiastoleController::class, 'destroy'] )->middleware('auth:sanctum');
 Route::get('/v1/observation/diastole/pasien/{id_pasien}',[DiastoleController::class, 'ByIdPasien'] )->middleware('auth:sanctum');
 Route::get('/v1/observation/diastole/mine/show',[DiastoleController::class, 'mine'] )->middleware('auth:sanctum');
+
+Route::post('/v1/observation/hearthRate',[HearthRateController::class, 'store'] )->middleware('auth:sanctum');
+
 
 Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/codes', [CodeController::class, 'store'])->middleware('auth:sanctum');

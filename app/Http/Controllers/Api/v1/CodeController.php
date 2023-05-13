@@ -87,6 +87,21 @@ class CodeController extends Controller
         }
     }
     public function update(Request $request){
+        $validator = Validator::make($request->all(), [
+            'code'      => 'required|unique:codes,code',
+            'system'    => 'required',
+            'display'   => 'required'
+        ]);
+        if($validator->fails()) {
+            return response()->json([
+                'status_code' => 422,
+                'message' => 'Gagal validasi',
+                'data' => [
+                    'errors' => $validator->errors()
+                ]
+
+            ], 422);
+        }
         $codes = Code::where('code', $request->code)->first();
         $data_update = [
             'code'      => $request->code,
@@ -94,6 +109,7 @@ class CodeController extends Controller
             'system'    => $request->system,
             'category'  => $request->category,
             'unit'      => $request->unit,
+            'base_line' => $request->base_line
         ];
         $update     = $codes->update($data_update);
         if($update){

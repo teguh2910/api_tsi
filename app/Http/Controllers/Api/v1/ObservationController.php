@@ -49,7 +49,7 @@ class ObservationController extends Controller
 //        data berdasarkan kode
         if(!isset($request->code)){ //        jika tidak ada code maka ambil semua data observasi
             $status_code    = 200;
-            $message        = 'datanya gak ada broo';
+            $message        = 'Success';
             $query          = Observation::all();
             return response()->json([
                 'status_code'   => $status_code,
@@ -209,30 +209,33 @@ class ObservationController extends Controller
         }
     }
 
-    public function temperatur(Request $request)
+    public function temperature(Request $request)
     {
         //mencari data observasi
         $category       = $this->observasi();
-        $id_pasien      = $request->header('id_user');
+        $id_pasien      = $request->id_pasien;
         $pasien         = User::find($id_pasien);
         if(empty($pasien)){
             return response()->json([
                 'status_code'   => 404,
-                'message'       => 'user not found'
-            ]);
+                'message'       => 'Pasien tidak ditemukan'
+            ],404);
         }
         //mencari data temperature dari DB
         $code_suhu      = (string) '8310-5';
         $find_suhu      = Code::find($code_suhu);
         $validator      = Validator::make($request->all(), [
-            'suhu'  => 'required|numeric|min:35|max:45'
+            'suhu'      => 'required|numeric|min:35|max:45',
+            'id_pasien' => 'required'
         ]);
         if($validator->fails()){
             return response()->json([
-                'status_code'   => 204,
+                'status_code'   => 422,
                 'message'       => 'Gagal Validasi',
-                'content'       => $validator->errors()
-            ]);
+                'data'          => [
+                    'errors'    => $validator->errors()
+                ]
+            ],422);
         }
         $suhu         = [
             'value'         => (float) $request->suhu,
@@ -245,48 +248,58 @@ class ObservationController extends Controller
                 "display"   => "Body temperature",
                 "system"    => "http://loinc.org"
             ],
-            'category'      => $category
+            'category'      => $category,
+            'base_line'     => [
+                'min'       => 36,
+                'max'       => 37.4
+            ],
+            'interpretation'=>[
+
+            ]
         ];
         $observation        = new Observation();
         $create_suhu        = $observation->create($suhu);
         if($create_suhu){
             return response()->json([
                 'status_code'   => 201,
-                'message'       => 'success'
+                'message'       => 'success',
+                'data'          => [
+                    'body_temperature'  => $suhu
+                ]
             ], 201);
         }
     }
 
     public function weight(Request $request)
     {
-
         $category       = $this->observasi();
         $code_wight = "29463-7";
-        $find_wight = Code::find($code_wight);
+        $find_wight = Code::where('code', $code_wight)->first();
 
-        $id_user    = $request->header('id_user');
-        $user       = User::find($id_user);
+        $id_pasien  = $request->id_pasien;
+        $user       = User::find($id_pasien);
         if(empty($user)){
             return response()->json([
                 'status_code'   => 404,
                 'message'       => 'User Not Found'
-            ]);
+            ],404);
         }
         $validation = Validator::make($request->all(),[
-            'weight'    => 'required|numeric|min:1|max:300'
+            'weight'    => 'required|numeric|min:1|max:300',
+            'id_pasien' => 'required'
         ]);
         if($validation->fails())
         {
             return response()->json([
-                'status_code'   => 304,
+                'status_code'   => 422,
                 'message'       => 'Gagal validasi',
                 'content'       => $validation->errors()
-            ]);
+            ],422);
         }
         $data         = [
-            'value'         => (int) $request->weight,
+            'value'         => (float) $request->weight,
             'unit'          => "Kg",
-            'id_pasien'     => $id_user,
+            'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
@@ -294,7 +307,13 @@ class ObservationController extends Controller
                 'display'   => $find_wight->display,
                 'system'    => $find_wight->system
             ],
-            'category'      => $category
+            'category'      => $category,
+            'base_line'     => [
+
+            ],
+            'interpretation'=>[
+
+            ]
         ];
         $observation    = new Observation();
         $create         = $observation->create($data);
@@ -302,7 +321,10 @@ class ObservationController extends Controller
         {
             return response()->json([
                 'status_code'   => 201,
-                'message'       => 'success'
+                'message'       => 'success',
+                'data'          => [
+                    'body_weight'   => $data
+                ]
 
             ]);
         }
@@ -311,38 +333,40 @@ class ObservationController extends Controller
     public function height(Request $request)
     {
         $code_observasi = 'vital-signs';
-        $find_observasi = Code::find($code_observasi);
+        $find_observasi = Code::where('code',$code_observasi)->first();
         $category       = [
             'code'      => $find_observasi->code,
             'display'   => $find_observasi->display,
             'system'    => $find_observasi->system
         ];
-        $code_height = "8302-2";
-        $find_height = Code::find($code_height);
-
-        $id_user    = $request->header('id_user');
-        $user       = User::find($id_user);
+        $code_height    = "8302-2";
+        $find_height    = Code::where('code', $code_height)->first();
+        $id_pasien      = $request->id_pasien;
+        $user           = User::find($id_pasien);
         if(empty($user)){
             return response()->json([
                 'status_code'   => 404,
                 'message'       => 'User Not Found'
-            ]);
+            ],404);
         }
         $validation = Validator::make($request->all(),[
-            'height'    => 'required|numeric|min:40|max:250'
+            'height'    => 'required|numeric|min:40|max:250',
+            'id_pasien' => 'required'
         ]);
         if($validation->fails())
         {
             return response()->json([
-                'status_code'   => 304,
+                'status_code'   => 422,
                 'message'       => 'Gagal validasi',
-                'content'       => $validation->errors()
-            ]);
+                'data'          => [
+                    'errors'    => $validation->errors()
+                ]
+            ],422);
         }
         $data         = [
-            'value'         => (int) $request->height,
-            'unit'          => "Kg",
-            'id_pasien'     => $id_user,
+            'value'         => (float) $request->height,
+            'unit'          => "CM",
+            'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
             'time'          => time(),
             'coding'        => [
@@ -350,7 +374,9 @@ class ObservationController extends Controller
                 'display'   => $find_height->display,
                 'system'    => $find_height->system
             ],
-            'category'      => $category
+            'category'      => $category,
+            'base_line'     => [],
+            'interpretation'=> []
         ];
         $observation    = new Observation();
         $create         = $observation->create($data);
@@ -358,7 +384,10 @@ class ObservationController extends Controller
         {
             return response()->json([
                 'status_code'   => 201,
-                'message'       => 'success'
+                'message'       => 'success',
+                'data'          => [
+                    'body_height'   => $data
+                ]
 
             ]);
         }
