@@ -22,7 +22,7 @@
                                         <div class="row mb-1">
                                             <label class="col-sm-2">Marital Status</label>
                                             <div class="col-sm-10">
-                                                {{ $marital_status->marital_status }}
+                                                {{ $marital_status->display }}
                                             </div>
                                         </div>
                                         <div class="row mb-1">
@@ -34,7 +34,7 @@
                                         <div class="row">
                                             <label class="col-sm-2">Deskripsi</label>
                                             <div class="col-sm-10">
-                                                {{ $marital_status->description }}
+                                                {{ $marital_status->definition }}
                                             </div>
                                         </div>
 

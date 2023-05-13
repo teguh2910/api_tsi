@@ -96,7 +96,8 @@ class SystoleController extends Controller
         }
 
         $validator      = Validator::make($request->all(), [
-            'systolic'      => 'required|numeric|min:40|max:300'
+            'systolic'      => 'required|numeric|min:40|max:300',
+            'id_pasien'     => 'required'
 
         ]);
 
@@ -109,7 +110,7 @@ class SystoleController extends Controller
                     ]
             ],422);
         }
-        $id_user    = $request->header('id_user');
+        $id_user    = $request->id_pasien;
         $user       = User::find($id_user);
         if(empty($user)){
             return response()->json([
@@ -129,7 +130,12 @@ class SystoleController extends Controller
                 'display'   => $find_systolic->display,
                 'system'    => $find_systolic->system
             ],
-            'category'      => $category
+            'category'      => $category,
+            'base_line'     => [
+                'min'       => '',
+                'max'       => '',
+            ],
+            'interpretation'    => []
 
         ];
 

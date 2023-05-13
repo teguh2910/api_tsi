@@ -159,7 +159,9 @@ class ObservationController extends Controller
                 'display'   => $find_systolic->display,
                 'system'    => $find_systolic->system
             ],
-            'category'      => $category
+            'category'      => $category,
+            'base_line'     => [],
+            'interpretation'    => []
 
         ];
         $diastolic   = [

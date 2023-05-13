@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\web\CodeController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\web\MaritalStatusController;
+use App\Http\Controllers\web\ObservationController;
 use App\Http\Controllers\Web\ReligionController;
 use App\Http\Controllers\Web\UserController;
 use Illuminate\Support\Facades\Route;
@@ -69,4 +71,8 @@ Route::get('/customers',[CustomerController::class,'index'])->name('customers');
 Route::post('/customers',[CustomerController::class,'store'])->name('customers.store');
 Route::get('/customers/{id}',[CustomerController::class,'show'])->name('customers.show');
 
+Route::get('observation', [ObservationController::class, 'index'])->name('observation.index');
+
+Route::get('code', [CodeController::class, 'index'])->name('code.index');
+Route::get('code/vital-sign', [CodeController::class, 'vital-sign'])->name('code.vital-sign');
 

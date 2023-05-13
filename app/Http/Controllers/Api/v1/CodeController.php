@@ -53,14 +53,17 @@ class CodeController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code'      => 'required|unique:codes,_id',
+            'code'      => 'required|unique:codes,code',
             'system'    => 'required',
             'display'   => 'required'
         ]);
         $input      = [
-            'code'       => $request->code,
+            'code'      => $request->code,
             'system'    => $request->system,
-            'display'   => $request->display
+            'display'   => $request->display,
+            'category'  => $request->category,
+            'unit'      => $request->unit,
+            'base_line' => $request->base_line
         ];
         if($validator->fails()){
             return response()->json([

@@ -70,10 +70,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="https://rspon.net/ppni/simk/perawat/penempatan.php" class="nav-link">
+                    <a href="{{ route('observation.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>
                         <p>
-                            Perawat
+                            Observation
                         </p>
                     </a>
                 </li>
