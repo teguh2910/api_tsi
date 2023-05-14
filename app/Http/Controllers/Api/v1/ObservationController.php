@@ -221,6 +221,73 @@ class ObservationController extends Controller
             ], 201);
         }
     }
+    public function hearth_rate(Request $request){
+        $category       = $this->observasi();
+        $validator      = Validator::make($request->all(), [
+            'heart_rate'    => 'required|numeric|min:10|max:500',
+            'id_pasien'     => 'required'
+        ]);
+        $code_HR        = '8867-4';
+        $find_HR        = Code::where('code', $code_HR)->first();
+        $id_user        = $request->id_pasien;
+        $user           = User::find($id_user);
+        if(empty($find_HR)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Not Found'
+            ]);
+        }elseif($validator->fails()){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'gagal validasi',
+                'data'          => [
+                    "errors"    => $validator->errors()
+                ]
+
+            ],422);
+        }elseif(empty($user)){
+            return response()->json([
+                'status_code'    => 404,
+                'message'        => 'pasien tidak terdaftar'
+            ],404);
+        }else{
+            $HR         = [
+                'value'         => (int) $request->heart_rate,
+                'unit'          => "beats/minute",
+                'id_pasien'     => $id_user,
+                'id_petugas'    => Auth::id(),
+                'time'          => time(),
+                'coding'        => [
+                    'code'      => $find_HR->code,
+                    'display'   => $find_HR->display,
+                    'system'    => $find_HR->system
+                ],
+                'category'      => $category,
+                'base_line'     => [
+                    'min'       => 60,
+                    'max'       => 80
+                ],
+                'interpretation'    => []
+            ];
+            $observation        = new Observation();
+            $create_HR          = $observation->create($HR);
+            if($create_HR){
+                return response()->json([
+                    'status_code'   => 201,
+                    'message'       => 'success',
+                    'data'          => [
+                        'heart_rate' => $HR
+                    ]
+                ], 201);
+            }
+
+        }
+
+
+
+
+
+    }
 
     public function temperature(Request $request)
     {

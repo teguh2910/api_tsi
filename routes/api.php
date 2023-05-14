@@ -64,6 +64,7 @@ Route::resource('/observations', ObservationController::class)->middleware('auth
 Route::get('/v1/observation',[ObservationController::class, 'index'] )->middleware('auth:sanctum');
 Route::get('/v1/observation/count',[ObservationController::class,'count'])->middleware('auth:sanctum');
 Route::post('/v1/bloodPressure',[ObservationController::class, 'bloodPressure'] )->middleware('auth:sanctum');
+Route::post('/v1/hearthRate',[ObservationController::class, 'hearth_rate'] )->middleware('auth:sanctum');
 Route::post('/v1/cholesterol',[ObservationController::class, 'cholesterol'] )->middleware('auth:sanctum');
 Route::post('/v1/uricAcid',[ObservationController::class, 'uricAcid'] )->middleware('auth:sanctum');
 Route::post('/v1/glucose',[ObservationController::class, 'glucose'] )->middleware('auth:sanctum');
