@@ -108,13 +108,13 @@ class ObservationController extends Controller
         $category       = $this->observasi();
         //mencari data systolic dari DB
         $code_systolic  = (string) '8480-6';
-        $find_systolic  = Code::where('code', $code_systolic)->first();
+        $find_systolic  = $this->code($code_systolic)->original;
         //mencari data diastolic dari db
         $code_diastolic = (string) '8462-4';
-        $find_diastolic = Code::where('code', $code_diastolic)->first();
+        $find_diastolic = $this->code($code_diastolic)->original;
         //mencari data HR
         $code_HR        = '8867-4';
-        $find_HR        = Code::where('code', $code_HR)->first();
+        $find_HR        = $this->code($code_HR)->original;;
         if(empty($find_systolic) && empty($find_diastolic) && empty($find_HR)){
             return response()->json([
                 'status_code'   => 404,
