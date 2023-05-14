@@ -473,6 +473,20 @@ class ObservationController extends Controller
         }
 
     }
+    public function bmi(){
+        $code = "39156-5";
+    }
+    private function code($code){
+        $code   = Code::where('code', $code)->first();
+        if(empty($code)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'User Not Found'
+            ],404);
+        }
+        return response($code);
+
+    }
 
     /**
      * Display the specified resource.
