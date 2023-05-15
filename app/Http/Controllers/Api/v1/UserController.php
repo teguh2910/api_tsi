@@ -197,7 +197,7 @@ class UserController extends Controller
         $status_code = 200;
         $data = [
             "status_code"   => $status_code,
-            "message"       => "Not Found",
+            "message"       => "success",
             "data"          => [
                 "user"      => $user
             ]
