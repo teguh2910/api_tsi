@@ -1,15 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\ChatController;
-use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\v1\AuthController;
-use App\Http\Controllers\Api\v1\BloodPressure;
 use App\Http\Controllers\Api\v1\CodeController;
 use App\Http\Controllers\Api\v1\ConsultationController;
+use App\Http\Controllers\Api\v1\CustomerController;
 use App\Http\Controllers\Api\v1\DiastoleController;
 use App\Http\Controllers\Api\v1\EducationController;
 use App\Http\Controllers\Api\v1\HearthRateController;
+use App\Http\Controllers\Api\v1\KitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
 use App\Http\Controllers\Api\v1\ObservationController;
 use App\Http\Controllers\Api\v1\ProfileController;
@@ -47,6 +47,7 @@ Route::put('/v1/auth/resetpassword',[AuthController::class,'update_password']);
 Route::get('/v1/profile', [ProfileController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/v1/profile/username', [ProfileController::class, 'update_username'])->middleware('auth:sanctum');
 Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->middleware('auth:sanctum');
+Route::get('/v1/profile/health-over-view', [ProfileController::class, 'health_over_view'])->middleware('auth:sanctum');
 
 Route::post('/v1/files', [FileController::class, 'store']);
 Route::post('/v1/files/save', [FileController::class, 'save']);
@@ -88,7 +89,6 @@ Route::get('/v1/observation/diastole/mine/show',[DiastoleController::class, 'min
 
 Route::post('/v1/observation/hearthRate',[HearthRateController::class, 'store'] )->middleware('auth:sanctum');
 
-
 Route::get('v1/codes', [CodeController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/codes', [CodeController::class, 'store'])->middleware('auth:sanctum');
 Route::get('v1/code/{id}', [CodeController::class, 'show'])->middleware('auth:sanctum');
@@ -111,3 +111,11 @@ Route::put('v1/consultations/{id}', [ConsultationController::class, 'update'])->
 
 Route::get('v1/chats', [ChatController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/chats', [ChatController::class,'store'])->middleware('auth:sanctum');
+
+Route::get('v1/kits', [KitController::class,'index'])->middleware('auth:sanctum');
+Route::post('v1/kits', [KitController::class,'store'])->middleware('auth:sanctum');
+
+Route::get('v1/customers', [CustomerController::class,'index'])->middleware('auth:sanctum');
+Route::post('v1/customers', [CustomerController::class,'store'])->middleware('auth:sanctum');
+Route::put('v1/customers', [CustomerController::class,'update'])->middleware('auth:sanctum');
+Route::delete('v1/customers/{id}', [CustomerController::class,'destroy'])->middleware('auth:sanctum');

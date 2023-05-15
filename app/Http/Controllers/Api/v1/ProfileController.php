@@ -18,14 +18,13 @@ class ProfileController extends Controller
             'id'            => Auth::id(),
             'nama_depan'    => Auth::user()['nama']['nama_depan'],
             'nama_belakang' => Auth::user()['nama']['nama_belakang'],
-            'gelar_depan'   => Auth::user()['gelar']['gelar_depan'],
-            'gelar_belakang'=> Auth::user()['gelar']['gelar_belakang'],
             'gender'        => Auth::user()['gender'],
             'username'      => Auth::user()['username'],
             'nik'           => Auth::user()['nik'],
             'email'         => Auth::user()['kontak']['email'],
             'nomor_telepon' => Auth::user()['kontak']['nomor_telepon'],
             'status_pernikahan' => Auth::user()['status_pernikahan'],
+            'kit'               => Auth::user()['kit'],
             'alamat'        => [
                 'provinsi'  => [
                     'id_provinsi'   => Auth::user()['address']['provinsi']['id_provinsi'],
@@ -50,6 +49,40 @@ class ProfileController extends Controller
             'status_code'       => 200,
             'message'           => 'success',
             'content'           => $data_user
+        ]);
+    }
+    public function health_over_view(){
+        $tanggal_lahir = Auth::user()['lahir']['tanggal'];
+        $birthDate = new \DateTime($tanggal_lahir);
+        $today  = new \DateTime("today");
+        $y      = $today->diff($birthDate)->y;
+        $m      = $today->diff($birthDate)->m;
+        $d      = $today->diff($birthDate)->d;
+        $usia   = [
+            'tahun'         => $y,
+            'bulan'         => $m,
+            'hari'          => $d
+        ];
+
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'today'             => $today,
+                'gender'            => Auth::user()['gender'],
+                'usia'              => $usia,
+                'systole'           => "ditemukan",
+                'diastole'          => '',
+                'hearth_rate'       => '',
+                'body_temperature'  => '',
+                'body_weight'       => '',
+                'body_height'       => '',
+                'oxygen_saturation' => '',
+                'blood_glucose'     => '',
+                'blood_cholesterole'=> '',
+                'uric_acid'         => '',
+                'bmi'               => ''
+            ]
         ]);
     }
 

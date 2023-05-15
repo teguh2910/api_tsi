@@ -139,8 +139,19 @@ class ObservationController extends Controller
 
             ],422);
         }
-        $id_user    = $request->id_pasien;
-        $user       = User::find($id_user);
+        $id_user        = $request->id_pasien;
+        $user           = User::find($id_user);
+        $tanggal_lahir  = $user['lahir']['tanggal'];
+        $birthDate      = new \DateTime($tanggal_lahir);
+        $today          = new \DateTime("today");
+        $y              = $today->diff($birthDate)->y;
+        $m              = $today->diff($birthDate)->m;
+        $d              = $today->diff($birthDate)->d;
+        $usia   = [
+            'tahun'         => $y,
+            'bulan'         => $m,
+            'hari'          => $d
+        ];
         if(empty($user)){
             return response()->json([
                'status_code'    => 404,
@@ -161,8 +172,11 @@ class ObservationController extends Controller
             ],
             'category'      => $category,
             'base_line'     => [
-                'min'       => 100,
-                'max'       => 129
+                'min'           => 91,
+                'max'           => 119,
+                'prahipertensi' => 139,
+                'hipertensi_1'  => 159,
+                'hipertensi_2'  => 180
             ],
             'interpretation'    => []
 
@@ -180,8 +194,11 @@ class ObservationController extends Controller
             ],
             'category'      => $category,
             'base_line'     => [
-                'min'       => 70,
-                'max'       => 80
+                'min'           => 69,
+                'max'           => 79,
+                'prahipertensi' => 89,
+                'hipertensi_1'  => 99,
+                'hipertensi_2'  => 100
             ],
             'interpretation'    => []
         ];
@@ -212,6 +229,7 @@ class ObservationController extends Controller
                 'status_code'   => 201,
                 'message'       => 'success',
                 'data'          => [
+                    'usia'          => $usia,
                     'bloodpressure' => [
                         'systolic'  => $systolic,
                         'diastolic' => $diastolic,

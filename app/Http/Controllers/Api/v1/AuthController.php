@@ -90,6 +90,23 @@ class AuthController extends Controller
     }
     public function login_petugas(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'username'          => 'required',
+            'password'          => 'required',
+            'id_atm_sehat_kit'  => 'required'
+        ]);
+        $id_atm_sehat_kit   = $request->id_atm_sehat_kit;
+        if($validator->fails()){
+            $status_code    = 422;
+            $data           = [
+                "status_code"   => $status_code,
+                "message"       => "gagal Validasi",
+                "data"          => [
+                    "errors"    => $validator->errors()
+                ]
+            ];
+            return response()->json($data, $status_code);
+        }
         if (!Auth::attempt($request->only('username', 'password')))
         {
             $data = [
@@ -100,9 +117,16 @@ class AuthController extends Controller
             return response()->json($data, 401);
 
         }else{
-            $token_name = 'auth_token';
+            $token_name = $id_atm_sehat_kit;
             $user       = User::where('username', $request['username'])->firstOrFail();
+            $kit_petugas = [
+                'kit'       => [
+                    'id_atm_sehat_kit'  => $id_atm_sehat_kit,
+                    'time'              => time()
+                ]
+            ];
             if($user->active == true){
+                $update_user = $user->update($kit_petugas);
                 $token      = $user->createToken($token_name)->plainTextToken;
                 $data       = [
                     "status_code"   => 200,

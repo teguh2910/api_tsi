@@ -3,17 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
-use Jenssegers\Mongodb\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
 
-class Customer extends Model
+class Customer extends Eloquent
 {
-    use HasFactory, HasApiTokens, SoftDeletes;
-
-    protected $primaryKey = '_id';
-    protected $dates = ['deleted_at'];
-    protected $guarded=[];
+    use HasFactory, HasApiTokens,SoftDeletes;
+    protected $connection   = 'mongodb';
+    protected $primaryKey   = '_id';
+    protected $dates        = ['deleted_at'];
+    protected $guarded      = [];
 
 }
