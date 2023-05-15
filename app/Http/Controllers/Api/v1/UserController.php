@@ -329,8 +329,24 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+        $id    = $request->id;
+        $user   = User::find($id);
+
+        if ($validator->fails()) {
+            $data = [
+                "status_code"   => 422,
+                "message"       => "Gagal validasi",
+                "data"          => [
+                    "errors" => $validator->errors(),
+                ],
+            ];
+            return response()->json($data, 422);
+        }
         $user = User::find((string)$id);
         if(empty($user)){
             $data = [
