@@ -173,6 +173,39 @@ class UserController extends Controller
         return response()->json($data, 200);
 
     }
+    public function findByemail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+        $email    = $request->email;
+        $user   = User::where('kontak.email', $email)->first();
+
+        if ($validator->fails()) {
+            $data = [
+                "status_code"   => 422,
+                "message"       => "Gagal validasi",
+                "data"          => [
+                    "errors" => $validator->errors(),
+                ],
+            ];
+            return response()->json($data, 422);
+        }elseif (empty($user)){
+            $status_code = 404;
+
+        }
+        $status_code = 200;
+        $data = [
+            "status_code"   => $status_code,
+            "message"       => "Not Found",
+            "data"          => [
+                "user"      => $user
+            ]
+
+        ];
+        return response()->json($data, $status_code);
+
+    }
     public function showNik($nik)
     {
         $user_query = User::where('nik', (int)$nik);
@@ -329,6 +362,7 @@ class UserController extends Controller
         ];
         return response()->json($data);
     }
+
     public function restore(Request $request){
         $id         = $request->header('id_user');
         $user       = User::where('_id', $id);

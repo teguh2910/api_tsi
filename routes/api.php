@@ -56,6 +56,7 @@ Route::resource('/v1/education', EducationController::class)->middleware('auth:s
 Route::resource('/v1/users', UserController::class)->middleware('auth:sanctum');
 Route::get('/v1/user/{nik}', [UserController::class, 'showNik'])->middleware('auth:sanctum');
 Route::post('/v1/user/find', [UserController::class, 'find'])->middleware('auth:sanctum');
+Route::post('/v1/user/findEmail', [UserController::class, 'findByemail'])->middleware('auth:sanctum');
 Route::delete('/v1/user/{id}', [UserController::class, 'destroy'])->middleware('auth:sanctum');
 Route::put('/v1/user/restored', [UserController::class, 'restore'])->middleware('auth:sanctum');
 
@@ -114,6 +115,7 @@ Route::post('v1/chats', [ChatController::class,'store'])->middleware('auth:sanct
 
 Route::get('v1/kits', [KitController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/kits', [KitController::class,'store'])->middleware('auth:sanctum');
+Route::put('v1/kits', [KitController::class,'update'])->middleware('auth:sanctum');
 
 Route::get('v1/customers', [CustomerController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/customers', [CustomerController::class,'store'])->middleware('auth:sanctum');
