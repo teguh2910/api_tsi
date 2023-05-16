@@ -7,7 +7,7 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 
-class Log_kit extends Eloquent
+class Log_device extends Eloquent
 {
     use HasFactory, HasApiTokens,SoftDeletes;
     protected $connection   = 'mongodb';

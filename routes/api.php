@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\v1\DiastoleController;
 use App\Http\Controllers\Api\v1\EducationController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\KitController;
+use App\Http\Controllers\Api\v1\LogUserKitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
 use App\Http\Controllers\Api\v1\ObservationController;
 use App\Http\Controllers\Api\v1\ProfileController;
@@ -117,6 +118,9 @@ Route::post('v1/chats', [ChatController::class,'store'])->middleware('auth:sanct
 Route::get('v1/kits', [KitController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/kits', [KitController::class,'store'])->middleware('auth:sanctum');
 Route::put('v1/kits', [KitController::class,'update'])->middleware('auth:sanctum');
+
+
+Route::post('v1/logKit', [LogUserKitController::class,'store'])->middleware('auth:sanctum');
 
 Route::get('v1/customers', [CustomerController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/customers', [CustomerController::class,'store'])->middleware('auth:sanctum');

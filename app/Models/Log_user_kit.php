@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
-class Log_user_kit extends Model
+class Log_user_kit extends Eloquent
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens,SoftDeletes;
+    protected $connection   = 'mongodb';
+    protected $primaryKey   = '_id';
+    protected $dates        = ['deleted_at'];
+    protected $guarded      = [];
 }
