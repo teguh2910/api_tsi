@@ -380,9 +380,35 @@ class UserController extends Controller
     }
 
     public function restore(Request $request){
-        $id         = $request->header('id_user');
-        $user       = User::where('_id', $id);
-        $data_user  = $user->get();
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+        $id    = $request->id;
+        $user   = User::where('_id', $id);
+
+        if ($validator->fails()) {
+            $data = [
+                "status_code"   => 422,
+                "message"       => "Gagal validasi",
+                "data"          => [
+                    "errors" => $validator->errors(),
+                ],
+            ];
+            return response()->json($data, 422);
+        }
+        $data_user  = $user->first();
+        $user_count = $user->count();
+        if($user_count <1 ){
+            $data = [
+                'status_code'   => 404,
+                'message'       => 'Not Found',
+                'data'          => [
+                    'user'      => $data_user
+                ]
+            ];
+            return response()->json($data);
+        }
+
         $restore    = $user->withTrashed()->restore();
 
         if($restore){
@@ -394,6 +420,16 @@ class UserController extends Controller
                 ]
             ];
             return response()->json($data);
+        }
+        if($restore){
+            $data = [
+                'status_code'   => 404,
+                'message'       => 'Not Found',
+                'data'          => [
+                    'user'      =>  $data_user
+                ]
+            ];
+            return response()->json($data, 404);
         }
     }
 }

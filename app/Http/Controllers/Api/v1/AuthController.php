@@ -13,6 +13,7 @@ use App\Jobs\Auth\LoginNotificationJob;
 use App\Jobs\Auth\RegistrationNotificationJob;
 use App\Jobs\Auth\RequestActivationCodeJob;
 use App\Jobs\Auth\UpdatePasswordNotificationJob;
+use App\Models\Kit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -126,9 +127,18 @@ class AuthController extends Controller
                 ]
             ];
             if($user->active == true){
-                $update_user = $user->update($kit_petugas);
-                $token      = $user->createToken($token_name)->plainTextToken;
-                $data       = [
+                $update_user    = $user->update($kit_petugas);
+                $token          = $user->createToken($token_name)->plainTextToken;
+                $kit            = Kit::where('code', $id_atm_sehat_kit)->first();
+                $operator_kit   = [
+                    "operator"  => [
+                        "nik"   => $user->nik,
+                        "time"  => time()
+                    ],
+
+                ];
+                $update_kit     = $kit->update($operator_kit);
+                $data           = [
                     "status_code"   => 200,
                     'message'       => 'Success',
                     "token"         => [
