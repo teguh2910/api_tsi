@@ -280,7 +280,7 @@ class KitController extends Controller
             'code_kit'  => 'required',
         ]);
         $code_kit   = $request->code_kit;
-        $kit        = Kit::where('code',$code_kit)->first();
+        $kit        = Kit::where('code',$code_kit)->where('pasien','!=',NULL)->first();
         if($validator->fails()){
             $status_code    = 422;
             $data           = [
