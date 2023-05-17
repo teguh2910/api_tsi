@@ -50,6 +50,7 @@ Route::post('/v1/profile/username', [ProfileController::class, 'update_username'
 Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->middleware('auth:sanctum');
 Route::get('/v1/profile/health-over-view', [ProfileController::class, 'health_over_view'])->middleware('auth:sanctum');
 
+
 Route::post('/v1/files', [FileController::class, 'store']);
 Route::post('/v1/files/save', [FileController::class, 'save']);
 
@@ -118,6 +119,9 @@ Route::post('v1/chats', [ChatController::class,'store'])->middleware('auth:sanct
 Route::get('v1/kits', [KitController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/kits', [KitController::class,'store'])->middleware('auth:sanctum');
 Route::put('v1/kits', [KitController::class,'update'])->middleware('auth:sanctum');
+Route::get('v1/kits/{id}', [KitController::class,'show'])->middleware('auth:sanctum');
+Route::post('/v1/kits/user/connect', [KitController::class,'link'])->middleware('auth:sanctum');
+Route::put('/v1/kits/user/unlink', [KitController::class,'unlink'])->middleware('auth:sanctum');
 
 
 Route::post('v1/logKit', [LogUserKitController::class,'store'])->middleware('auth:sanctum');

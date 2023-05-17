@@ -139,6 +139,7 @@ class AuthController extends Controller
                 $operator_kit   = [
                     "operator"  => [
                         "nik"   => $user->nik,
+                        "id"    => $user->_id,
                         "time"  => time()
                     ],
 
