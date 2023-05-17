@@ -399,6 +399,7 @@ class ObservationController extends Controller
             'unit'          => "Kg",
             'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
+            'code_atm_sehat'    => Auth::user()['kit']['kit_code'],
             'time'          => time(),
             'coding'        => [
                 'code'      => $find_wight->code,
