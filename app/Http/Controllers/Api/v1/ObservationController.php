@@ -349,6 +349,9 @@ class ObservationController extends Controller
             'unit'          => "C",
             'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
+            'atm_sehat'     => [
+                'code_kit'  => Auth::user()['kit']['kit_code']
+            ],
             'time'          => time(),
             'coding'        => [
                 "code"      => "8310-5",
