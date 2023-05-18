@@ -632,7 +632,7 @@ class ObservationController extends Controller
     }
     public function uric_acid(Request $request)
     {
-        $code_observasi = 'vital-signs';
+        $code_observasi = 'laboratory';
         $find_observasi = Code::where('code',$code_observasi)->first();
         $category       = [
             'code'      => $find_observasi->code,
@@ -719,7 +719,7 @@ class ObservationController extends Controller
     }
     public function blood_glucose(Request $request)
     {
-        $code_observasi = 'vital-signs';
+        $code_observasi = 'laboratory';
         $find_observasi = Code::where('code',$code_observasi)->first();
         $category       = [
             'code'      => $find_observasi->code,
