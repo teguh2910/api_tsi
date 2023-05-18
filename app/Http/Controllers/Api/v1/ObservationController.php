@@ -113,13 +113,57 @@ class ObservationController extends Controller
         $code_diastolic = (string) '8462-4';
         $find_diastolic = $this->code($code_diastolic)->original;
         //mencari data HR
-        $code_HR        = '8867-4';
-        $find_HR        = $this->code($code_HR)->original;;
+        $code_HR            = '8867-4';
+        $find_HR            = $this->code($code_HR)->original;
+        $value_systolic     = $request->systolic;
+        $value_diastolic    = $request->diastolic;
+        $value_hr           = $request->heart_rate;
+        $min_systolic       = 90;
+        $max_systolic       = 129;
+
+        if($value_systolic < $min_systolic){
+            $interpretation_code_systole       = 'L';
+            $interpretation_display_systole    = "Low";
+        }elseif($value_systolic > $max_systolic){
+            $interpretation_code_systole       = 'H';
+            $interpretation_display_systole    = "High";
+
+        }else{
+            $interpretation_code_systole       = 'N';
+            $interpretation_display_systole    = "Normal";
+        }
+        $min_diastolic      = 60;
+        $max_diastolic      = 79;
+        if($value_diastolic < $min_diastolic){
+            $interpretation_code_diastolic       = 'L';
+            $interpretation_display_diastolic    = "Low";
+        }elseif($value_diastolic > $max_diastolic){
+            $interpretation_code_diastolic       = 'H';
+            $interpretation_display_diastolic    = "High";
+
+        }else{
+            $interpretation_code_diastolic       = 'N';
+            $interpretation_display_diastolic    = "Normal";
+        }
+
         if(empty($find_systolic) && empty($find_diastolic) && empty($find_HR)){
             return response()->json([
                 'status_code'   => 404,
                 'message'       => 'Not Found'
             ]);
+        }
+        $min_hr             = 80;
+        $max_hr             = 100;
+        if($value_hr < $min_hr){
+            $interpretation_code_hr       = 'L';
+            $interpretation_display_hr    = "Low";
+        }elseif($value_hr > $max_hr){
+            $interpretation_code_hr       = 'H';
+            $interpretation_display_hr    = "High";
+
+        }else{
+            $interpretation_code_hr       = 'N';
+            $interpretation_display_hr    = "Normal";
         }
 
         $validator      = Validator::make($request->all(), [
@@ -175,13 +219,14 @@ class ObservationController extends Controller
             ],
             'category'      => $category,
             'base_line'     => [
-                'min'           => 91,
-                'max'           => 119,
-                'prahipertensi' => 139,
-                'hipertensi_1'  => 159,
-                'hipertensi_2'  => 180
+                'min'           => $min_systolic,
+                'max'           => $max_systolic
             ],
-            'interpretation'    => []
+            'interpretation'=> [
+                'code'      => $interpretation_code_systole,
+                'display'   => $interpretation_display_systole,
+                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+            ]
 
         ];
         $diastolic   = [
@@ -200,13 +245,14 @@ class ObservationController extends Controller
             ],
             'category'      => $category,
             'base_line'     => [
-                'min'           => 69,
-                'max'           => 79,
-                'prahipertensi' => 89,
-                'hipertensi_1'  => 99,
-                'hipertensi_2'  => 100
+                'min'           => $min_diastolic,
+                'max'           => $max_diastolic
             ],
-            'interpretation'    => []
+            'interpretation'=> [
+                'code'      => $interpretation_code_diastolic,
+                'display'   => $interpretation_display_diastolic,
+                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+            ]
         ];
         $HR         = [
             'value'         => (int) $request->heart_rate,
@@ -224,10 +270,14 @@ class ObservationController extends Controller
             ],
             'category'      => $category,
             'base_line'     => [
-                'min'       => 60,
-                'max'       => 80
+                'min'           => $min_hr,
+                'max'           => $max_hr
             ],
-            'interpretation'    => []
+            'interpretation'=> [
+                'code'      => $interpretation_code_hr,
+                'display'   => $interpretation_display_hr,
+                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+            ]
         ];
         $observation        = new Observation();
         $create_systolic    = $observation->create($systolic);
@@ -711,6 +761,93 @@ class ObservationController extends Controller
                 'message'       => 'success',
                 'data'          => [
                     'body_height'   => $data
+                ]
+
+            ]);
+        }
+
+    }
+    public function cholesterol(Request $request)
+    {
+        $code_observasi = 'laboratory';
+        $find_observasi = Code::where('code',$code_observasi)->first();
+        $category       = [
+            'code'      => $find_observasi->code,
+            'display'   => $find_observasi->display,
+            'system'    => $find_observasi->system
+        ];
+        $code_chole     = "2093-3";
+        $find_chole     = Code::where('code', $code_chole)->first();
+        $id_pasien      = $request->id_pasien;
+        $user           = User::find($id_pasien);
+        $value_periksa  = (float) $request->cholesterol;
+        $value_min      = 125;
+        $value_max      = 200;
+        if($value_periksa < $value_min ){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($value_periksa > $value_max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
+
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
+        }
+        if(empty($user)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'User Not Found'
+            ],404);
+        }
+        $validation = Validator::make($request->all(),[
+            'cholesterol'   => 'required|numeric|min:10|max:600',
+            'id_pasien'     => 'required'
+        ]);
+        if($validation->fails())
+        {
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'Gagal validasi',
+                'data'          => [
+                    'errors'    => $validation->errors()
+                ]
+            ],422);
+        }
+        $data         = [
+            'value'         => $value_periksa,
+            'unit'          => "mg/dL",
+            'id_pasien'     => $id_pasien,
+            'id_petugas'    => Auth::id(),
+            'atm_sehat'     => [
+                'code_kit'  => Auth::user()['kit']['kit_code']
+            ],
+            'time'          => time(),
+            'coding'        => [
+                'code'      => $find_chole->code,
+                'display'   => $find_chole->display,
+                'system'    => $find_chole->system
+            ],
+            'category'      => $category,
+            'base_line'     => [
+                'min'       => (float) $value_min,
+                'max'       => (float) $value_max
+            ],
+            'interpretation'=> [
+                'code'      => $interpretation_code,
+                'display'   => $interpretation_display,
+                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+            ]
+        ];
+        $observation        = new Observation();
+        $create             = $observation->create($data);
+        if($create)
+        {
+            return response()->json([
+                'status_code'   => 201,
+                'message'       => 'success',
+                'data'          => [
+                    'cholesterol'   => $data
                 ]
 
             ]);
