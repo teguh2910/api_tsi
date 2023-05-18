@@ -470,7 +470,20 @@ class ObservationController extends Controller
         $code_wight = "29463-7";
         $find_wight = Code::where('code', $code_wight)->first();
 
-        $id_pasien  = $request->id_pasien;
+        $code_bmi           = "39156-5";
+        $fine_bmi           = Code::where('code', $code_bmi)->first();
+        $id_pasien          = $request->id_pasien;
+        $value_weight       = (float) $request->weight;
+        $code_height        = "8302-2";
+        $las_body_height    = Observation::where('id_pasien', $id_pasien)->where('coding.code', $code_height)->first();
+
+        if($las_body_height->value != NULL){
+            $kuadrat_tb = (($las_body_height->value/100)*($las_body_height->value/100));
+            $value_bmi = ($value_weight/$kuadrat_tb);
+            $this->bmi($value_bmi,$id_pasien,Auth::id(), Auth::user()['kit']['kit_code']);
+        }else{
+            $value_bmi = NULL;
+        }
         $user       = User::find($id_pasien);
         if(empty($user)){
             return response()->json([
@@ -491,8 +504,9 @@ class ObservationController extends Controller
             ],422);
         }
         $data         = [
-            'value'         => (float) $request->weight,
+            'value'         => $value_weight,
             'unit'          => "Kg",
+            'bmi'           => $value_bmi,
             'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
             'atm_sehat'     => [
@@ -941,8 +955,77 @@ class ObservationController extends Controller
         }
 
     }
-    public function bmi(){
-        $code = "39156-5";
+    private function bmi($value_bmi, $id_pasien, $id_pemeriksa, $id_kit){
+
+        $code_observasi = 'vital-signs';
+        $find_observasi = Code::where('code',$code_observasi)->first();
+        $category       = [
+            'code'      => $find_observasi->code,
+            'display'   => $find_observasi->display,
+            'system'    => $find_observasi->system
+        ];
+        $bmi_code       = "39156-5";
+        $find_bmi       = Code::where('code', $bmi_code)->first();
+        $user           = User::find($id_pasien);
+        $value_periksa  = (float) $value_bmi;
+        $value_min      = 18.5;
+        $value_max      = 24.9;
+        if($value_periksa < $value_min ){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($value_periksa > $value_max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
+
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
+        }
+        if(empty($user)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'User Not Found'
+            ],404);
+        }
+
+        $data         = [
+            'value'         => $value_periksa,
+            'unit'          => "Kg/M2",
+            'id_pasien'     => $id_pasien,
+            'id_petugas'    => $id_pemeriksa,
+            'atm_sehat'     => [
+                'code_kit'  => $id_kit
+            ],
+            'time'          => time(),
+            'coding'        => [
+                'code'      => $find_bmi->code,
+                'display'   => $find_bmi->display,
+                'system'    => $find_bmi->system
+            ],
+            'category'      => $category,
+            'base_line'     => [
+                'min'       => (float) $value_min,
+                'max'       => (float) $value_max
+            ],
+            'interpretation'=> [
+                'code'      => $interpretation_code,
+                'display'   => $interpretation_display,
+                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+            ]
+        ];
+        $observation        = new Observation();
+        $create             = $observation->create($data);
+        if($create)
+        {
+            return response()->json([
+                'status_code'   => 201,
+                'message'       => 'success',
+                'data'          => [
+                    'glucose'   => $data
+                ]
+
+            ]);
+        }
     }
     private function code($code){
         $code   = Code::where('code', $code)->first();
