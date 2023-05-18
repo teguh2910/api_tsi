@@ -62,9 +62,7 @@ Route::post('/v1/user/find/email', [UserController::class, 'findByemail'])->midd
 Route::delete('/v1/user', [UserController::class, 'destroy'])->middleware('auth:sanctum');
 Route::put('/v1/user/restored', [UserController::class, 'restore'])->middleware('auth:sanctum');
 
-
 Route::resource('/customers', CustomerController::class);
-Route::resource('/observations', ObservationController::class)->middleware('auth:sanctum');
 
 Route::get('/v1/observation',[ObservationController::class, 'index'] )->middleware('auth:sanctum');
 Route::get('/v1/observation/count',[ObservationController::class,'count'])->middleware('auth:sanctum');

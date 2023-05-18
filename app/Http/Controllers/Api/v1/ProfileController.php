@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Observation;
 use App\Models\User;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
@@ -63,7 +64,63 @@ class ProfileController extends Controller
             'bulan'         => $m,
             'hari'          => $d
         ];
+        $code_sistole   = "8480-6";
+        $systole        = Observation::where([
+            'coding.code'   => $code_sistole,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
 
+        $code_diastolic = "8462-4";
+        $diastole        = Observation::where([
+            'coding.code'   => $code_diastolic,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $hr_code    = "8867-4";
+        $hr         = Observation::where([
+            'coding.code'   => $hr_code,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+
+        $body_temp_code = "8310-5";
+        $body_temp      = Observation::where([
+            'coding.code'   => $body_temp_code,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $body_weight_code   = "29463-7";
+        $body_weight        = Observation::where([
+            'coding.code'   => $body_weight_code,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $code_height    = "8302-2";
+        $height         = Observation::where([
+            'coding.code'   => $code_height,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $code_spo2      = "59408-5";
+        $spo2           = Observation::where([
+            'coding.code'   => $code_spo2,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $code_glucose   = "2345-7";
+        $glucose        = Observation::where([
+            'coding.code'   => $code_glucose,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $code_chole     = "2093-3";
+        $cholesterol    = Observation::where([
+            'coding.code'   => $code_chole,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $code_UA        = "3084-1";
+        $uric_acid      = Observation::where([
+            'coding.code'   => $code_UA,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
+        $bmi_code       = "39156-5";
+        $bmi            = Observation::where([
+            'coding.code'   => $bmi_code,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit(1)->get();
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
@@ -71,17 +128,20 @@ class ProfileController extends Controller
                 'today'             => $today,
                 'gender'            => Auth::user()['gender'],
                 'usia'              => $usia,
-                'systole'           => "ditemukan",
-                'diastole'          => '',
-                'hearth_rate'       => '',
-                'body_temperature'  => '',
-                'body_weight'       => '',
-                'body_height'       => '',
-                'oxygen_saturation' => '',
-                'blood_glucose'     => '',
-                'blood_cholesterole'=> '',
-                'uric_acid'         => '',
-                'bmi'               => ''
+                'systole'           => [
+                    'value'         => $systole
+
+                ],
+                'diastole'          => $diastole,
+                'hearth_rate'       => $hr,
+                'body_temperature'  => $body_temp,
+                'body_weight'       => $body_weight,
+                'body_height'       => $height,
+                'oxygen_saturation' => $spo2,
+                'blood_glucose'     => $glucose,
+                'blood_cholesterole'=> $cholesterol,
+                'uric_acid'         => $uric_acid,
+                'bmi'               => $bmi
             ]
         ]);
     }

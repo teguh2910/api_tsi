@@ -467,8 +467,8 @@ class ObservationController extends Controller
     public function weight(Request $request)
     {
         $category       = $this->observasi();
-        $code_wight = "29463-7";
-        $find_wight = Code::where('code', $code_wight)->first();
+        $code_wight     = "29463-7";
+        $find_wight     = Code::where('code', $code_wight)->first();
 
         $code_bmi           = "39156-5";
         $fine_bmi           = Code::where('code', $code_bmi)->first();
@@ -506,7 +506,6 @@ class ObservationController extends Controller
         $data         = [
             'value'         => $value_weight,
             'unit'          => "Kg",
-            'bmi'           => $value_bmi,
             'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
             'atm_sehat'     => [
@@ -554,6 +553,18 @@ class ObservationController extends Controller
         $find_height    = Code::where('code', $code_height)->first();
         $id_pasien      = $request->id_pasien;
         $user           = User::find($id_pasien);
+        $value_height   = (float) $request->height;
+
+        $code_weight        = "29463-7";
+        $las_body_weight    = Observation::where('id_pasien', $id_pasien)->where('coding.code', $code_weight)->first();
+
+        if($las_body_weight->value != NULL){
+            $kuadrat_tb = ($value_height/100)*($value_height/100);
+            $value_bmi = ($las_body_weight->value/$kuadrat_tb);
+            $this->bmi($value_bmi,$id_pasien,Auth::id(), Auth::user()['kit']['kit_code']);
+        }else{
+            $value_bmi = NULL;
+        }
         if(empty($user)){
             return response()->json([
                 'status_code'   => 404,
@@ -575,8 +586,9 @@ class ObservationController extends Controller
             ],422);
         }
         $data         = [
-            'value'         => (float) $request->height,
+            'value'         => $value_height,
             'unit'          => "CM",
+            'bmi'           => $value_bmi,
             'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
             'atm_sehat'     => [
