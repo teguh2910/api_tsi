@@ -71,12 +71,13 @@ Route::get('/v1/observation/count',[ObservationController::class,'count'])->midd
 Route::post('/v1/bloodPressure',[ObservationController::class, 'bloodPressure'] )->middleware('auth:sanctum');
 Route::post('/v1/hearthRate',[ObservationController::class, 'hearth_rate'] )->middleware('auth:sanctum');
 Route::post('/v1/cholesterol',[ObservationController::class, 'cholesterol'] )->middleware('auth:sanctum');
-Route::post('/v1/uricAcid',[ObservationController::class, 'uricAcid'] )->middleware('auth:sanctum');
-Route::post('/v1/glucose',[ObservationController::class, 'glucose'] )->middleware('auth:sanctum');
+Route::post('/v1/glucose',[ObservationController::class, 'blood_glucose'] )->middleware('auth:sanctum');
+Route::post('/v1/uricAcid',[ObservationController::class, 'uric_acid'] )->middleware('auth:sanctum');
 Route::post('/v1/weight',[ObservationController::class, 'weight'] )->middleware('auth:sanctum');
 Route::post('/v1/height',[ObservationController::class, 'height'] )->middleware('auth:sanctum');
-Route::post('/v1/spo2',[HearthRateController::class,'store'])->middleware('auth:sanctum');
+Route::post('/v1/length',[ObservationController::class, 'length'] )->middleware('auth:sanctum');
 Route::post('/v1/suhu',[ObservationController::class,'temperature'])->middleware('auth:sanctum');
+Route::post('/v1/spo2',[ObservationController::class,'spo2'])->middleware('auth:sanctum');
 
 Route::get('/v1/observation/systole',[SystoleController::class, 'index'] )->middleware('auth:sanctum');
 Route::post('/v1/observation/systole',[SystoleController::class, 'store'] )->middleware('auth:sanctum');
