@@ -164,6 +164,9 @@ class ObservationController extends Controller
             'unit'          => 'mmHg',
             'id_pasien'     => $id_user,
             'id_petugas'    => Auth::id(),
+            'atm_sehat'     => [
+                'code_kit'  => Auth::user()['kit']['kit_code']
+            ],
             'time'          => time(),
             'coding'        => [
                 'code'      => $find_systolic->code,
@@ -186,6 +189,9 @@ class ObservationController extends Controller
             'unit'          => 'mmHg',
             'id_pasien'     => $id_user,
             'id_petugas'    => Auth::id(),
+            'atm_sehat'     => [
+                'code_kit'  => Auth::user()['kit']['kit_code']
+            ],
             'time'          => time(),
             'coding'        => [
                 'code'      => $find_diastolic->code,
@@ -207,6 +213,9 @@ class ObservationController extends Controller
             'unit'          => "beats/minute",
             'id_pasien'     => $id_user,
             'id_petugas'    => Auth::id(),
+            'atm_sehat'     => [
+                'code_kit'  => Auth::user()['kit']['kit_code']
+            ],
             'time'          => time(),
             'coding'        => [
                 'code'      => $find_HR->code,
@@ -469,6 +478,9 @@ class ObservationController extends Controller
             'unit'          => "CM",
             'id_pasien'     => $id_pasien,
             'id_petugas'    => Auth::id(),
+            'atm_sehat'     => [
+                'code_kit'  => Auth::user()['kit']['kit_code']
+            ],
             'time'          => time(),
             'coding'        => [
                 'code'      => $find_height->code,
