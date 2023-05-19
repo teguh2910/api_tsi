@@ -15,18 +15,17 @@ class ObservationResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id'            => $this->_id,
             'id_pasien'     => $this->id_pasien,
             'id_petugas'    => $this->id_petugas,
-            'atm_sehat'     => [
-                'code'      => $this->atm_sehat['code_kit']
-            ],
+            'atm_sehat'     => $this->atm_sehat,
             'coding'        => $this->coding,
             'time'          => $this->time,
             'hasil'         => [
                 'value'     => $this->value,
                 'unit'      => $this->unit
             ],
-            'base_line'     => $this->baseline,
+            'base_line'     => $this->base_line,
             'interpretation'=> $this->interpretation,
         ];
     }

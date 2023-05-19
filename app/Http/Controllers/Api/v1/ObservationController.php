@@ -56,7 +56,7 @@ class ObservationController extends Controller
                 'status_code'   => $status_code,
                 'message'       => $message,
                 'data'          => [
-                    'observasi' => $query
+                    'observasi' => ObservationResource::collection($query)
                 ]
             ],$status_code);
         }else if(isset($request->id_pasien)){ // jika ada id pasien
@@ -300,35 +300,12 @@ class ObservationController extends Controller
         }
     }
     public function hearth_rate(Request $request){
-        $category       = $this->observasi();
+
         $validator      = Validator::make($request->all(), [
             'heart_rate'    => 'required|numeric|min:10|max:500',
             'id_pasien'     => 'required'
         ]);
-        $code_HR        = '8867-4';
-        $find_HR        = Code::where('code', $code_HR)->first();
-        $id_user        = $request->id_pasien;
-        $user           = User::find($id_user);
-        $value_periksa  = (float) $request->heart_rate;
-        $value_min      = 60;
-        $value_max      = 80;
-        if($value_periksa < $value_min ){
-            $interpretation_code       = 'L';
-            $interpretation_display    = "Low";
-        }elseif($value_periksa > $value_max){
-            $interpretation_code       = 'H';
-            $interpretation_display    = "High";
-
-        }else{
-            $interpretation_code       = 'N';
-            $interpretation_display    = "Normal";
-        }
-        if(empty($find_HR)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'Not Found'
-            ]);
-        }elseif($validator->fails()){
+        if($validator->fails()){
             return response()->json([
                 'status_code'   => 422,
                 'message'       => 'gagal validasi',
@@ -337,62 +314,22 @@ class ObservationController extends Controller
                 ]
 
             ],422);
-        }elseif(empty($user)){
-            return response()->json([
-                'status_code'    => 404,
-                'message'        => 'pasien tidak terdaftar'
-            ],404);
-        }else{
-            $HR         = [
-                'value'         => (int) $request->heart_rate,
-                'unit'          => "beats/minute",
-                'id_pasien'     => $id_user,
-                'id_petugas'    => Auth::id(),
-                'time'          => time(),
-                'coding'        => [
-                    'code'      => $find_HR->code,
-                    'display'   => $find_HR->display,
-                    'system'    => $find_HR->system
-                ],
-                'category'      => $category,
-                'base_line'     => [
-                    'min'       => 60,
-                    'max'       => 80
-                ],
-                'interpretation'=> [
-                    'code'      => $interpretation_code,
-                    'display'   => $interpretation_display,
-                    'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-                ]
-            ];
-            $observation        = new Observation();
-            $create_HR          = $observation->create($HR);
-            if($create_HR){
-                return response()->json([
-                    'status_code'   => 201,
-                    'message'       => 'success',
-                    'data'          => [
-                        'heart_rate' => $HR
-                    ]
-                ], 201);
-            }
-
         }
-
-
-
-
-
-    }
-    public function temperature(Request $request)
-    {
-        //mencari data observasi
-        $category       = $this->observasi();
-        $id_pasien      = $request->id_pasien;
-        $pasien         = User::find($id_pasien);
-        $value_periksa  = (float) $request->suhu;
-        $value_min      = 36;
-        $value_max      = 37.5;
+        $category_code      = (string) 'vital-signs';
+        $observation_code   = (string) '8867-4';
+        $id_pasien          = $request->id_pasien;
+        $value_periksa      = (float) $request->heart_rate;
+        $unit               = [
+            'code'      => 'bpm',
+            'display'   => 'beats/minute',
+            'system'    => 'http://unitsofmeasure.org'
+        ];
+        $value_min      = 60;
+        $value_max      = 80;
+        $base_line          = [
+            'min'       => $value_min,
+            'max'       => $value_max
+        ];
         if($value_periksa < $value_min ){
             $interpretation_code       = 'L';
             $interpretation_display    = "Low";
@@ -404,15 +341,16 @@ class ObservationController extends Controller
             $interpretation_code       = 'N';
             $interpretation_display    = "Normal";
         }
-        if(empty($pasien)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'Pasien tidak ditemukan'
-            ],404);
-        }
-        //mencari data temperature dari DB
-        $code_suhu      = (string) '8310-5';
-        $find_suhu      = Code::find($code_suhu);
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+    }
+    public function temperature(Request $request)
+    {
         $validator      = Validator::make($request->all(), [
             'suhu'      => 'required|numeric|min:35|max:45',
             'id_pasien' => 'required'
@@ -426,70 +364,45 @@ class ObservationController extends Controller
                 ]
             ],422);
         }
-        $suhu         = [
-            'value'         => (float) $request->suhu,
-            'unit'          => "C",
-            'id_pasien'     => $id_pasien,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                "code"      => "8310-5",
-                "display"   => "Body temperature",
-                "system"    => "http://loinc.org"
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'       => 36,
-                'max'       => 37.4
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code,
-                'display'   => $interpretation_display,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
+        //mencari data observasi
+        $category_code      = 'vital-signs';
+        $observation_code   = (string) '8310-5';
+        $unit               = [
+            'code'      => 'C',
+            'display'   => 'C',
+            'system'    => 'http://unitsofmeasure.org'
         ];
-        $observation        = new Observation();
-        $create_suhu        = $observation->create($suhu);
-        if($create_suhu){
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'body_temperature'  => $suhu
-                ]
-            ], 201);
+        $id_pasien      = $request->id_pasien;
+        $value_periksa  = (float) $request->suhu;
+        $value_min      = 36;
+        $value_max      = 37.5;
+        $base_line          = [
+            'min'       => $value_min,
+            'max'       => $value_max
+        ];
+        if($value_periksa < $value_min ){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($value_periksa > $value_max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
+
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
         }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+
+        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+
     }
     public function weight(Request $request)
     {
-        $category       = $this->observasi();
-        $code_wight     = "29463-7";
-        $find_wight     = Code::where('code', $code_wight)->first();
-
-        $code_bmi           = "39156-5";
-        $fine_bmi           = Code::where('code', $code_bmi)->first();
-        $id_pasien          = $request->id_pasien;
-        $value_weight       = (float) $request->weight;
-        $code_height        = "8302-2";
-        $las_body_height    = Observation::where('id_pasien', $id_pasien)->where('coding.code', $code_height)->first();
-
-        if($las_body_height->value != NULL){
-            $kuadrat_tb = (($las_body_height->value/100)*($las_body_height->value/100));
-            $value_bmi = ($value_weight/$kuadrat_tb);
-            $this->bmi($value_bmi,$id_pasien,Auth::id(), Auth::user()['kit']['kit_code']);
-        }else{
-            $value_bmi = NULL;
-        }
-        $user       = User::find($id_pasien);
-        if(empty($user)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found'
-            ],404);
-        }
         $validation = Validator::make($request->all(),[
             'weight'    => 'required|numeric|min:1|max:300',
             'id_pasien' => 'required'
@@ -502,74 +415,22 @@ class ObservationController extends Controller
                 'content'       => $validation->errors()
             ],422);
         }
-        $data         = [
-            'value'         => $value_weight,
-            'unit'          => "Kg",
-            'id_pasien'     => $id_pasien,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_wight->code,
-                'display'   => $find_wight->display,
-                'system'    => $find_wight->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-
-            ],
-            'interpretation'=>[
-
-            ]
+        $category_code      = 'vital-signs';
+        $observation_code   = "29463-7";
+        $id_pasien      = $request->id_pasien;
+        $value_periksa  = (float) $request->weight;
+        $base_line      = NULL;
+        $unit           = [
+            'code'      => 'Kg',
+            'display'   => 'Kg',
+            'system'    => 'http://unitsofmeasure.org'
         ];
-        $observation    = new Observation();
-        $create         = $observation->create($data);
-        if($create)
-        {
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'body_weight'   => $data
-                ]
-
-            ]);
-        }
-
+        $interpretation     = NULL;
+        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
     }
     public function height(Request $request)
     {
-        $code_observasi = 'vital-signs';
-        $find_observasi = Code::where('code',$code_observasi)->first();
-        $category       = [
-            'code'      => $find_observasi->code,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
-        ];
-        $code_height    = "8302-2";
-        $find_height    = Code::where('code', $code_height)->first();
-        $id_pasien      = $request->id_pasien;
-        $user           = User::find($id_pasien);
-        $value_height   = (float) $request->height;
-
-        $code_weight        = "29463-7";
-        $las_body_weight    = Observation::where('id_pasien', $id_pasien)->where('coding.code', $code_weight)->first();
-
-        if($las_body_weight->value != NULL){
-            $kuadrat_tb = ($value_height/100)*($value_height/100);
-            $value_bmi = ($las_body_weight->value/$kuadrat_tb);
-            $this->bmi($value_bmi,$id_pasien,Auth::id(), Auth::user()['kit']['kit_code']);
-        }else{
-            $value_bmi = NULL;
-        }
-        if(empty($user)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found'
-            ],404);
-        }
         $validation = Validator::make($request->all(),[
             'height'    => 'required|numeric|min:40|max:250',
             'id_pasien' => 'required'
@@ -584,73 +445,23 @@ class ObservationController extends Controller
                 ]
             ],422);
         }
-        $data         = [
-            'value'         => $value_height,
-            'unit'          => "CM",
-            'bmi'           => $value_bmi,
-            'id_pasien'     => $id_pasien,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_height->code,
-                'display'   => $find_height->display,
-                'system'    => $find_height->system
-            ],
-            'category'      => $category,
-            'base_line'     => [],
-            'interpretation'=> []
+        $category_code      = 'vital-signs';
+        $observation_code   = "8302-2";
+        $id_pasien          = $request->id_pasien;
+        $value_periksa      = (float) $request->height;
+        $base_line          = NULL;
+        $unit               = [
+            'code'      => 'cm',
+            'display'   => 'cm',
+            'system'    => 'http://unitsofmeasure.org'
         ];
-        $observation    = new Observation();
-        $create         = $observation->create($data);
-        if($create)
-        {
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'body_height'   => $data
-                ]
-
-            ]);
-        }
+        $interpretation     = NULL;
+        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
 
     }
     public function spo2(Request $request)
     {
-        $code_observasi = 'vital-signs';
-        $find_observasi = Code::where('code',$code_observasi)->first();
-        $category       = [
-            'code'      => $find_observasi->code,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
-        ];
-        $code_spo2      = "59408-5";
-        $find_spo2      = Code::where('code', $code_spo2)->first();
-        $id_pasien      = $request->id_pasien;
-        $user           = User::find($id_pasien);
-        $value_periksa  = (float) $request->spo2;
-        $value_min      = 95;
-        $value_max      = 100;
-        if($value_periksa < $value_min ){
-            $interpretation_code       = 'L';
-            $interpretation_display    = "Low";
-        }elseif($value_periksa > $value_max){
-            $interpretation_code       = 'H';
-            $interpretation_display    = "High";
-
-        }else{
-            $interpretation_code       = 'N';
-            $interpretation_display    = "Normal";
-        }
-        if(empty($user)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found'
-            ],404);
-        }
         $validation = Validator::make($request->all(),[
             'spo2'      => 'required|numeric|min:40|max:100',
             'id_pasien' => 'required'
@@ -665,62 +476,21 @@ class ObservationController extends Controller
                 ]
             ],422);
         }
-        $data         = [
-            'value'         => (float) $request->spo2,
-            'unit'          => "%",
-            'id_pasien'     => $id_pasien,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_spo2->code,
-                'display'   => $find_spo2->display,
-                'system'    => $find_spo2->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'       => '95',
-                'max'       => '100'
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code,
-                'display'   => $interpretation_display,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
+        $category_code      = 'vital-signs';
+        $observation_code   = "59408-5";
+        $id_pasien          = $request->id_pasien;
+        $value_periksa      = (float) $request->spo2;
+        $value_min          = 95;
+        $value_max          = 100;
+        $base_line          = [
+            'min'       => $value_min,
+            'max'       => $value_max
         ];
-        $observation    = new Observation();
-        $create         = $observation->create($data);
-        if($create)
-        {
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'spo2'   => $data
-                ]
-
-            ]);
-        }
-
-    }
-    public function uric_acid(Request $request)
-    {
-        $code_observasi = 'laboratory';
-        $find_observasi = Code::where('code',$code_observasi)->first();
-        $category       = [
-            'code'      => $find_observasi->code,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
+        $unit               = [
+            'code'      => '%',
+            'display'   => '%',
+            'system'    => 'http://unitsofmeasure.org'
         ];
-        $code_UA        = "3084-1";
-        $find_UA        = Code::where('code', $code_UA)->first();
-        $id_pasien      = $request->id_pasien;
-        $user           = User::find($id_pasien);
-        $value_periksa  = (float) $request->uric_acid;
-        $value_min      = 3.4;
-        $value_max      = 7.0;
         if($value_periksa < $value_min ){
             $interpretation_code       = 'L';
             $interpretation_display    = "Low";
@@ -732,12 +502,18 @@ class ObservationController extends Controller
             $interpretation_code       = 'N';
             $interpretation_display    = "Normal";
         }
-        if(empty($user)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found'
-            ],404);
-        }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+
+
+    }
+    public function uric_acid(Request $request)
+    {
         $validation = Validator::make($request->all(),[
             'uric_acid'     => 'required|numeric|min:1|max:100',
             'id_pasien'     => 'required'
@@ -752,62 +528,22 @@ class ObservationController extends Controller
                 ]
             ],422);
         }
-        $data         = [
-            'value'         => $value_periksa,
-            'unit'          => "mg/dL",
-            'id_pasien'     => $id_pasien,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_UA->code,
-                'display'   => $find_UA->display,
-                'system'    => $find_UA->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'       => (float) $value_min,
-                'max'       => (float) $value_max
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code,
-                'display'   => $interpretation_display,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
+        $category_code      = 'laboratory'; //untuk category
+        $observation_code   = "3084-1";     //untuk asam urat
+        $id_pasien          = $request->id_pasien;
+        $value_periksa      = (float) $request->uric_acid;
+        $unit               = [
+            'code'      => 'mg/dL',
+            'display'   => 'mg/dL',
+            'system'    => 'http://unitsofmeasure.org'
         ];
-        $observation        = new Observation();
-        $create             = $observation->create($data);
-        if($create)
-        {
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'body_height'   => $data
-                ]
-
-            ]);
-        }
-
-    }
-    public function cholesterol(Request $request)
-    {
-        $code_observasi = 'laboratory';
-        $find_observasi = Code::where('code',$code_observasi)->first();
-        $category       = [
-            'code'      => $find_observasi->code,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
+        $value_min          = 3.4;
+        $value_max          = 7.0;
+        $base_line      = [
+            'min'       => $value_min,
+            'max'       => $value_max
         ];
-        $code_chole     = "2093-3";
-        $find_chole     = Code::where('code', $code_chole)->first();
-        $id_pasien      = $request->id_pasien;
-        $user           = User::find($id_pasien);
-        $value_periksa  = (float) $request->cholesterol;
-        $value_min      = 125;
-        $value_max      = 200;
+
         if($value_periksa < $value_min ){
             $interpretation_code       = 'L';
             $interpretation_display    = "Low";
@@ -819,12 +555,16 @@ class ObservationController extends Controller
             $interpretation_code       = 'N';
             $interpretation_display    = "Normal";
         }
-        if(empty($user)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found'
-            ],404);
-        }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+    }
+    public function cholesterol(Request $request)
+    {
         $validation = Validator::make($request->all(),[
             'cholesterol'   => 'required|numeric|min:10|max:600',
             'id_pasien'     => 'required'
@@ -839,62 +579,21 @@ class ObservationController extends Controller
                 ]
             ],422);
         }
-        $data         = [
-            'value'         => $value_periksa,
-            'unit'          => "mg/dL",
-            'id_pasien'     => $id_pasien,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_chole->code,
-                'display'   => $find_chole->display,
-                'system'    => $find_chole->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'       => (float) $value_min,
-                'max'       => (float) $value_max
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code,
-                'display'   => $interpretation_display,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
+        $category_code      = 'laboratory';
+        $observation_code   = "2093-3";
+        $id_pasien          = $request->id_pasien;
+        $value_periksa      = (float) $request->cholesterol;
+        $value_min      = 125;
+        $value_max      = 200;
+        $base_line      = [
+            'min'       => $value_min,
+            'max'       => $value_max
         ];
-        $observation        = new Observation();
-        $create             = $observation->create($data);
-        if($create)
-        {
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'cholesterol'   => $data
-                ]
-
-            ]);
-        }
-
-    }
-    public function blood_glucose(Request $request)
-    {
-        $code_observasi = 'laboratory';
-        $find_observasi = Code::where('code',$code_observasi)->first();
-        $category       = [
-            'code'      => $find_observasi->code,
-            'display'   => $find_observasi->display,
-            'system'    => $find_observasi->system
+        $unit               = [
+            'code'      => 'mg/dL',
+            'display'   => 'mg/dL',
+            'system'    => 'http://unitsofmeasure.org'
         ];
-        $code_glucose   = "2345-7";
-        $find_glucose   = Code::where('code', $code_glucose)->first();
-        $id_pasien      = $request->id_pasien;
-        $user           = User::find($id_pasien);
-        $value_periksa  = (float) $request->glucose;
-        $value_min      = 70;
-        $value_max      = 140;
         if($value_periksa < $value_min ){
             $interpretation_code       = 'L';
             $interpretation_display    = "Low";
@@ -906,12 +605,19 @@ class ObservationController extends Controller
             $interpretation_code       = 'N';
             $interpretation_display    = "Normal";
         }
-        if(empty($user)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found'
-            ],404);
-        }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+
+
+
+    }
+    public function blood_glucose(Request $request)
+    {
         $validation = Validator::make($request->all(),[
             'glucose'       => 'required|numeric|min:10|max:600',
             'id_pasien'     => 'required'
@@ -926,45 +632,39 @@ class ObservationController extends Controller
                 ]
             ],422);
         }
-        $data         = [
-            'value'         => $value_periksa,
-            'unit'          => "mg/dL",
-            'id_pasien'     => $id_pasien,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_glucose->code,
-                'display'   => $find_glucose->display,
-                'system'    => $find_glucose->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'       => (float) $value_min,
-                'max'       => (float) $value_max
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code,
-                'display'   => $interpretation_display,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
+        $category_code = 'laboratory';
+        $code_glucose   = "2345-7";
+        $unit           = [
+            'code'      => 'mg/dL',
+            'display'   => 'mg/dL',
+            'system'    => 'http://unitsofmeasure.org'
         ];
-        $observation        = new Observation();
-        $create             = $observation->create($data);
-        if($create)
-        {
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'glucose'   => $data
-                ]
+        $id_pasien      = $request->id_pasien;
+        $value_periksa  = (float) $request->glucose;
+        $value_min      = 70;
+        $value_max      = 140;
+        $base_line      = [
+            'min'       => $value_min,
+            'max'       => $value_max
+        ];
+        if($value_periksa < $value_min ){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($value_periksa > $value_max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
 
-            ]);
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
         }
-
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($value_periksa, $unit, $id_pasien, $code_glucose, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
     }
     public function gd(Request $request)
     {
@@ -997,14 +697,12 @@ class ObservationController extends Controller
                 'min'       => $value_min,
                 'max'       => $value_max
             ];
-
             if($value_periksa < $value_min ){
                 $interpretation_code       = 'L';
                 $interpretation_display    = "Low";
             }elseif($value_periksa > $value_max){
                 $interpretation_code       = 'H';
                 $interpretation_display    = "High";
-
             }else{
                 $interpretation_code       = 'N';
                 $interpretation_display    = "Normal";
@@ -1014,13 +712,9 @@ class ObservationController extends Controller
                 'display'   => $interpretation_display,
                 'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
             ];
-//            echo "sukses";
-
             $save = $this->save($value_periksa, $unit, $id_pasien, $code_glucose, $category_code, $base_line, $interpretation);
-            return response($save);
+            return response()->json($save->original, $save->original['status_code']);
         }
-
-
     }
     private function bmi($value_bmi, $id_pasien, $id_pemeriksa, $id_kit){
 
@@ -1127,10 +821,10 @@ class ObservationController extends Controller
             'owner'     => $atm_sehat->owner
         ];
         if(empty($pasien)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found'
-            ],404);
+            $status_code    = 404;
+            $message        = "User Not Found";
+            $data           = "";
+
         }else{
             $data         = [
                 'value'         => $value,
@@ -1148,24 +842,35 @@ class ObservationController extends Controller
             $create             = $observation->create($data);
             if($create)
             {
-                return response()->json([
-                    'status_code'   => 201,
-                    'message'       => 'success',
-                    'data'          => [
-                        'glucose'   => $data
-                    ]
+                $status_code    = 200;
+                $message        = "success";
+                $data           = [
+                    'observation'   => $data
+                ];
 
-                ]);
             }else{
+                $status_code    = 400;
+                $message        = "Gagal menyimpan data";
+                $data           = [
+                    'glucose'   => $data
+                ];
                 return response()->json([
                     'status_code'   => 400,
                     'message'       => 'Gagal menyimpan data',
                     'data'          => [
-                        'glucose'   => $data
+                        'observation'   => $data
                     ]
 
                 ]);
             }
+            $response   = [
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ];
+
+            ;
+            return response($response);
         }
 
 

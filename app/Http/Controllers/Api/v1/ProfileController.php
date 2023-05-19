@@ -196,17 +196,17 @@ class ProfileController extends Controller
                 'today'             => $today,
                 'gender'            => Auth::user()['gender'],
                 'usia'              => $usia,
-                'systole'           => $this->myObservation($code_sistole, 1),
-                'diastole'          => $this->myObservation($code_diastolic, 1),
-                'hearth_rate'       => $this->myObservation($hr_code, 1),
-                'body_temperature'  => $this->myObservation($body_temp_code, 1),
-                'body_weight'       => $this->myObservation($body_weight_code, 1),
-                'body_height'       => $this->myObservation($code_height, 1),
-                'oxygen_saturation' => $this->myObservation($code_spo2, 1),
-                'blood_glucose'     => $this->myObservation($code_glucose, 1),
-                'blood_cholesterole'=> $this->myObservation($code_chole, 1),
-                'uric_acid'         => $this->myObservation($code_UA, 1),
-                'bmi'               => $this->myObservation($bmi_code, 1)
+                'systole'           => $this->myObservation($code_sistole, 1)->original,
+                'diastole'          => $this->myObservation($code_diastolic, 1)->original,
+                'hearth_rate'       => $this->myObservation($hr_code, 1)->original,
+                'body_temperature'  => $this->myObservation($body_temp_code, 1)->original,
+                'body_weight'       => $this->myObservation($body_weight_code, 1)->original,
+                'body_height'       => $this->myObservation($code_height, 1)->original,
+                'oxygen_saturation' => $this->myObservation($code_spo2, 1)->original,
+                'blood_glucose'     => $this->myObservation($code_glucose, 1)->original,
+                'blood_cholesterole'=> $this->myObservation($code_chole, 1)->original,
+                'uric_acid'         => $this->myObservation($code_UA, 1)->original,
+                'bmi'               => $this->myObservation($bmi_code, 1)->original
             ]
         ]);
     }
