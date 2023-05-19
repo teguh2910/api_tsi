@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ObservationResource;
 use App\Models\Observation;
 use App\Models\User;
 use App\Models\Wilayah;
@@ -52,100 +53,6 @@ class ProfileController extends Controller
             'content'           => $data_user
         ]);
     }
-    public function health_over_view(){
-        $tanggal_lahir = Auth::user()['lahir']['tanggal'];
-        $birthDate = new \DateTime($tanggal_lahir);
-        $today  = new \DateTime("today");
-        $y      = $today->diff($birthDate)->y;
-        $m      = $today->diff($birthDate)->m;
-        $d      = $today->diff($birthDate)->d;
-        $usia   = [
-            'tahun'         => $y,
-            'bulan'         => $m,
-            'hari'          => $d
-        ];
-        $code_sistole   = "8480-6";
-        $systole        = Observation::where([
-            'coding.code'   => $code_sistole,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-
-        $code_diastolic = "8462-4";
-        $diastole        = Observation::where([
-            'coding.code'   => $code_diastolic,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $hr_code    = "8867-4";
-        $hr         = Observation::where([
-            'coding.code'   => $hr_code,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-
-        $body_temp_code = "8310-5";
-        $body_temp      = Observation::where([
-            'coding.code'   => $body_temp_code,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $body_weight_code   = "29463-7";
-        $body_weight        = Observation::where([
-            'coding.code'   => $body_weight_code,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $code_height    = "8302-2";
-        $height         = Observation::where([
-            'coding.code'   => $code_height,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $code_spo2      = "59408-5";
-        $spo2           = Observation::where([
-            'coding.code'   => $code_spo2,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $code_glucose   = "2345-7";
-        $glucose        = Observation::where([
-            'coding.code'   => $code_glucose,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $code_chole     = "2093-3";
-        $cholesterol    = Observation::where([
-            'coding.code'   => $code_chole,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $code_UA        = "3084-1";
-        $uric_acid      = Observation::where([
-            'coding.code'   => $code_UA,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        $bmi_code       = "39156-5";
-        $bmi            = Observation::where([
-            'coding.code'   => $bmi_code,
-            'id_pasien'     => Auth::id()
-        ])->orderBy('time', 'DESC')->limit(1)->get();
-        return response()->json([
-            'status_code'   => 200,
-            'message'       => 'success',
-            'data'          => [
-                'today'             => $today,
-                'gender'            => Auth::user()['gender'],
-                'usia'              => $usia,
-                'systole'           => [
-                    'value'         => $systole
-
-                ],
-                'diastole'          => $diastole,
-                'hearth_rate'       => $hr,
-                'body_temperature'  => $body_temp,
-                'body_weight'       => $body_weight,
-                'body_height'       => $height,
-                'oxygen_saturation' => $spo2,
-                'blood_glucose'     => $glucose,
-                'blood_cholesterole'=> $cholesterol,
-                'uric_acid'         => $uric_acid,
-                'bmi'               => $bmi
-            ]
-        ]);
-    }
-
     public function update_username(Request $request)
     {
         $user       = Auth::user();
@@ -251,15 +158,187 @@ class ProfileController extends Controller
             ]
         ],401);
     }
-    public function edit($id)
-    {
-        //
-    }
-
-
     public function update(Request $request)
     {
         //
     }
+    public function edit($id)
+    {
+        //
+    }
+    public function resume(){
+        $tanggal_lahir = Auth::user()['lahir']['tanggal'];
+        $birthDate = new \DateTime($tanggal_lahir);
+        $today  = new \DateTime("today");
+        $y      = $today->diff($birthDate)->y;
+        $m      = $today->diff($birthDate)->m;
+        $d      = $today->diff($birthDate)->d;
+        $usia   = [
+            'tahun'         => $y,
+            'bulan'         => $m,
+            'hari'          => $d
+        ];
+        $code_sistole   = "8480-6";
+        $code_diastolic = "8462-4";
+        $hr_code        = "8867-4";
+        $body_temp_code = "8310-5";
+        $body_weight_code   = "29463-7";
+        $code_height    = "8302-2";
+        $code_spo2      = "59408-5";
+        $code_glucose   = "2345-7";
+        $code_chole     = "2093-3";
+        $code_UA        = "3084-1";
+        $bmi_code       = "39156-5";
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'today'             => $today,
+                'gender'            => Auth::user()['gender'],
+                'usia'              => $usia,
+                'systole'           => $this->myObservation($code_sistole, 1),
+                'diastole'          => $this->myObservation($code_diastolic, 1),
+                'hearth_rate'       => $this->myObservation($hr_code, 1),
+                'body_temperature'  => $this->myObservation($body_temp_code, 1),
+                'body_weight'       => $this->myObservation($body_weight_code, 1),
+                'body_height'       => $this->myObservation($code_height, 1),
+                'oxygen_saturation' => $this->myObservation($code_spo2, 1),
+                'blood_glucose'     => $this->myObservation($code_glucose, 1),
+                'blood_cholesterole'=> $this->myObservation($code_chole, 1),
+                'uric_acid'         => $this->myObservation($code_UA, 1),
+                'bmi'               => $this->myObservation($bmi_code, 1)
+            ]
+        ]);
+    }
+    public function systole(Request $request){
+        $limit          = $request->limit;
+        $code_sistole   = "8480-6";
+        $systole        = $this->myObservation($code_sistole, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'systole'   => $systole->original
+            ]
+        ],200);
+    }
+    public function diastole(Request $request){
+        $limit          = $request->limit;
+        $code_diastolic = "8462-4";
+        $diastole       = $this->myObservation($code_diastolic, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'diastole'   => $diastole->original
+            ]
+        ],200);
+    }
+    public function hearth_rate(Request $request){
+        $limit          = $request->limit;
+        $code_HR        = '8867-4';
+        $hearth_rate    = $this->myObservation($code_HR, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'hearth_rate'   => $hearth_rate->original
+            ]
+        ],200);
+    }
+    public function temperature(Request $request){
+        $limit          = $request->limit;
+        $code_suhu      = (string) '8310-5';
+        $temperature    = $this->myObservation($code_suhu, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'temperature'   => $temperature->original
+            ]
+        ],200);
+    }
+    public function spo2(Request $request){
+        $limit          = $request->limit;
+        $code_spo2      = "59408-5";
+        $spo2           = $this->myObservation($code_spo2, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'spo2'   => $spo2->original
+            ]
+        ],200);
+    }
+    public function weight(Request $request){
+        $limit          = $request->limit;
+        $weight_code    = "29463-7";
+        $weight           = $this->myObservation($weight_code, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'weight'   => $weight->original
+            ]
+        ],200);
+    }
+    public function height(Request $request){
+        $limit          = $request->limit;
+        $code_height    = "8302-2";
+        $height         = $this->myObservation($code_height, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'height'   => $height->original
+            ]
+        ],200);
+    }
+    public function cholesterol(Request $request){
+        $limit          = $request->limit;
+        $code_chole     = "2093-3";
+        $cholesterol    = $this->myObservation($code_chole, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'cholesterol '   => $cholesterol ->original
+            ]
+        ],200);
+    }
+    public function uric_acid(Request $request){
+        $limit          = $request->limit;
+        $code_height    = "8302-2";
+        $height         = $this->myObservation($code_height, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'height'   => $height->original
+            ]
+        ],200);
+    }
+    public function glucose(Request $request){
+        $limit          = $request->limit;
+        $code_height    = "8302-2";
+        $height         = $this->myObservation($code_height, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'height'   => $height->original
+            ]
+        ],200);
+    }
+    private function myObservation($observation_code, $limit=1){
+        $query_ovsrevation = Observation::where([
+            'coding.code'   => $observation_code,
+            'id_pasien'     => Auth::id()
+        ])->orderBy('time', 'DESC')->limit($limit)->get();
+        $myObservation  = ObservationResource::collection($query_ovsrevation);
+
+        return response($myObservation);
+
+}
 
 }

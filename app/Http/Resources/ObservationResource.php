@@ -17,12 +17,17 @@ class ObservationResource extends JsonResource
         return [
             'id_pasien'     => $this->id_pasien,
             'id_petugas'    => $this->id_petugas,
+            'atm_sehat'     => [
+                'code'      => $this->atm_sehat['code_kit']
+            ],
             'coding'        => $this->coding,
             'time'          => $this->time,
             'hasil'         => [
                 'value'     => $this->value,
                 'unit'      => $this->unit
-            ]
+            ],
+            'base_line'     => $this->baseline,
+            'interpretation'=> $this->interpretation,
         ];
     }
 }

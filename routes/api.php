@@ -48,8 +48,20 @@ Route::put('/v1/auth/resetpassword',[AuthController::class,'update_password']);
 Route::get('/v1/profile', [ProfileController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/v1/profile/username', [ProfileController::class, 'update_username'])->middleware('auth:sanctum');
 Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->middleware('auth:sanctum');
-Route::get('/v1/profile/health-over-view', [ProfileController::class, 'health_over_view'])->middleware('auth:sanctum');
 
+Route::get('/v1/over-view/resume', [ProfileController::class, 'resume'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/diastole', [ProfileController::class, 'diastole'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/hearth-rate', [ProfileController::class, 'hearth_rate'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/temperature', [ProfileController::class, 'temperature'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/spo2', [ProfileController::class, 'spo2'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/weight', [ProfileController::class, 'weight'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/height', [ProfileController::class, 'height'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/cholesterol', [ProfileController::class, 'cholesterol'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/uric-acid', [ProfileController::class, 'height'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/glucose', [ProfileController::class, 'height'])->middleware('auth:sanctum');
+
+Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');
 
 Route::post('/v1/files', [FileController::class, 'store']);
 Route::post('/v1/files/save', [FileController::class, 'save']);
@@ -76,6 +88,7 @@ Route::post('/v1/height',[ObservationController::class, 'height'] )->middleware(
 Route::post('/v1/length',[ObservationController::class, 'length'] )->middleware('auth:sanctum');
 Route::post('/v1/suhu',[ObservationController::class,'temperature'])->middleware('auth:sanctum');
 Route::post('/v1/spo2',[ObservationController::class,'spo2'])->middleware('auth:sanctum');
+Route::post('/v1/gd',[ObservationController::class,'gd'])->middleware('auth:sanctum');
 
 Route::get('/v1/observation/systole',[SystoleController::class, 'index'] )->middleware('auth:sanctum');
 Route::post('/v1/observation/systole',[SystoleController::class, 'store'] )->middleware('auth:sanctum');
