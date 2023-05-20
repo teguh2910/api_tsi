@@ -324,8 +324,8 @@ class ObservationController extends Controller
             'display'   => 'beats/minute',
             'system'    => 'http://unitsofmeasure.org'
         ];
-        $value_min      = 60;
-        $value_max      = 80;
+        $value_min      = 80;
+        $value_max      = 119;
         $base_line          = [
             'min'       => $value_min,
             'max'       => $value_max
