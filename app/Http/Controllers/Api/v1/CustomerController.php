@@ -17,15 +17,16 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::all();
+        $status_code = 200;
         return response()->json([
-            "status_code"   => 200,
+            "status_code"   => $status_code,
             "message"       => "success",
             "time"          => time(),
             "data"          => [
                 'count'     => Customer::count(),
                 'customers' => $customers
             ]
-        ],203);
+        ],$status_code);
     }
     /**
      * Store a newly created resource in storage.

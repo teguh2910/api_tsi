@@ -307,26 +307,26 @@ class ProfileController extends Controller
         ],200);
     }
     public function uric_acid(Request $request){
-        $limit          = $request->limit;
-        $code_height    = "8302-2";
-        $height         = $this->myObservation($code_height, $limit);
+        $limit              = $request->limit;
+        $observation_code   = "3084-1";
+        $observation        = $this->myObservation($observation_code, $limit);
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
             'data'          => [
-                'height'   => $height->original
+                'uric_acid'   => $observation->original
             ]
         ],200);
     }
     public function glucose(Request $request){
-        $limit          = $request->limit;
-        $code_height    = "8302-2";
-        $height         = $this->myObservation($code_height, $limit);
+        $limit              = $request->limit;
+        $observation_code   = "2093-3";
+        $observation        = $this->myObservation($observation_code, $limit);
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
             'data'          => [
-                'height'   => $height->original
+                'glucose'   => $observation->original
             ]
         ],200);
     }

@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ProfesionSeeder::class,
             EducationSeeder::class,
-            CodeSeeder::class
+            CodeSeeder::class,
+            DeviceSeeder::class
         ]);
 //
     }

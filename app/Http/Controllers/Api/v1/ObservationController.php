@@ -106,67 +106,6 @@ class ObservationController extends Controller
      */
     public function bloodPressure(Request $request)
     {
-        $category       = $this->observasi();
-        //mencari data systolic dari DB
-        $code_systolic  = (string) '8480-6';
-        $find_systolic  = $this->code($code_systolic)->original;
-        //mencari data diastolic dari db
-        $code_diastolic = (string) '8462-4';
-        $find_diastolic = $this->code($code_diastolic)->original;
-        //mencari data HR
-        $code_HR            = '8867-4';
-        $find_HR            = $this->code($code_HR)->original;
-        $value_systolic     = $request->systolic;
-        $value_diastolic    = $request->diastolic;
-        $value_hr           = $request->heart_rate;
-        $min_systolic       = 90;
-        $max_systolic       = 129;
-
-        if($value_systolic < $min_systolic){
-            $interpretation_code_systole       = 'L';
-            $interpretation_display_systole    = "Low";
-        }elseif($value_systolic > $max_systolic){
-            $interpretation_code_systole       = 'H';
-            $interpretation_display_systole    = "High";
-
-        }else{
-            $interpretation_code_systole       = 'N';
-            $interpretation_display_systole    = "Normal";
-        }
-        $min_diastolic      = 60;
-        $max_diastolic      = 79;
-        if($value_diastolic < $min_diastolic){
-            $interpretation_code_diastolic       = 'L';
-            $interpretation_display_diastolic    = "Low";
-        }elseif($value_diastolic > $max_diastolic){
-            $interpretation_code_diastolic       = 'H';
-            $interpretation_display_diastolic    = "High";
-
-        }else{
-            $interpretation_code_diastolic       = 'N';
-            $interpretation_display_diastolic    = "Normal";
-        }
-
-        if(empty($find_systolic) && empty($find_diastolic) && empty($find_HR)){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'Not Found'
-            ]);
-        }
-        $min_hr             = 80;
-        $max_hr             = 100;
-        if($value_hr < $min_hr){
-            $interpretation_code_hr       = 'L';
-            $interpretation_display_hr    = "Low";
-        }elseif($value_hr > $max_hr){
-            $interpretation_code_hr       = 'H';
-            $interpretation_display_hr    = "High";
-
-        }else{
-            $interpretation_code_hr       = 'N';
-            $interpretation_display_hr    = "Normal";
-        }
-
         $validator      = Validator::make($request->all(), [
             'systolic'      => 'required|numeric|min:40|max:300',
             'diastolic'     => 'required|numeric|min:10|max:200',
@@ -184,120 +123,122 @@ class ObservationController extends Controller
 
             ],422);
         }
-        $id_user        = $request->id_pasien;
-        $user           = User::find($id_user);
-        $tanggal_lahir  = $user['lahir']['tanggal'];
-        $birthDate      = new \DateTime($tanggal_lahir);
-        $today          = new \DateTime("today");
-        $y              = $today->diff($birthDate)->y;
-        $m              = $today->diff($birthDate)->m;
-        $d              = $today->diff($birthDate)->d;
-        $usia   = [
-            'tahun'         => $y,
-            'bulan'         => $m,
-            'hari'          => $d
+        $category_code  = (string) 'vital-signs';
+        $code_systolic  = (string) '8480-6';
+        $code_diastolic = (string) '8462-4';
+        $code_HR            = '8867-4';
+        $id_pasien          = $request->id_pasien;
+        $value_systolic     = $request->systolic;
+        $value_diastolic    = $request->diastolic;
+        $value_hr           = $request->heart_rate;
+        $min_systolic       = 90;
+        $max_systolic       = 129;
+        $base_line_systole  = [
+            'min'       => $min_systolic,
+            'max'       => $max_systolic
         ];
-        if(empty($user)){
-            return response()->json([
-               'status_code'    => 404,
-               'message'        => 'pasien tidak terdaftar'
-            ],404);
-        }
+        $unit_bp   = [
+            'code'      => 'mmHg',
+            'display'   => 'mmHg',
+            'system'    => 'http://unitsofmeasure.org'
+        ];
 
-        $systolic   = [
-            'value'         => (int) $request->systolic,
-            'unit'          => 'mmHg',
-            'id_pasien'     => $id_user,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_systolic->code,
-                'display'   => $find_systolic->display,
-                'system'    => $find_systolic->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'           => $min_systolic,
-                'max'           => $max_systolic
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code_systole,
-                'display'   => $interpretation_display_systole,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
+        if($value_systolic < $min_systolic){
+            $interpretation_code_systole       = 'L';
+            $interpretation_display_systole    = "Low";
+        }elseif($value_systolic > $max_systolic){
+            $interpretation_code_systole       = 'H';
+            $interpretation_display_systole    = "High";
 
-        ];
-        $diastolic   = [
-            'value'         => (int) $request->diastolic,
-            'unit'          => 'mmHg',
-            'id_pasien'     => $id_user,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_diastolic->code,
-                'display'   => $find_diastolic->display,
-                'system'    => $find_diastolic->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'           => $min_diastolic,
-                'max'           => $max_diastolic
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code_diastolic,
-                'display'   => $interpretation_display_diastolic,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
-        ];
-        $HR         = [
-            'value'         => (int) $request->heart_rate,
-            'unit'          => "beats/minute",
-            'id_pasien'     => $id_user,
-            'id_petugas'    => Auth::id(),
-            'atm_sehat'     => [
-                'code_kit'  => Auth::user()['kit']['kit_code']
-            ],
-            'time'          => time(),
-            'coding'        => [
-                'code'      => $find_HR->code,
-                'display'   => $find_HR->display,
-                'system'    => $find_HR->system
-            ],
-            'category'      => $category,
-            'base_line'     => [
-                'min'           => $min_hr,
-                'max'           => $max_hr
-            ],
-            'interpretation'=> [
-                'code'      => $interpretation_code_hr,
-                'display'   => $interpretation_display_hr,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ]
-        ];
-        $observation        = new Observation();
-        $create_systolic    = $observation->create($systolic);
-        $create_diastolic   = $observation->create($diastolic);
-        $create_HR          = $observation->create($HR);
-        if($create_systolic && $create_diastolic && $create_HR){
-            return response()->json([
-                'status_code'   => 201,
-                'message'       => 'success',
-                'data'          => [
-                    'usia'          => $usia,
-                    'bloodpressure' => [
-                        'systolic'  => $systolic,
-                        'diastolic' => $diastolic,
-                        'heart_rate'=> $HR
-                    ]
-                ]
-            ], 201);
+        }else{
+            $interpretation_code_systole       = 'N';
+            $interpretation_display_systole    = "Normal";
         }
+        $interpretation_systole     = [
+            'code'      => $interpretation_code_systole,
+            'display'   => $interpretation_display_systole,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+
+        $save_systole = $this->save($value_systolic, $unit_bp, $id_pasien, $code_systolic, $category_code, $base_line_systole, $interpretation_systole);
+        $data_sytole = [
+            'status_code'   => $save_systole->original['status_code'],
+            'message'       => $save_systole->original['message'],
+            'data'          => $save_systole->original['data']
+        ];
+
+        $min_diastolic      = 60;
+        $max_diastolic      = 79;
+        $base_line_diastole  = [
+            'min'       => $min_diastolic,
+            'max'       => $max_diastolic
+        ];
+
+        if($value_diastolic < $min_diastolic){
+            $interpretation_code_diastolic       = 'L';
+            $interpretation_display_diastolic    = "Low";
+        }elseif($value_diastolic > $max_diastolic){
+            $interpretation_code_diastolic       = 'H';
+            $interpretation_display_diastolic    = "High";
+
+        }else{
+            $interpretation_code_diastolic       = 'N';
+            $interpretation_display_diastolic    = "Normal";
+        }
+        $interpretation_diastole     = [
+            'code'      => $interpretation_code_diastolic,
+            'display'   => $interpretation_display_diastolic,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save_diastole = $this->save($value_diastolic, $unit_bp, $id_pasien, $code_diastolic, $category_code, $base_line_diastole, $interpretation_diastole);
+        $data_diastole = [
+            'status_code'   => $save_diastole->original['status_code'],
+            'message'       => $save_diastole->original['message'],
+            'data'          => $save_diastole->original['data']
+        ];
+        $min_hr             = 80;
+        $max_hr             = 119;
+        $base_line_hr  = [
+            'min'       => $min_hr,
+            'max'       => $max_hr
+        ];
+        $unit_hr        = [
+            'code'      => 'bpm',
+            'display'   => 'beats/minute',
+            'system'    => 'http://unitsofmeasure.org'
+        ];
+        if($value_hr < $min_hr){
+            $interpretation_code_hr       = 'L';
+            $interpretation_display_hr    = "Low";
+        }elseif($value_hr > $max_hr){
+            $interpretation_code_hr       = 'H';
+            $interpretation_display_hr    = "High";
+
+        }else{
+            $interpretation_code_hr       = 'N';
+            $interpretation_display_hr    = "Normal";
+        }
+        $interpretation_hr     = [
+            'code'      => $interpretation_code_diastolic,
+            'display'   => $interpretation_display_diastolic,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save_hr = $this->save($value_hr, $unit_hr, $id_pasien, $code_HR, $category_code, $base_line_hr, $interpretation_hr);
+        $data_hr = [
+            'status_code'   => $save_hr->original['status_code'],
+            'message'       => $save_hr->original['message'],
+            'data'          => $save_hr->original['data']
+        ];
+        return response()->json([
+            'status_code'   => '',
+            'message'       => '',
+            'data'          => [
+                'data_systole'  => $data_sytole,
+                'data_diastole' => $data_diastole,
+                'data_hr'       => $data_hr
+            ]
+        ]);
+
     }
     public function hearth_rate(Request $request){
 

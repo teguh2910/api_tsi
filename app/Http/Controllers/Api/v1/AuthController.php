@@ -108,8 +108,7 @@ class AuthController extends Controller
                 ]
             ];
             return response()->json($data, $status_code);
-        }
-        if (!Auth::attempt($request->only('username', 'password')))
+        }elseif (!Auth::attempt($request->only('username', 'password')))
         {
             $data = [
                 "status_code"   => 401,
@@ -121,6 +120,14 @@ class AuthController extends Controller
         }else{
             $token_name = $id_atm_sehat_kit;
             $user       = User::where('username', $request['username'])->firstOrFail();
+            $kit        = Kit::where('code', $id_atm_sehat_kit)->first();
+            $force_login = $request->force_login;
+            if($force_login == true){
+
+            }
+
+
+
             $data_log_kit   = [
                 'kit_code'      => $id_atm_sehat_kit,
                 'nik_petugas'   => $user->nik,
