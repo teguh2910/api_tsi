@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CodeController;
+use App\Http\Controllers\Api\v1\ConsultantController;
 use App\Http\Controllers\Api\v1\ConsultationController;
 use App\Http\Controllers\Api\v1\CustomerController;
 use App\Http\Controllers\Api\v1\DiastoleController;
@@ -142,3 +143,6 @@ Route::get('v1/customers', [CustomerController::class,'index'])->middleware('aut
 Route::post('v1/customers', [CustomerController::class,'store'])->middleware('auth:sanctum');
 Route::put('v1/customers', [CustomerController::class,'update'])->middleware('auth:sanctum');
 Route::delete('v1/customers/{id}', [CustomerController::class,'destroy'])->middleware('auth:sanctum');
+
+Route::get('v1/consultants', [ConsultantController::class,'index'])->middleware('auth:sanctum');
+Route::post('v1/consultants', [ConsultantController::class,'store'])->middleware('auth:sanctum');

@@ -77,7 +77,7 @@ class ObservationController extends Controller
             $status_code    = 200;
             $message        = "success";
         }
-        $observation = ObservationResource::collection($query_observasi->orderBy($order_by, $sort)->get()) ;
+        $observation = ObservationResource::collection($query_observasi->orderBy($order_by, $sort)->paginate(2)) ;
         return response()->json([
             'status_code'   => $status_code,
             'message'       => $message,
@@ -219,8 +219,8 @@ class ObservationController extends Controller
             $interpretation_display_hr    = "Normal";
         }
         $interpretation_hr     = [
-            'code'      => $interpretation_code_diastolic,
-            'display'   => $interpretation_display_diastolic,
+            'code'      => $interpretation_code_hr,
+            'display'   => $interpretation_display_hr,
             'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
         ];
         $save_hr = $this->save($value_hr, $unit_hr, $id_pasien, $code_HR, $category_code, $base_line_hr, $interpretation_hr);
