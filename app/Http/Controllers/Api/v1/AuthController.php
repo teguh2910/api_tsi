@@ -96,7 +96,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'username'          => 'required',
             'password'          => 'required',
-            'id_atm_sehat_kit'  => 'required'
+            'id_atm_sehat_kit'  => 'required',
+            'force_login'       => 'required|boolean'
         ]);
         $id_atm_sehat_kit   = $request->id_atm_sehat_kit;
         if($validator->fails()){
@@ -122,17 +123,17 @@ class AuthController extends Controller
             $token_name     = $id_atm_sehat_kit;
             $user           = User::where('username', $request['username'])->firstOrFail();
             $kit            = Kit::where('code', $id_atm_sehat_kit)->first();
-            $force_login    = $request->forsce_login;
+            $force_login    = $request->force_login;
+            $cari_token     = PersonalAccessToken::where('tokenable_id', '!=',  $user->_id)->where('name', $token_name);
+            $data_token     = $cari_token->get();
+            $count_token    = $cari_token->count();
             if($force_login < 1 ){
-                $cari_token = PersonalAccessToken::where('tokenable_id', '!=',  $user->_id)->where('name', $token_name);
-                $data_token = $cari_token->get();
-                $count_token = $cari_token->count();
-                if($count_token >  0 ){
+                if($count_token > 0){
                     $status_code = 404;
                     $message        = "Kit ATM Sehat sudah digunakan oleh petugas lain";
                     $data           = [
                         'force_login'   => $force_login,
-                        'petugas'   => $count_token
+                        'petugas'       => $count_token
                     ];
                     return response()->json([
                         'status_code'   => $status_code,
@@ -141,6 +142,7 @@ class AuthController extends Controller
                     ], $status_code);
                 }
             }
+            $delete_login = $cari_token->delete();
             $data_log_kit   = [
                 'kit_code'      => $id_atm_sehat_kit,
                 'nik_petugas'   => $user->nik,
