@@ -19,6 +19,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -118,16 +119,28 @@ class AuthController extends Controller
             return response()->json($data, 401);
 
         }else{
-            $token_name = $id_atm_sehat_kit;
-            $user       = User::where('username', $request['username'])->firstOrFail();
-            $kit        = Kit::where('code', $id_atm_sehat_kit)->first();
-            $force_login = $request->force_login;
-            if($force_login == true){
-
+            $token_name     = $id_atm_sehat_kit;
+            $user           = User::where('username', $request['username'])->firstOrFail();
+            $kit            = Kit::where('code', $id_atm_sehat_kit)->first();
+            $force_login    = $request->forsce_login;
+            if($force_login < 1 ){
+                $cari_token = PersonalAccessToken::where('tokenable_id', '!=',  $user->_id)->where('name', $token_name);
+                $data_token = $cari_token->get();
+                $count_token = $cari_token->count();
+                if($count_token >  0 ){
+                    $status_code = 404;
+                    $message        = "Kit ATM Sehat sudah digunakan oleh petugas lain";
+                    $data           = [
+                        'force_login'   => $force_login,
+                        'petugas'   => $count_token
+                    ];
+                    return response()->json([
+                        'status_code'   => $status_code,
+                        '$message'      => $message,
+                        'data'          => $data
+                    ], $status_code);
+                }
             }
-
-
-
             $data_log_kit   = [
                 'kit_code'      => $id_atm_sehat_kit,
                 'nik_petugas'   => $user->nik,
