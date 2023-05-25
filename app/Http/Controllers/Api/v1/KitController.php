@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Kit;
 use App\Models\Log_user_kit;
 use App\Models\User;
+use GPBMetadata\Google\Api\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -269,7 +270,15 @@ class KitController extends Controller
                 "status_code"   => $status_code,
                 "message"       => "Success",
                 "data"          => [
-                    "kits"    => $kit
+                    "kits"      => $kit,
+                    "pasien"    => [
+                        'nama_depan'    => Auth()->user()['nama']['nama_depan'],
+                        'nama_belakang' => Auth()->user()['nama']['nama_belakang'],
+                        'nik'           => Auth()->user()['nik'],
+                        'email'         => Auth()->user()['kontak']['email'],
+                        'nomor_telepon' => Auth()->user()['kontak']['nomor_telepon'],
+                        'tgl_lahir'     => Auth()->user()['lahir']['tanggal']
+                    ]
                 ]
             ];
             return response()->json($data, $status_code);
