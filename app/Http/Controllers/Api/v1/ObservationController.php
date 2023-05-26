@@ -87,6 +87,7 @@ class ObservationController extends Controller
         ],$status_code);
 
     }
+
     public function count()
     {
         $observation    = Observation::where('id_petugas', Auth::id())->count() ;
@@ -240,8 +241,8 @@ class ObservationController extends Controller
         ]);
 
     }
-    public function hearth_rate(Request $request){
 
+    public function hearth_rate(Request $request){
         $validator      = Validator::make($request->all(), [
             'heart_rate'    => 'required|numeric|min:10|max:500',
             'id_pasien'     => 'required'
@@ -253,41 +254,9 @@ class ObservationController extends Controller
                 'data'          => [
                     "errors"    => $validator->errors()
                 ]
-
             ],422);
         }
-        $category_code      = (string) 'vital-signs';
-        $observation_code   = (string) '8867-4';
-        $id_pasien          = $request->id_pasien;
-        $value_periksa      = (float) $request->heart_rate;
-        $unit               = [
-            'code'      => 'bpm',
-            'display'   => 'beats/minute',
-            'system'    => 'http://unitsofmeasure.org'
-        ];
-        $value_min      = 80;
-        $value_max      = 119;
-        $base_line          = [
-            'min'       => $value_min,
-            'max'       => $value_max
-        ];
-        if($value_periksa < $value_min ){
-            $interpretation_code       = 'L';
-            $interpretation_display    = "Low";
-        }elseif($value_periksa > $value_max){
-            $interpretation_code       = 'H';
-            $interpretation_display    = "High";
-
-        }else{
-            $interpretation_code       = 'N';
-            $interpretation_display    = "Normal";
-        }
-        $interpretation     = [
-            'code'      => $interpretation_code,
-            'display'   => $interpretation_display,
-            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-        ];
-        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        $save = $this->nadi_private($request->heart_rate, $request->id_pasien);
         return response()->json($save->original, $save->original['status_code']);
     }
     public function temperature(Request $request)
@@ -668,6 +637,7 @@ class ObservationController extends Controller
             return response()->json($save->original, $save->original['status_code']);
         }
     }
+
     private function bmi($berat_badan, $tinggi_badan, $id_pasien){
         $value_periksa      = $berat_badan/(($tinggi_badan/100)*($tinggi_badan/100));
         $unit               = [
@@ -700,6 +670,112 @@ class ObservationController extends Controller
         ];
         $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
         return response()->json($save->original, $save->original['status_code']);
+    }
+    private function systolic_private($systole, $id_pasien){
+        $category_code      = (string) 'vital-signs';
+        $observation_code   = (string) '8480-6';
+        $min                = 90;
+        $max                = 129;
+        $base_line          = [
+            'min'       => $min,
+            'max'       => $max
+        ];
+        $unit   = [
+            'code'      => 'mmHg',
+            'display'   => 'mmHg',
+            'system'    => 'http://unitsofmeasure.org'
+        ];
+
+        if($systole < $min){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($systole > $max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
+
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
+        }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($systole, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+
+    }
+    private function diastolic_private($diastole, $id_pasien){
+        $category_code      = (string) 'vital-signs';
+        $observation_code   = (string) '8462-4';
+        $min                = 60;
+        $max                = 89;
+        $base_line          = [
+            'min'       => $min,
+            'max'       => $max
+        ];
+        $unit   = [
+            'code'      => 'mmHg',
+            'display'   => 'mmHg',
+            'system'    => 'http://unitsofmeasure.org'
+        ];
+
+        if($diastole < $min){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($diastole > $max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
+
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
+        }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($diastole, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+
+    }
+    private function nadi_private($hearth_rate, $id_pasien){
+        $category_code      = (string) 'vital-signs';
+        $observation_code   = (string) '8867-4';
+        $min                = 80;
+        $max                = 119;
+        $base_line          = [
+            'min'       => $min,
+            'max'       => $max
+        ];
+        $unit        = [
+            'code'      => 'bpm',
+            'display'   => 'beats/minute',
+            'system'    => 'http://unitsofmeasure.org'
+        ];
+
+
+        if($hearth_rate < $min){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($hearth_rate > $max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
+
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
+        }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($hearth_rate, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+
     }
     private function code($code){
         $code   = Code::where('code', $code)->first();
