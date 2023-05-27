@@ -24,8 +24,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $data->coding['display'] }}</td>
                                         <td>{{ $data->coding['code'] }}</td>
-                                        <td>{{ $data->value }}</td>
-                                        <td>{{ $data->unit }}</td>
+                                        <td>{{ round($data->value, 2) }}</td>
+                                        <td>{{ $data->unit['display'] }}</td>
                                         <td>{{ date('Y-m-d H:i:s', $data->time) }}</td>
                                         <td><a href="" class="btn btn-sm btn-info">Detail</a></td>
                                     </tr>

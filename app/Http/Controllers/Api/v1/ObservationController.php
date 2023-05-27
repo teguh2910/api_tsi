@@ -124,119 +124,35 @@ class ObservationController extends Controller
 
             ],422);
         }
-        $category_code  = (string) 'vital-signs';
-        $code_systolic  = (string) '8480-6';
-        $code_diastolic = (string) '8462-4';
-        $code_HR            = '8867-4';
-        $id_pasien          = $request->id_pasien;
-        $value_systolic     = $request->systolic;
-        $value_diastolic    = $request->diastolic;
-        $value_hr           = $request->heart_rate;
-        $min_systolic       = 90;
-        $max_systolic       = 129;
-        $base_line_systole  = [
-            'min'       => $min_systolic,
-            'max'       => $max_systolic
-        ];
-        $unit_bp   = [
-            'code'      => 'mmHg',
-            'display'   => 'mmHg',
-            'system'    => 'http://unitsofmeasure.org'
-        ];
 
-        if($value_systolic < $min_systolic){
-            $interpretation_code_systole       = 'L';
-            $interpretation_display_systole    = "Low";
-        }elseif($value_systolic > $max_systolic){
-            $interpretation_code_systole       = 'H';
-            $interpretation_display_systole    = "High";
-
-        }else{
-            $interpretation_code_systole       = 'N';
-            $interpretation_display_systole    = "Normal";
-        }
-        $interpretation_systole     = [
-            'code'      => $interpretation_code_systole,
-            'display'   => $interpretation_display_systole,
-            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-        ];
-
-        $save_systole = $this->save($value_systolic, $unit_bp, $id_pasien, $code_systolic, $category_code, $base_line_systole, $interpretation_systole);
+        $save_systole = $this->systolic_private($request->systolic, $request->id_pasien);
         $data_sytole = [
             'status_code'   => $save_systole->original['status_code'],
             'message'       => $save_systole->original['message'],
             'data'          => $save_systole->original['data']
         ];
 
-        $min_diastolic      = 60;
-        $max_diastolic      = 79;
-        $base_line_diastole  = [
-            'min'       => $min_diastolic,
-            'max'       => $max_diastolic
-        ];
 
-        if($value_diastolic < $min_diastolic){
-            $interpretation_code_diastolic       = 'L';
-            $interpretation_display_diastolic    = "Low";
-        }elseif($value_diastolic > $max_diastolic){
-            $interpretation_code_diastolic       = 'H';
-            $interpretation_display_diastolic    = "High";
-
-        }else{
-            $interpretation_code_diastolic       = 'N';
-            $interpretation_display_diastolic    = "Normal";
-        }
-        $interpretation_diastole     = [
-            'code'      => $interpretation_code_diastolic,
-            'display'   => $interpretation_display_diastolic,
-            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-        ];
-        $save_diastole = $this->save($value_diastolic, $unit_bp, $id_pasien, $code_diastolic, $category_code, $base_line_diastole, $interpretation_diastole);
+        $save_diastole = $this->diastolic_private($request->diastolic, $request->id_pasien);
         $data_diastole = [
             'status_code'   => $save_diastole->original['status_code'],
             'message'       => $save_diastole->original['message'],
             'data'          => $save_diastole->original['data']
         ];
-        $min_hr             = 80;
-        $max_hr             = 119;
-        $base_line_hr  = [
-            'min'       => $min_hr,
-            'max'       => $max_hr
-        ];
-        $unit_hr        = [
-            'code'      => 'bpm',
-            'display'   => 'beats/minute',
-            'system'    => 'http://unitsofmeasure.org'
-        ];
-        if($value_hr < $min_hr){
-            $interpretation_code_hr       = 'L';
-            $interpretation_display_hr    = "Low";
-        }elseif($value_hr > $max_hr){
-            $interpretation_code_hr       = 'H';
-            $interpretation_display_hr    = "High";
 
-        }else{
-            $interpretation_code_hr       = 'N';
-            $interpretation_display_hr    = "Normal";
-        }
-        $interpretation_hr     = [
-            'code'      => $interpretation_code_hr,
-            'display'   => $interpretation_display_hr,
-            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-        ];
-        $save_hr = $this->save($value_hr, $unit_hr, $id_pasien, $code_HR, $category_code, $base_line_hr, $interpretation_hr);
+        $save_hr = $this->nadi_private($request->heart_rate, $request->id_pasien);
         $data_hr = [
             'status_code'   => $save_hr->original['status_code'],
             'message'       => $save_hr->original['message'],
             'data'          => $save_hr->original['data']
         ];
         return response()->json([
-            'status_code'   => '',
-            'message'       => '',
+            'status_code'   => '200',
+            'message'       => 'success',
             'data'          => [
-                'data_systole'  => $data_sytole,
-                'data_diastole' => $data_diastole,
-                'data_hr'       => $data_hr
+                'data_systole'  => $data_sytole['data']['observation'],
+                'data_diastole' => $data_diastole['data']['observation'],
+                'data_hr'       => $data_hr['data']['observation']
             ]
         ]);
 
@@ -257,6 +173,40 @@ class ObservationController extends Controller
             ],422);
         }
         $save = $this->nadi_private($request->heart_rate, $request->id_pasien);
+        return response()->json($save->original, $save->original['status_code']);
+    }
+    public function systole(Request $request){
+        $validator      = Validator::make($request->all(), [
+            'systolic'    => 'required|numeric|min:10|max:300',
+            'id_pasien'     => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'gagal validasi',
+                'data'          => [
+                    "errors"    => $validator->errors()
+                ]
+            ],422);
+        }
+        $save = $this->systolic_private($request->systolic, $request->id_pasien);
+        return response()->json($save->original, $save->original['status_code']);
+    }
+    public function diastole(Request $request){
+        $validator      = Validator::make($request->all(), [
+            'diastolic'     => 'required|numeric|min:10|max:300',
+            'id_pasien'     => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'gagal validasi',
+                'data'          => [
+                    "errors"    => $validator->errors()
+                ]
+            ],422);
+        }
+        $save = $this->diastolic_private($request->diastolic, $request->id_pasien);
         return response()->json($save->original, $save->original['status_code']);
     }
     public function temperature(Request $request)
@@ -812,8 +762,9 @@ class ObservationController extends Controller
         if(empty($pasien)){
             $status_code    = 404;
             $message        = "User Not Found";
-            $data           = "";
-
+            $data           = [
+                'pasien'    => $pasien
+            ];
         }else{
             $data         = [
                 'value'         => $value,
@@ -836,7 +787,6 @@ class ObservationController extends Controller
                 $data           = [
                     'observation'   => $data
                 ];
-
             }else{
                 $status_code    = 400;
                 $message        = "Gagal menyimpan data";
@@ -849,7 +799,6 @@ class ObservationController extends Controller
                     'data'          => [
                         'observation'   => $data
                     ]
-
                 ]);
             }
             $response   = [
@@ -857,43 +806,48 @@ class ObservationController extends Controller
                 'message'       => $message,
                 'data'          => $data
             ];
-
-            ;
             return response($response);
         }
-
-
+    }
+    private function user($id){
+        $user = User::find($id);
+        $data_user  = [
+            "nama"      => $user->nama,
+            "ttl"       => $user->lahir,
+            "gender"    => $user->gender,
+            "nik"       => $user->nik,
+            "kontak"    => $user->kontak
+        ];
+        return response($data_user);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Observation  $observation
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Observation $observation)
+    public function show($id)
     {
-        //
+        $observation    = Observation::find($id);
+        $status_code    = 200;
+        $message        = "success";
+        $data           = [
+            "observation"   => [
+                'name'              => $observation->coding,
+                'category'          => $observation->category,
+                'value'             => $observation->value,
+                'unit'              => $observation->unit,
+                'time'              => $observation->time,
+                'base_line'         => $observation->base_line,
+                'interpretation'    => $observation->interpretation,
+                'patient'           => $this->user($observation->id_pasien)->original,
+                'observer'          => $this->user($observation->id_petugas)->original
+            ]
+        ];
+        $response       = [
+            'status_code'   => $status_code,
+            'message'       => $message,
+            'data'          => $data
+        ];
+        return response($response, $status_code);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Observation  $observation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Observation $observation)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\Observation\UpdateObservationRequest  $request
-     * @param  \App\Models\Observation  $observation
-     * @return \Illuminate\Http\Response
-     */
     public function update(UpdateObservationRequest $request, Observation $observation)
     {
         //
