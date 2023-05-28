@@ -20,4 +20,7 @@ class ObservationController extends Controller
         ];
         return view('admin.observation.vital-sign.index', $data);
     }
+    public function otp(Request $request){
+
+    }
 }

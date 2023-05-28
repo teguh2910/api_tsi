@@ -38,20 +38,45 @@ class UserController extends Controller
      */
     public function create()
     {
-        $marital_status = Marital_status::all();
-        $users      = new User();
-        $provinces  = Province::orderBy('nama')->get();
+        $token          = 'Authorization: Bearer 645706809498aea6a30091c2|QJESpLWRUr1CRQTwjvYQ4L3ZiuCvirpyLQccCh3d';
+        $url            = 'https://dev.atm-sehat.com/api/v1/maritalStatus';
+        $method         = 'GET';
+        $pernikahan     = json_decode($this->curl_get($token, $url, $method)->original);
+        $marital_status = $pernikahan->data->marital_status;
+        $url            = 'https://dev.atm-sehat.com/api/v1/religion';
+        $agama          = json_decode($this->curl_get($token, $url, $method)->original)->data->religion;
+        $url            = 'https://dev.atm-sehat.com/api/v1/wilayah/provinsi';
+        $provinces      = json_decode($this->curl_get($token, $url, $method)->original)->data->provinsi;
+        $users          = new User();
         $data = [
             "title"         => "Detail User",
             "class"         => "User",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
             "marital_status"=> $marital_status,
-            "users"     => $users,
-            "provinsi"  => $provinces
+            "agama"         => $agama,
+            "users"         => $users,
+            "provinsi"      => $provinces
         ];
         return view('admin.user.create', $data);
 
+    }
+    public function curl_get($token, $url, $method){
+        $curl   = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST =>  $method,
+            CURLOPT_HTTPHEADER => array($token),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return response($response);
     }
 
     /**

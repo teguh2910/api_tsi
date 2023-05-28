@@ -114,6 +114,7 @@
                                 @enderror
                             </td>
                         </tr>
+
                         <tr>
                             <th>Status Pernikahan</th>
                             <td>:</td>
@@ -130,13 +131,11 @@
                             <th>Agama</th>
                             <td>:</td>
                             <td>
-                                <select class="form-control form-control-sm" name="agama">
+                                <select class="form-control form-control-sm" name="status_menikah">
                                     <option value="">---pilih---</option>
-                                    <option value="Islam">Islam</option>
-                                    <option value="Kristen">Kristen</option>
-                                    <option value="Katolik">Katolik</option>
-                                    <option value="Hindu">Hindu</option>
-                                    <option value="Budha">Budha</option>
+                                    @foreach($agama as $data)
+                                        <option value="{{ $data->_id }}">{{ $data->name }}</option>
+                                    @endforeach
                                 </select>
                                 @error('agama')
                                 <small class="text-danger">{{$message}}</small>
@@ -144,13 +143,15 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Suku</th>
+                            <th>Provinsi</th>
                             <td>:</td>
                             <td>
-                                <input type="text" class="form-control form-control-sm" name="suku" value="{{ old('suku', $users->suku) }}">
-                                @error('suku')
-                                <small class="text-danger">{{$message}}</small>
-                                @enderror
+                                <select class="form-control form-control-sm" name="status_menikah">
+                                    <option value="">---pilih---</option>
+                                    @foreach($provinsi as $data)
+                                        <option value="{{ $data->code }}">{{ $data->nama }}</option>
+                                    @endforeach
+                                </select>
                             </td>
                         </tr>
                         <tr>
