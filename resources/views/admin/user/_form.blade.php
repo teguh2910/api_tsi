@@ -83,7 +83,6 @@
                                 <small class="text-danger">{{$message}}</small>
                                 @enderror
                             </td>
-
                         </tr>
                     </table>
                 </div>
@@ -174,17 +173,9 @@
                                 @enderror
                             </td>
                         </tr>
-
                     </table>
                 </div>
             </div>
         </div>
-
-
-
     </div>
-
-
-
-
 </div>
