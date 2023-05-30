@@ -394,7 +394,7 @@ class AuthController extends Controller
         }
 
         $user_demo          = User::where('kontak.email', $request->email)->first();
-        $user               = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
+
 
         $user['active']     = true;
         $user['aktifasi']   = "";
@@ -424,7 +424,7 @@ class AuthController extends Controller
         }
 
 
-
+        $user               = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
         if(!empty($user)){
             $time = time();
             if ($user->aktifasi['exp'] < $time){
@@ -575,55 +575,74 @@ class AuthController extends Controller
             'username'  => 'required',
             'password'  => 'required|confirmed'
         ]);
-        if ($validator->fails()){
+        if ($validator->fails()) {
             $data = [
-                "status_code"   => 422,
-                "message"       => "Validation failed",
-                "data"          => [
-                    'errors'    => $validator->errors(),
+                "status_code" => 422,
+                "message" => "Validation failed",
+                "data" => [
+                    'errors' => $validator->errors(),
                 ],
-                "time"          => time()
+                "time" => time()
             ];
-            return response()->json($data,422);
-        }
-        $user   = User::where([
-            'forgot_password.code'  => $request->otp,
-            'username'          => $request->username
-        ])->first();
-        $now    = time();
-        if( empty($user)){
-            $data = [
-                'status_code'   => 404,
-                'message'       => 'Not Found',
-            ];
-            return response()->json($data, 404);
-        }elseif ($user->forgot_password['exp'] > $now){
-            $user['password']           = bcrypt($request->password);
-            $user['forgot_password']    = "";
-            $update = $user->update();
-            if($update){
-                $data_email = [
-                    "content"     => $user
-                ];
-                dispatch(new UpdatePasswordNotificationJob($data_email));
-                $data = [
-                    'status_code'   => 205,
-                    'message'       => 'password updated',
-                ];
-                return response()->json($data, 205);
-            }
+            return response()->json($data, 422);
         }else{
-            $data = [
-                'status_code'   => 404,
-                'message'       => 'OTP expired',
-                'time'          => $now,
-                'data'          => [
-                    'otp'       => $user->forgot_password
-                ],
+            $now            = time();
+            $user_demo      = User::where('username', $request->username)->first();
+            if($user_demo == NULL){
+                $status_code    = 404;
+                $message        = "User Not Found";
+                $data           = [
+                    'user'      => $user_demo
+                ];
+                return response()->json([
+                    'status_code'   => $status_code,
+                    'message'       => $message,
+                    'data'          => $data
+                ], 205);
+            }else if($user_demo->forgot_password['code'] == 111111){
 
-            ];
-            return response()->json($data, 404);
+
+            }
+            $user   = User::where([
+                'forgot_password.code'  => $request->otp,
+                'username'          => $request->username
+            ])->first();
+
+            if( empty($user)){
+                $data = [
+                    'status_code'   => 404,
+                    'message'       => 'Not Found',
+                ];
+                return response()->json($data, 404);
+            }elseif ($user->forgot_password['exp'] > $now){
+                $user['password']           = bcrypt($request->password);
+                $user['forgot_password']    = "";
+                $update = $user->update();
+                if($update){
+                    $data_email = [
+                        "content"     => $user
+                    ];
+                    dispatch(new UpdatePasswordNotificationJob($data_email));
+                    $data = [
+                        'status_code'   => 205,
+                        'message'       => 'password updated',
+                    ];
+                    return response()->json($data, 205);
+                }
+            }else{
+                $data = [
+                    'status_code'   => 404,
+                    'message'       => 'OTP expired',
+                    'time'          => $now,
+                    'data'          => [
+                        'otp'       => $user->forgot_password
+                    ],
+
+                ];
+                return response()->json($data, 404);
+            }
         }
+
     }
 
 
