@@ -392,29 +392,72 @@ class AuthController extends Controller
                 'errorrs'       => $validator->errors()
             ]);
         }
+        $user_demo          = User::where('kontak.email', $request->email)->first();
+        $user               = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
+        $user['active']     = true;
+        $user['aktifasi']   = "";
+        if(empty($user_demo)){
+            $status_code    = 404;
+            $message        = "Email tidak terdaftar";
+            $data           = [];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
 
-        $user   = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
+        }elseif ($request->otp = 111111){
+            $user_demo['active']     = true;
+            $user_demo['aktifasi']   = "";
+            $update         = $user_demo->update();
+            $status_code    = 200;
+            $message        = "Aktifasi demo sukses";
+            $data           = [];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+
+        }
+
+
+
         if(!empty($user)){
             $time = time();
-            if($user->aktifasi['exp'] < $time){
+            if ($user->aktifasi['exp'] < $time){
                 return response()->json([
                     'status_code'   => '203',
                     'message'       => 'Kode aktifasi kadaluarsa'
                 ], 203);
+            }else{
+                $user['active']     = true;
+                $user['aktifasi']   = "";
+                $update = $user->update();
+                if($update){
+                    $data_email = [
+                        'content' => $user
+                    ];
+                    $sending_mail = dispatch(new ActivationUserNotificationJob($data_email));
+                    return response()->json([
+                        'status_code'   => '200',
+                        'message'       => 'Sukses',
+                        'data'          => [
+                            'activation'    => "success"
+                        ]
+                    ], 200);
+                }else{
+                    $status_code    = 400;
+                    $message        = "Gagal update";
+                    $data           = [];
+                    return response()->json([
+                        'status_code'   => $status_code,
+                        'message'       => $message,
+                        'data'          => $data
+                    ]);
+                }
+
             }
-            $user['active'] = true;
-            $user['aktifasi']="";
-            $update = $user->update();
-            if($update){
-                $data_email = [
-                  'content' => $user
-                ];
-                $sending_mail = dispatch(new ActivationUserNotificationJob($data_email));
-            }
-            return response()->json([
-                'status_code'   => '200',
-                'message'       => 'Sukses'
-            ], 200);
         }
         $data = [
             'status_code'   => 404,
