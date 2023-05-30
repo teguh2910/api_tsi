@@ -392,11 +392,13 @@ class AuthController extends Controller
                 'errorrs'       => $validator->errors()
             ]);
         }
+
         $user_demo          = User::where('kontak.email', $request->email)->first();
         $user               = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
+
         $user['active']     = true;
         $user['aktifasi']   = "";
-        if(empty($user_demo)){
+        if($user_demo = NULL){
             $status_code    = 404;
             $message        = "Email tidak terdaftar";
             $data           = [];
@@ -406,7 +408,7 @@ class AuthController extends Controller
                 'data'          => $data
             ], $status_code);
 
-        }elseif ($request->otp = 111111){
+        }elseif ($request->otp == 111111){
             $user_demo['active']     = true;
             $user_demo['aktifasi']   = "";
             $update         = $user_demo->update();
