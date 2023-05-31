@@ -200,6 +200,7 @@ class UserController extends Controller
             "message"       => "success",
             "data"          => [
                 'id'        => $user->_id,
+                'nik'       => $user->nik,
                 "nama"      => $user->nama,
                 'gender'    => $user->gender,
                 'gelar'     => $user->gelar,
