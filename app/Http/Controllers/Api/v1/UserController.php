@@ -199,7 +199,13 @@ class UserController extends Controller
             "status_code"   => $status_code,
             "message"       => "success",
             "data"          => [
-                "user"      => $user
+                'id'        => $user->_id,
+                "nama"      => $user->nama,
+                'gender'    => $user->gender,
+                'gelar'     => $user->gelar,
+                'lahir'     => $user->lahir,
+                'kontak'    => $user->kontak,
+                'active'    => $user->active
             ]
 
         ];
