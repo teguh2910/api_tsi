@@ -626,7 +626,7 @@ class AuthController extends Controller
                 'message'       => $message,
                 'data'          => $data
             ], $status_code);
-        }elseif($user_demo->forgot_password['code'] = 111111){
+        }elseif($request->otp == 111111){
             $update_password    = $this->reset_password($user_demo->_id, $request->password);
             $status_code        = 200;
             $message            = "Reset password akun demo berhasil";
