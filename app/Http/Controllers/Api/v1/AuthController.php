@@ -352,13 +352,17 @@ class AuthController extends Controller
             $status_code = 400;
             return response()->json([
                 'status_code'   => $status_code,
-                'message'       => 'Anda memiliki OTP yang masih aktif'
+                'message'       => 'Anda memiliki OTP yang masih aktif',
+                'data'          => [
+                    'waiting_time'  => $user['aktifasi']['exp']-$now,
+                    'unit_time'     => 'detik'
+                ]
             ], $status_code);
 
         }
         $user['aktifasi'] = [
             'otp'   => rand(100000,999999),
-            'exp'   => time()+(24*60*60)
+            'exp'   => time()+(5*60)
         ];
         $creating_code = $user->update();
         $data_email = [
@@ -383,22 +387,20 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email'     => 'required|email',
-            'otp'  => 'required|numeric'
+            'otp'       => 'required|numeric'
         ]);
+        $user_demo = User::where('kontak.email', $request->email)->first();
+        $now = time();
+
         if($validator->fails()){
             return response()->json([
                 'status_code'   => 203,
                 'message'       => 'Gagal validasi',
-                'errorrs'       => $validator->errors()
+                'data'          => [
+                    'errors'   => $validator->errors()
+                ]
             ]);
-        }
-
-        $user_demo          = User::where('kontak.email', $request->email)->first();
-
-
-        $user['active']     = true;
-        $user['aktifasi']   = "";
-        if($user_demo = NULL){
+        }elseif(empty($user_demo)){
             $status_code    = 404;
             $message        = "Email tidak terdaftar";
             $data           = [];
@@ -407,65 +409,72 @@ class AuthController extends Controller
                 'message'       => $message,
                 'data'          => $data
             ], $status_code);
-
-        }elseif ($request->otp == 111111){
-            $user_demo['active']     = true;
-            $user_demo['aktifasi']   = "";
-            $update         = $user_demo->update();
-            $status_code    = 200;
-            $message        = "Aktifasi demo sukses";
-            $data           = [];
+            }elseif($request->otp == 111111){
+                $aktifasi = $this->activate($user_demo->_id)->original;
+                $status_code    = 200;
+                $message        = "Aktifasi demo sukses";
+                $data           = [
+                    'aktifasi'  => $aktifasi
+                ];
+                return response()->json([
+                    'status_code'   => $status_code,
+                    'message'       => $message,
+                    'data'          => $data
+                ], $status_code);
+            }elseif($user_demo->active == true){
+            $status_code    = 400;
+            $message        = "Akun anda telah aktif";
+            $data           = [
+                'otp'  => $request->otp
+            ];
             return response()->json([
                 'status_code'   => $status_code,
                 'message'       => $message,
                 'data'          => $data
             ], $status_code);
 
+        }elseif($user_demo->aktifasi['otp'] != $request->otp ){
+            $status_code    = 400;
+            $message        = "OTP tidak sesuai";
+            $data           = [
+                'otp'  => $request->otp
+            ];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+
+        }elseif($user_demo->aktifasi['exp'] < $now){
+            $status_code    = 400;
+            $message        = "OTP expired";
+            $data           = [
+                'otp'  => $request->otp
+            ];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+
+        }else{
+            $this->activate($user_demo->_id);
+            $data_email = [
+                'content' => $user_demo
+            ];
+            $sending_mail = dispatch(new ActivationUserNotificationJob($data_email));
+            $status_code    = 200;
+            $message        = "Aktifasi sukses";
+            $data           = [
+                'otp'  => $request->otp
+            ];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
         }
 
-
-        $user               = User::where('aktifasi.otp', $request->otp)->where('kontak.email', $request->email)->first();
-        if(!empty($user)){
-            $time = time();
-            if ($user->aktifasi['exp'] < $time){
-                return response()->json([
-                    'status_code'   => '203',
-                    'message'       => 'Kode aktifasi kadaluarsa'
-                ], 203);
-            }else{
-                $user['active']     = true;
-                $user['aktifasi']   = "";
-                $update = $user->update();
-                if($update){
-                    $data_email = [
-                        'content' => $user
-                    ];
-                    $sending_mail = dispatch(new ActivationUserNotificationJob($data_email));
-                    return response()->json([
-                        'status_code'   => '200',
-                        'message'       => 'Sukses',
-                        'data'          => [
-                            'activation'    => "success"
-                        ]
-                    ], 200);
-                }else{
-                    $status_code    = 400;
-                    $message        = "Gagal update";
-                    $data           = [];
-                    return response()->json([
-                        'status_code'   => $status_code,
-                        'message'       => $message,
-                        'data'          => $data
-                    ]);
-                }
-
-            }
-        }
-        $data = [
-            'status_code'   => 404,
-            'message'       => "Data not Found"
-        ];
-        return response()->json($data, 404);
     }
 
     /**
@@ -488,21 +497,54 @@ class AuthController extends Controller
             ]);
         }
         $time   = time();
-
         $user_data   = User::where([
             'kontak.email'         => $request->email,
             'kontak.nomor_telepon' => $request->nomor_telepon
         ]);
 
         $user_count = $user_data->count();
+        $user   = $user_data->first();
         if($user_count < 1 ){
             return response()->json([
                 'status_code'   => 404,
-                'message'       => 'Data Not Found'
-            ]);
+                'message'       => 'User Not Found',
+                'data'          => [
+                    'user'      => $user_data->first()
+                ]
+            ], 404);
+        }elseif($user->forgot_password['exp'] > $time){
+            return response()->json([
+                'status_code'   => 400,
+                'message'       => 'Anda masih memiliki OTP yang aktif',
+                'data'          => [
+                    'waiting_time'  => $user->forgot_password['exp']-$time,
+                    'unit'          => 'second'
+                ]
+            ], 400);
+        }else{
+            $user['forgot_password'] = [
+                'code'          => rand('100000', 999999),
+                'created_at'    => time(),
+                'exp'           => time()+(5*60)
+            ];
+            $data = [
+                'status_code'   => 200,
+                'message'       => 'Permohonan reset password telah dikirim ke alamat email terdaftar',
+                'data'          => [
+                    'email'         => $request->email,
+                    'nomor_telepon' => $request->nomor_telepon
+                ]
+            ];
+            $update     = $user->update();
+            $data_email = [
+                "content"     => $user
+            ];
+            $sending_email = dispatch(new ForgetPasswordJob($data_email));
+            return response()->json($data, 200);
+
         }
 
-        $user   = $user_data->first();
+
 
         if(isset($user->forgot_password['exp'])){
             $exp_di_DB = $user->forgot_password['exp'];
@@ -523,21 +565,7 @@ class AuthController extends Controller
                 ];
                 return response()->json($data, 404);
             }else{
-                $user['forgot_password'] = [
-                    'code'          => rand('100000', 999999),
-                    'created_at'    => time(),
-                    'exp'           => time()+(5*60)
-                ];
-                $data = [
-                    'status_code'   => 200,
-                    'message'       => 'Permohonan reset password telah dikirim ke alamat email terdaftar'
-                ];
-                $update     = $user->update();
-                $data_email = [
-                    "content"     => $user
-                ];
-                $sending_email = dispatch(new ForgetPasswordJob($data_email));
-                return response()->json($data, 200);
+
             }
 
         }else{
@@ -575,6 +603,8 @@ class AuthController extends Controller
             'username'  => 'required',
             'password'  => 'required|confirmed'
         ]);
+        $now            = time();
+        $user_demo      = User::where('username', $request->username)->first();
         if ($validator->fails()) {
             $data = [
                 "status_code" => 422,
@@ -585,65 +615,116 @@ class AuthController extends Controller
                 "time" => time()
             ];
             return response()->json($data, 422);
+        }elseif(empty($user_demo)){
+            $status_code    = 404;
+            $message        = "User Not Found";
+            $data           = [
+                'user'      => $user_demo
+            ];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+        }elseif($user_demo->forgot_password['code'] == 111111){
+            $update_password    = $this->reset_password($user_demo->_id, $request->password);
+            $status_code        = 200;
+            $message            = "Reset password akun demo berhasil";
+            $data               = [
+                'username'          => $request->username,
+                'otp'               => $request->otp,
+                'update_password'   => $update_password->original
+            ];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+        }elseif($user_demo->forgot_password['code'] != $request->otp){
+            $status_code    = 400;
+            $message        = "OTP tidak sesuai";
+            $data           = [
+                'username'  => $request->username,
+                'otp'       => $request->otp
+            ];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+
+        }elseif($user_demo->forgot_password['exp'] < $now){
+            $status_code    = 400;
+            $message        = "OTP sudah tidak berlaku";
+            $data           = [
+                'username'  => $request->username,
+                'otp'       => $request->otp
+            ];
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+
         }else{
-            $now            = time();
-            $user_demo      = User::where('username', $request->username)->first();
-            if($user_demo == NULL){
-                $status_code    = 404;
-                $message        = "User Not Found";
-                $data           = [
-                    'user'      => $user_demo
+            $update_password    = $this->reset_password($user_demo->_id, $request->password);
+            $status_code        = 200;
+            $message            = "Reset password berhasil";
+            $data               = [
+                'username'          => $request->username,
+                'otp'               => $request->otp,
+                'update_password'   => $update_password->original
+            ];
+            if($update_password){
+                $data_email = [
+                    "content"     => $user_demo
                 ];
-                return response()->json([
-                    'status_code'   => $status_code,
-                    'message'       => $message,
-                    'data'          => $data
-                ], 205);
-            }else if($user_demo->forgot_password['code'] == 111111){
+                dispatch(new UpdatePasswordNotificationJob($data_email));
+                $data = [
+                    'status_code'   => 200,
+                    'message'       => 'password updated',
+                    'data '         => [
+                        'username'          => $request->username,
+                        'otp'               => $request->otp,
+                        'update_password'   => $update_password->original
+                    ]
+                ];
+                return response()->json($data, 200);
+            }
 
+
+            return response()->json([
+                'status_code'   => $status_code,
+                'message'       => $message,
+                'data'          => $data
+            ], $status_code);
+                $update = $user_demo->update();
 
             }
-            $user   = User::where([
-                'forgot_password.code'  => $request->otp,
-                'username'          => $request->username
-            ])->first();
-
-            if( empty($user)){
-                $data = [
-                    'status_code'   => 404,
-                    'message'       => 'Not Found',
-                ];
-                return response()->json($data, 404);
-            }elseif ($user->forgot_password['exp'] > $now){
-                $user['password']           = bcrypt($request->password);
-                $user['forgot_password']    = "";
-                $update = $user->update();
-                if($update){
-                    $data_email = [
-                        "content"     => $user
-                    ];
-                    dispatch(new UpdatePasswordNotificationJob($data_email));
-                    $data = [
-                        'status_code'   => 205,
-                        'message'       => 'password updated',
-                    ];
-                    return response()->json($data, 205);
-                }
-            }else{
-                $data = [
-                    'status_code'   => 404,
-                    'message'       => 'OTP expired',
-                    'time'          => $now,
-                    'data'          => [
-                        'otp'       => $user->forgot_password
-                    ],
-
-                ];
-                return response()->json($data, 404);
-            }
-        }
-
     }
+    private function reset_password($id_user, $password){
+        $user               = User::find($id_user);
+        $user['active']     = true;
+        $user['password']   = bcrypt($password);
+        $user['forgot_password']   = [
+            'created_at'    => '',
+            'code'          => '',
+            'exp'           => ''
+        ];
+        $forgot_password    = $user->update();
+        return response($forgot_password);
+    }
+    private function activate($id_user){
+        $user               = User::find($id_user);
+        $user['active']     = true;
+        $user['aktifasi']   = [
+            'otp'           => '',
+            'exp'           => ''
+        ];
+        $aktifasi           = $user->update();
+        return response($aktifasi);
+    }
+
 
 
     public function update_user(Request $request)
