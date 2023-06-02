@@ -25,7 +25,7 @@ class ProfileController extends Controller
             'nik'           => Auth::user()['nik'],
             'email'         => Auth::user()['kontak']['email'],
             'nomor_telepon' => Auth::user()['kontak']['nomor_telepon'],
-            'status_pernikahan' => Auth::user()['status_pernikahan']['display'],
+            'status_pernikahan' => Auth::user()['status_menikah']['display'],
             'kit'               => Auth::user()['kit'],
             'alamat'        => [
                 'provinsi'  => [
