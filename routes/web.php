@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\v1\CustomerController;
 use App\Http\Controllers\web\CodeController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
+use App\Http\Controllers\Web\KitController;
 use App\Http\Controllers\web\MaritalStatusController;
 use App\Http\Controllers\web\ObservationController;
 use App\Http\Controllers\Web\ReligionController;
@@ -75,4 +76,7 @@ Route::get('observation', [ObservationController::class, 'index'])->name('observ
 
 Route::get('code', [CodeController::class, 'index'])->name('code.index');
 Route::get('code/vital-sign', [CodeController::class, 'vital-sign'])->name('code.vital-sign');
+
+Route::get('kits', [KitController::class, 'index'])->name('kits.index');
+Route::post('kits', [KitController::class, 'store'])->name('kits.store');
 

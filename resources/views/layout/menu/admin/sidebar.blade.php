@@ -37,20 +37,13 @@
                 <li class="nav-item">
                     <a href="https://rspon.net/ppni/simk/dashboard/" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>
-                            Dashboard
-
-                        </p>
+                        <p>Dashboard</p>
                     </a>
-
                 </li>
                 <li class="nav-item">
                     <a href="https://rspon.net/ppni/simk/user/" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            My Profile
-                            <span class="right badge badge-danger">New</span>
-                        </p>
+                        <p>My Profile<span class="right badge badge-danger">New</span></p>
                     </a>
                 </li>
                 <li class="nav-item">
