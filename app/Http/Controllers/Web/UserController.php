@@ -172,7 +172,6 @@ class UserController extends Controller
         $url            = 'https://dev.atm-sehat.com/api/v1/profile/identitas';
         $method         = 'PUT';
         $update_user    = $this->curl_put($token,$url,$method,$json_user);
-        echo $update_user;
     }
     public function blokir(Request $request, $id)
     {

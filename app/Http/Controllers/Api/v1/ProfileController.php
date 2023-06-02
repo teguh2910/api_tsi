@@ -160,7 +160,7 @@ class ProfileController extends Controller
     }
     public function update_identitas(Request $request)
     {
-        $user = Auth::user();
+        $user           = Auth::user();
         $validator      = Validator::make($request->all(), [
             'nik'       => 'required|numeric'
         ]);
@@ -174,6 +174,7 @@ class ProfileController extends Controller
             ],422);
         }
         $update_profile = $user->update($request->all());
+
     }
 
     public function resume(){
