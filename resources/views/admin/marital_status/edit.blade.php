@@ -9,7 +9,7 @@
                             @include('layout.menu.admin.submenu.master')
                         </div>
                         <div class="row mt-2 justify-content-center">
-                            <div class="col-lg-6">
+                            <div class="col-lg-8">
                                 <div class="card">
                                     <div class="card-header bg-dark"><b>Create Master {{ $title }}</b></div>
                                     <form action="{{ route('marital_status.update', ['id'=>$marital_status->id ]) }}" method="post">

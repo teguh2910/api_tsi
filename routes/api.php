@@ -49,6 +49,8 @@ Route::put('/v1/auth/resetpassword',[AuthController::class,'update_password']);
 Route::get('/v1/profile', [ProfileController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/v1/profile/username', [ProfileController::class, 'update_username'])->middleware('auth:sanctum');
 Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->middleware('auth:sanctum');
+Route::put('/v1/profile/identitas', [ProfileController::class, 'update_identitas'])->middleware('auth:sanctum');
+
 
 Route::get('/v1/over-view/resume', [ProfileController::class, 'resume'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');

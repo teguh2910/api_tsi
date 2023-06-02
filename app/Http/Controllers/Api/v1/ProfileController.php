@@ -158,9 +158,22 @@ class ProfileController extends Controller
             ]
         ],401);
     }
-    public function update(Request $request)
+    public function update_identitas(Request $request)
     {
-        //
+        $user = Auth::user();
+        $validator      = Validator::make($request->all(), [
+            'nik'       => 'required|numeric'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'gagal validasi',
+                'data'          => [
+                    'errors' => $validator->errors()
+                ]
+            ],422);
+        }
+        $update_profile = $user->update($request->all());
     }
     public function edit($id)
     {

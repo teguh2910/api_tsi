@@ -9,7 +9,7 @@
                             @include('layout.menu.admin.submenu.master')
                         </div>
                         <div class="row my-2 mx-2 justify-content-center">
-                            <div class="col-lg-6">
+                            <div class="col-lg-8">
                                 <div class="card">
                                     <div class="card-header bg-black"><b>Show Master {{ $title }}</b></div>
                                     <div class="card-body">
