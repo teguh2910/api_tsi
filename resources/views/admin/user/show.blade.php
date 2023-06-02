@@ -46,12 +46,20 @@
                                                 <tr>
                                                     <th>Status</th>
                                                     <td>:</td>
-                                                    <td>{{ $users['status_menikah']['display'] }}</td>
+                                                    <td>
+                                                        @if(isset($users['status_menikah']))
+                                                            {{ $users['status_menikah']['display'] }}
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Agama</th>
                                                     <td>:</td>
-                                                    <td>{{ $users['agama']['name'] }}</td>
+                                                    <td>
+                                                        @if(isset($users['agama']))
+                                                            {{ $users['agama']['name'] }}
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Suku</th>
