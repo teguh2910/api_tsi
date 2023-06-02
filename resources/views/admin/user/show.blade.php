@@ -46,12 +46,12 @@
                                                 <tr>
                                                     <th>Status</th>
                                                     <td>:</td>
-                                                    <td>{{ $users['status_menikah'] }}</td>
+                                                    <td>{{ $users['status_menikah']['display'] }}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Agama</th>
                                                     <td>:</td>
-                                                    <td>{{ $users['agama'] }}</td>
+                                                    <td>{{ $users['agama']['name'] }}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Suku</th>
