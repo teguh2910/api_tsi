@@ -25,7 +25,7 @@ class ProfileController extends Controller
             'nik'           => Auth::user()['nik'],
             'email'         => Auth::user()['kontak']['email'],
             'nomor_telepon' => Auth::user()['kontak']['nomor_telepon'],
-            'status_pernikahan' => Auth::user()['status_pernikahan'],
+            'status_pernikahan' => Auth::user()['status_pernikahan']['display'],
             'kit'               => Auth::user()['kit'],
             'alamat'        => [
                 'provinsi'  => [
@@ -175,10 +175,7 @@ class ProfileController extends Controller
         }
         $update_profile = $user->update($request->all());
     }
-    public function edit($id)
-    {
-        //
-    }
+
     public function resume(){
         $tanggal_lahir = Auth::user()['lahir']['tanggal'];
         $birthDate = new \DateTime($tanggal_lahir);
