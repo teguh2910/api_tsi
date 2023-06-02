@@ -35,7 +35,7 @@ class KitController extends Controller
         ];
         $data_json  = json_encode($data_input);
         $token          = 'Authorization: Bearer 645706809498aea6a30091c2|QJESpLWRUr1CRQTwjvYQ4L3ZiuCvirpyLQccCh3d';
-        $url            = 'https://dev.atm-sehat.com/api/v1/maritalStatus';
+        $url            = 'https://dev.atm-sehat.com/api/v1/kits';
         $method         = 'POST';
         $create         = json_decode($this->curl($token, $url, $method, $data_json)->original);
 
