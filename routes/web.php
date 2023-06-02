@@ -78,5 +78,6 @@ Route::get('code', [CodeController::class, 'index'])->name('code.index');
 Route::get('code/vital-sign', [CodeController::class, 'vital-sign'])->name('code.vital-sign');
 
 Route::get('kits', [KitController::class, 'index'])->name('kits.index');
+Route::get('kit', [KitController::class, 'create'])->name('kits.create');
 Route::post('kits', [KitController::class, 'store'])->name('kits.store');
 

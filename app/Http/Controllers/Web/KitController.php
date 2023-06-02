@@ -14,16 +14,27 @@ class KitController extends Controller
 {
     public function index(){
         $kit = Kit::all();
-        $customer = Customer::all();
         $data = [
             "title"     => "Kits List",
             "class"     => "Kit",
             "sub_class" => "Get All",
             "content"   => "layout.admin",
-            "kits"      => $kit,
-            "customer"  => $customer
+            "kits"      => $kit
         ];
         return view('admin.kits.index', $data);
+    }
+    public function create(){
+        $customer = Customer::all();
+        $kits       = new Kit();
+        $data = [
+            "title"     => "Kits List",
+            "class"     => "Kit",
+            "sub_class" => "Get All",
+            "content"   => "layout.admin",
+            "customer"  => $customer,
+            "kits"      => $kits
+        ];
+        return view('admin.kits.create', $data);
     }
     public function store(StoreKitRequest $request){
         $input      = $request->validated();
