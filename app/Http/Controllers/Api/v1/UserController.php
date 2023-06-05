@@ -135,15 +135,7 @@ class UserController extends Controller
         ]);
         $nik    = $request->nik;
         $user   = User::where('nik', (int)$nik)->first();
-        $user_publish = [
-            'id'            => $user->id,
-            'nama_depan'    => $user->nama['nama_depan'],
-            'nama_belakang' => $user->nama['nama_belakang'],
-            'tanggal_lahir' => $user->lahir['tanggal'],
-            'tempat_lahir'  => $user->lahir['tempat'],
-            'email'         => $user->kontak['email'],
-            'nomor_telepon' => $user->kontak['nomor_telepon'],
-        ];
+
         if ($validator->fails()) {
             $data = [
                 "status_code"   => 422,
@@ -161,6 +153,15 @@ class UserController extends Controller
             ];
             return response()->json($data, 404);
         }
+        $user_publish = [
+            'id'            => $user->id,
+            'nama_depan'    => $user->nama['nama_depan'],
+            'nama_belakang' => $user->nama['nama_belakang'],
+            'tanggal_lahir' => $user->lahir['tanggal'],
+            'tempat_lahir'  => $user->lahir['tempat'],
+            'email'         => $user->kontak['email'],
+            'nomor_telepon' => $user->kontak['nomor_telepon'],
+        ];
         $data = [
             "status_code"   => 200,
             "message"       => "Success",
