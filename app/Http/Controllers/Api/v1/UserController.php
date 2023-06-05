@@ -139,7 +139,6 @@ class UserController extends Controller
             'id'            => $user->id,
             'nama_depan'    => $user->nama['nama_depan'],
             'nama_belakang' => $user->nama['nama_belakang'],
-            'nama_lengkap' => $user->nama['nama_lengkap'],
             'tanggal_lahir' => $user->lahir['tanggal'],
             'tempat_lahir'  => $user->lahir['tempat'],
             'email'         => $user->kontak['email'],
