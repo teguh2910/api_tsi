@@ -251,8 +251,8 @@ class AuthController extends Controller
             'nama_depan'        => 'required',
             'nama_belakang'     => 'required',
             'gender'            => 'required',
-            'nik'               => 'required|integer|unique:users,nik',
-            'email'             => 'required|email:rfc,dns|unique:users,kontak.email',
+            'nik'               => 'integer|unique:users,nik',
+            'email'             => 'email:rfc,dns|unique:users,kontak.email',
             'nomor_telepon'     => 'required|unique:users,kontak.nomor_telepon',
             'tempat_lahir'      => 'required',
             'tanggal_lahir'     => 'required|date'
@@ -299,9 +299,11 @@ class AuthController extends Controller
         $data_email = [
             'content'=> $input
         ];
+        if(!empty($request->email)){
+            $sending_mail = dispatch(new RegistrationNotificationJob($data_email));
+            $time_end   = microtime(true);
+        }
 
-        $sending_mail = dispatch(new RegistrationNotificationJob($data_email));
-        $time_end   = microtime(true);
 
         if($add){
             $data           = [

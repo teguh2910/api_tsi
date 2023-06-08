@@ -46,6 +46,25 @@ class ConsultantController extends Controller
             'data'          => $data
         ],$status_code);
     }
+    public function sms(){
+        $token  = "b115db523542ddc9d9ccd345de753204";
+        $to     = "081906011985";
+        $msg    = "Hari ini apih sedang liburan ke semarang";
+        $url    = "http://websms.co.id/api/smsgateway?token=$token&to=$to&msg=urlencode($msg)";
+
+        $header = array(
+            'Accept: application/json',
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+
+        echo $result;
+    }
 
 }
 

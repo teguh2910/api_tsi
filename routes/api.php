@@ -150,3 +150,5 @@ Route::delete('v1/customers/{id}', [CustomerController::class,'destroy'])->middl
 
 Route::get('v1/consultants', [ConsultantController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/consultants', [ConsultantController::class,'store'])->middleware('auth:sanctum');
+
+Route::post('v1/sms', [ConsultantController::class,'sms']);
