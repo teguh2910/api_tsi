@@ -269,6 +269,11 @@ class AuthController extends Controller
             ];
             return response()->json($data, $status_code);
         }
+        if(empty($request->email)){
+            $username = $request->nomor_telepon;
+        }else{
+            $username = $request->email;
+        }
         $input = [
             'nama'      => [
                 'nama_depan'    => $request->nama_depan,
@@ -284,7 +289,7 @@ class AuthController extends Controller
                 'email'         => $request->email,
                 'nomor_telepon' => $request->nomor_telepon
             ],
-            'username'  => $request->email,
+            'username'  => $username,
             'password'  => bcrypt($request->password),
             'aktifasi'  => [
                 'otp'   => rand(100000,999999),
