@@ -176,7 +176,6 @@ class ProfileController extends Controller
         $update_profile = $user->update($request->all());
 
     }
-
     public function resume(){
         $tanggal_lahir = Auth::user()['lahir']['tanggal'];
         $birthDate = new \DateTime($tanggal_lahir);
@@ -338,6 +337,17 @@ class ProfileController extends Controller
             'message'       => 'success',
             'data'          => [
                 'glucose'   => $observation->original
+            ]
+        ],200);
+    }
+    public function observation(Request $request){
+        $paginate       = $request->header('paginate');
+        $observation    = Observation::where('id_pasien', Auth::id())->paginate($paginate);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'observations'   => $observation
             ]
         ],200);
     }

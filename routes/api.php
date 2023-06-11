@@ -52,6 +52,7 @@ Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->m
 Route::put('/v1/profile/identitas', [ProfileController::class, 'update_identitas'])->middleware('auth:sanctum');
 
 
+Route::get('/v1/over-view/observations', [ProfileController::class, 'observation'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/resume', [ProfileController::class, 'resume'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/diastole', [ProfileController::class, 'diastole'])->middleware('auth:sanctum');
