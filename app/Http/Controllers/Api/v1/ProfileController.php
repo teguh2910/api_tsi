@@ -330,7 +330,7 @@ class ProfileController extends Controller
     }
     public function glucose(Request $request){
         $limit              = $request->limit;
-        $observation_code   = "2093-3";
+        $observation_code   = "2345-7";
         $observation        = $this->myObservation($observation_code, $limit);
         return response()->json([
             'status_code'   => 200,
