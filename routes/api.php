@@ -61,6 +61,7 @@ Route::get('/v1/over-view/temperature', [ProfileController::class, 'temperature'
 Route::get('/v1/over-view/spo2', [ProfileController::class, 'spo2'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/weight', [ProfileController::class, 'weight'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/height', [ProfileController::class, 'height'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/bmi', [ProfileController::class, 'bmi'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/cholesterol', [ProfileController::class, 'cholesterol'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/uric-acid', [ProfileController::class, 'uric_acid'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/glucose', [ProfileController::class, 'glucose'])->middleware('auth:sanctum');

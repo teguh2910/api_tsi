@@ -304,6 +304,18 @@ class ProfileController extends Controller
             ]
         ],200);
     }
+    public function bmi(Request $request){
+        $limit          = $request->limit;
+        $code_bmi       = "39156-5";
+        $height         = $this->myObservation($code_bmi, $limit);
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'bmi'   => $height->original
+            ]
+        ],200);
+    }
     public function cholesterol(Request $request){
         $limit          = $request->limit;
         $code_chole     = "2093-3";
