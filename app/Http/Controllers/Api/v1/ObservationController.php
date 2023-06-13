@@ -302,7 +302,7 @@ class ObservationController extends Controller
         $base_line_db_median = BaseLine::where([
             'variabel'          => 'Male',
             'variabel_1'        => 'Usia',
-            'nilai_variabel_1'  => "$usia",
+            'nilai_variabel_1'  => (string)$usia,
             'variabel_2'        => $variabel_baseline,
             'label'             => "0"
         ])->first();
@@ -310,7 +310,7 @@ class ObservationController extends Controller
         $base_line_db_sd_1 = BaseLine::where([
             'variabel'          => 'Male',
             'variabel_1'        => 'Usia',
-            'nilai_variabel_1'  => "$usia",
+            'nilai_variabel_1'  => (string)$usia,
             'variabel_2'        => $variabel_baseline,
             'label'             => "1"
         ])->first();
