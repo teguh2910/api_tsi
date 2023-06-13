@@ -268,21 +268,6 @@ class ObservationController extends Controller
             'weight'    => 'required|numeric|min:1|max:300',
             'id_pasien' => 'required'
         ]);
-        $variabel_baseline = "Berat Badan";
-        $base_line_db_median = BaseLine::where([
-            'variabel'          => 'Male',
-            'variabel_1'        => 'Usia',
-            'nilai_variabel_1'  => "5",
-            'variabel_2'        => $variabel_baseline,
-            'label'             => "0"
-        ])->first();
-        $base_line_db_sd_1 = BaseLine::where([
-            'variabel'          => 'Male',
-            'variabel_1'        => 'Usia',
-            'nilai_variabel_1'  => "5",
-            'variabel_2'        => $variabel_baseline,
-            'label'             => "1"
-        ])->first();
 
         if($validation->fails())
         {
@@ -295,11 +280,47 @@ class ObservationController extends Controller
         $category_code      = 'vital-signs';
         $observation_code   = "29463-7";
         $id_pasien          = $request->id_pasien;
+        $pasien             = User::find($id_pasien);
+        $tanggal_lahir      = $pasien->lahir['tanggal'];
+        $birthDate          = new \DateTime($tanggal_lahir);
+        $today              = new \DateTime("today");
+        $y                  = $today->diff($birthDate)->y;
+        $m                  = $today->diff($birthDate)->m;
+        $d                  = $today->diff($birthDate)->d;
+        $usia               = [
+            'tahun'         => $y,
+            'bulan'         => $m,
+            'hari'          => $d
+        ];
+        if($y<1){
+            $usia = $m;
+        }else{
+            $usia = $y*12;
+        }
+
+        $variabel_baseline = "Berat Badan";
+        $base_line_db_median = BaseLine::where([
+            'variabel'          => 'Male',
+            'variabel_1'        => 'Usia',
+            'nilai_variabel_1'  => "$usia",
+            'variabel_2'        => $variabel_baseline,
+            'label'             => "0"
+        ])->first();
+
+        $base_line_db_sd_1 = BaseLine::where([
+            'variabel'          => 'Male',
+            'variabel_1'        => 'Usia',
+            'nilai_variabel_1'  => "$usia",
+            'variabel_2'        => $variabel_baseline,
+            'label'             => "1"
+        ])->first();
         $value_periksa      = (float) $request->weight;
         $base_line          = [
             'median'    => $base_line_db_median->nilai_variabel_2,
-            'max'       => $base_line_db_sd_1->nilai_variabel_2
+            'sd_1'      => $base_line_db_sd_1->nilai_variabel_2
         ];
+        return response($base_line);
+
         $unit           = [
             'code'      => 'Kg',
             'display'   => 'Kg',
@@ -882,5 +903,9 @@ class ObservationController extends Controller
     public function destroy(Observation $observation)
     {
         //
+    }
+
+    private function string($usia)
+    {
     }
 }
