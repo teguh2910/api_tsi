@@ -317,7 +317,8 @@ class ObservationController extends Controller
         $value_periksa      = (float) $request->weight;
         $base_line          = [
             'median'    => $base_line_db_median->nilai_variabel_2,
-            'sd_1'      => $base_line_db_sd_1->nilai_variabel_2
+            'sd_1'      => $base_line_db_sd_1->nilai_variabel_2,
+
         ];
         return response($base_line);
 
