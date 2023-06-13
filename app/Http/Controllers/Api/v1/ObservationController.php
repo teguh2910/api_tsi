@@ -295,39 +295,92 @@ class ObservationController extends Controller
         if($y<1){
             $usia = $m;
         }else{
-            $usia = $y*12;
+            $usia = ($y*12)+$m;
         }
-
-        $variabel_baseline = "Berat Badan";
-        $base_line_db_median = BaseLine::where([
-            'variabel'          => 'Male',
-            'variabel_1'        => 'Usia',
-            'nilai_variabel_1'  => (string)$usia,
-            'variabel_2'        => $variabel_baseline,
-            'label'             => "0"
-        ])->first();
-
-        $base_line_db_sd_1 = BaseLine::where([
-            'variabel'          => 'Male',
-            'variabel_1'        => 'Usia',
-            'nilai_variabel_1'  => (string)$usia,
-            'variabel_2'        => $variabel_baseline,
-            'label'             => "1"
-        ])->first();
+        $variabel           = 'Male';
+        $variabel_1         = "Usia";
+        $nilai_variabel_1   = (string)$usia;
+        $variabel_2         = "Berat Badan";
+        $label_median       = "0";
+        $median             = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
+        $sd_1               = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
+        $sd_2               = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
+        $sd_3               = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
+        $sd_1_min           = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
+        $sd_2_min           = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
+        $sd_3_min           = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
         $value_periksa      = (float) $request->weight;
         $base_line          = [
-            'median'    => $base_line_db_median->nilai_variabel_2,
-            'sd_1'      => $base_line_db_sd_1->nilai_variabel_2,
+            '-3SD'      => $sd_3_min->nilai_variabel_2,
+            '-2SD'      => $sd_2_min->nilai_variabel_2,
+            '-1SD'      => $sd_1_min->nilai_variabel_2,
+            'median'    => $median->nilai_variabel_2,
+            '+1SD'      => $sd_1->nilai_variabel_2,
+            '+2SD'      => $sd_2->nilai_variabel_2,
+            '+3SD'      => $sd_3->nilai_variabel_2,
 
         ];
-        return response($base_line);
+        if($value_periksa < $sd_3_min->nilai_variabel_2){
+            $interpretation     = [
+                'code'      => "<-3SD",
+                'display'   => "Berat badan sangat kurang",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+        }else if($value_periksa < $sd_2_min->nilai_variabel_2){
+            $interpretation     = [
+                'code'      => "<-2SD",
+                'display'   => "Berat badan kurang",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+
+        }else if($value_periksa < $sd_1_min->nilai_variabel_2){
+            $interpretation     = [
+                'code'      => "<-1SD",
+                'display'   => "Berat badan normal",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+
+        }else if($value_periksa < $median->nilai_variabel_2){
+            $interpretation     = [
+                'code'      => "< Median",
+                'display'   => "Berat badan normal",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+
+        }else if($value_periksa < $sd_1->nilai_variabel_2){
+            $interpretation     = [
+                'code'      => "<+1SD",
+                'display'   => "Berat badan normal",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+
+        }else if($value_periksa < $sd_2->nilai_variabel_2){
+            $interpretation     = [
+                'code'      => "<+2SD",
+                'display'   => "Risiko Berat badan lebih",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+
+        }else if($value_periksa < $sd_3->nilai_variabel_2){
+            $interpretation     = [
+                'code'      => "<+3SD",
+                'display'   => "Risiko Berat badan lebih",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+        }else{
+            $interpretation     = [
+                'code'      => "+3SD",
+                'display'   => "Risiko Berat badan lebih",
+                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+            ];
+        }
 
         $unit           = [
             'code'      => 'Kg',
             'display'   => 'Kg',
             'system'    => 'http://unitsofmeasure.org'
         ];
-        $interpretation     = NULL;
+
         $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
         return response()->json($save->original, $save->original['status_code']);
     }
@@ -628,6 +681,17 @@ class ObservationController extends Controller
             $save = $this->save($value_periksa, $unit, $id_pasien, $code_glucose, $category_code, $base_line, $interpretation);
             return response()->json($save->original, $save->original['status_code']);
         }
+    }
+
+    private function base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2="", $label){
+        $base_line = BaseLine::where([
+            'variabel'          => $variabel,
+            'variabel_1'        => $variabel_1,
+            'nilai_variabel_1'  => $nilai_variabel_1,
+            'variabel_2'        => $variabel_2,
+            'label'             => $label
+        ])->first();
+        return response($base_line);
     }
 
     private function bmi($berat_badan, $tinggi_badan, $id_pasien){
