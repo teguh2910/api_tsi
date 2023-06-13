@@ -16,16 +16,23 @@ class ProfileController extends Controller
 
     public function index()
     {
+        if(isset(Auth::user()['status_menikah'])){
+            $status_nikah = Auth::user()['status_menikah']['display'];
+        }else{
+            $status_nikah   = "";
+        }
+
         $data_user = [
             'id'            => Auth::id(),
             'nama_depan'    => Auth::user()['nama']['nama_depan'],
             'nama_belakang' => Auth::user()['nama']['nama_belakang'],
             'gender'        => Auth::user()['gender'],
+            'lahir'         => Auth::user()['lahir'],
             'username'      => Auth::user()['username'],
             'nik'           => Auth::user()['nik'],
             'email'         => Auth::user()['kontak']['email'],
             'nomor_telepon' => Auth::user()['kontak']['nomor_telepon'],
-            'status_pernikahan' => Auth::user()['status_menikah']['display'],
+            'status_pernikahan' => $status_nikah,
             'kit'               => Auth::user()['kit'],
             'alamat'        => [
                 'provinsi'  => [

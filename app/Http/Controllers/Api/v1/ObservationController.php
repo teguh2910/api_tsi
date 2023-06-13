@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Observation\UpdateObservationRequest;
 use App\Http\Resources\ObservationResource;
+use App\Models\BaseLine;
 use App\Models\Code;
 use App\Models\Kit;
 use App\Models\Observation;
@@ -267,6 +268,22 @@ class ObservationController extends Controller
             'weight'    => 'required|numeric|min:1|max:300',
             'id_pasien' => 'required'
         ]);
+        $variabel_baseline = "Berat Badan";
+        $base_line_db_median = BaseLine::where([
+            'variabel'          => 'Male',
+            'variabel_1'        => 'Usia',
+            'nilai_variabel_1'  => "5",
+            'variabel_2'        => $variabel_baseline,
+            'label'             => "0"
+        ])->first();
+        $base_line_db_sd_1 = BaseLine::where([
+            'variabel'          => 'Male',
+            'variabel_1'        => 'Usia',
+            'nilai_variabel_1'  => "5",
+            'variabel_2'        => $variabel_baseline,
+            'label'             => "1"
+        ])->first();
+
         if($validation->fails())
         {
             return response()->json([
@@ -277,9 +294,12 @@ class ObservationController extends Controller
         }
         $category_code      = 'vital-signs';
         $observation_code   = "29463-7";
-        $id_pasien      = $request->id_pasien;
-        $value_periksa  = (float) $request->weight;
-        $base_line      = NULL;
+        $id_pasien          = $request->id_pasien;
+        $value_periksa      = (float) $request->weight;
+        $base_line          = [
+            'median'    => $base_line_db_median->nilai_variabel_2,
+            'max'       => $base_line_db_sd_1->nilai_variabel_2
+        ];
         $unit           = [
             'code'      => 'Kg',
             'display'   => 'Kg',

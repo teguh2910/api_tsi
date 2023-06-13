@@ -10,7 +10,7 @@
             <a class="nav-link text-white" href="{{ route('code.index') }}">Code</a>
             <a class="nav-link text-white" href="{{ route('code.vital-sign') }}">Vital Sign</a>
             <a class="nav-link text-white" href="{{ route('kits.index') }}">ATM Kits</a>
-            <a class="nav-link text-white" href="#">Profesi</a>
+            <a class="nav-link text-white" href="{{ route('baseLine.index') }}">Base Line</a>
             <a class="nav-link text-white" href="{{ route('education') }}">Pendidikan</a>
         </div>
     </div>

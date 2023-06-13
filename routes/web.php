@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\CustomerController;
+use App\Http\Controllers\Web\BaseLineController;
 use App\Http\Controllers\web\CodeController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
@@ -81,3 +82,4 @@ Route::get('kits', [KitController::class, 'index'])->name('kits.index');
 Route::get('kit', [KitController::class, 'create'])->name('kits.create');
 Route::post('kits', [KitController::class, 'store'])->name('kits.store');
 
+Route::get('baseLine', [BaseLineController::class, 'index'])->name('baseLine.index');
