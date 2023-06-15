@@ -297,83 +297,90 @@ class ObservationController extends Controller
         }else{
             $usia = ($y*12)+$m;
         }
-        $variabel           = 'Male';
+        $variabel           = $pasien->gender;
         $variabel_1         = "Usia";
         $nilai_variabel_1   = (string)$usia;
         $variabel_2         = "Berat Badan";
         $label_median       = "0";
-        $median             = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
-        $sd_1               = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
-        $sd_2               = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
-        $sd_3               = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
-        $sd_1_min           = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
-        $sd_2_min           = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
-        $sd_3_min           = $this->base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
+        $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
+        $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
+        $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
+        $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
+        $sd_1_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
+        $sd_2_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
+        $sd_3_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
         $value_periksa      = (float) $request->weight;
-        $base_line          = [
-            '-3SD'      => $sd_3_min->nilai_variabel_2,
-            '-2SD'      => $sd_2_min->nilai_variabel_2,
-            '-1SD'      => $sd_1_min->nilai_variabel_2,
-            'median'    => $median->nilai_variabel_2,
-            '+1SD'      => $sd_1->nilai_variabel_2,
-            '+2SD'      => $sd_2->nilai_variabel_2,
-            '+3SD'      => $sd_3->nilai_variabel_2,
+        if($usia<=60){
+            $base_line          = [
+                '-3SD'      => $sd_3_min->nilai_variabel_2,
+                '-2SD'      => $sd_2_min->nilai_variabel_2,
+                '-1SD'      => $sd_1_min->nilai_variabel_2,
+                'median'    => $median->nilai_variabel_2,
+                '+1SD'      => $sd_1->nilai_variabel_2,
+                '+2SD'      => $sd_2->nilai_variabel_2,
+                '+3SD'      => $sd_3->nilai_variabel_2,
 
-        ];
-        if($value_periksa < $sd_3_min->nilai_variabel_2){
-            $interpretation     = [
-                'code'      => "<-3SD",
-                'display'   => "Berat badan sangat kurang",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
             ];
-        }else if($value_periksa < $sd_2_min->nilai_variabel_2){
-            $interpretation     = [
-                'code'      => "<-2SD",
-                'display'   => "Berat badan kurang",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-            ];
+            if($value_periksa < $sd_3_min->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<-3SD",
+                    'display'   => "Berat badan sangat kurang",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+            }else if($value_periksa < $sd_2_min->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<-2SD",
+                    'display'   => "Berat badan kurang",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
 
-        }else if($value_periksa < $sd_1_min->nilai_variabel_2){
-            $interpretation     = [
-                'code'      => "<-1SD",
-                'display'   => "Berat badan normal",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-            ];
+            }else if($value_periksa < $sd_1_min->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<-1SD",
+                    'display'   => "Berat badan normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
 
-        }else if($value_periksa < $median->nilai_variabel_2){
-            $interpretation     = [
-                'code'      => "< Median",
-                'display'   => "Berat badan normal",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-            ];
+            }else if($value_periksa < $median->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "< Median",
+                    'display'   => "Berat badan normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
 
-        }else if($value_periksa < $sd_1->nilai_variabel_2){
-            $interpretation     = [
-                'code'      => "<+1SD",
-                'display'   => "Berat badan normal",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-            ];
+            }else if($value_periksa < $sd_1->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<+1SD",
+                    'display'   => "Berat badan normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
 
-        }else if($value_periksa < $sd_2->nilai_variabel_2){
-            $interpretation     = [
-                'code'      => "<+2SD",
-                'display'   => "Risiko Berat badan lebih",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-            ];
+            }else if($value_periksa < $sd_2->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<+2SD",
+                    'display'   => "Risiko Berat badan lebih",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
 
-        }else if($value_periksa < $sd_3->nilai_variabel_2){
-            $interpretation     = [
-                'code'      => "<+3SD",
-                'display'   => "Risiko Berat badan lebih",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-            ];
+            }else if($value_periksa < $sd_3->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<+3SD",
+                    'display'   => "Risiko Berat badan lebih",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+            }else{
+                $interpretation     = [
+                    'code'      => "+3SD",
+                    'display'   => "Risiko Berat badan lebih",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+            }
+
         }else{
-            $interpretation     = [
-                'code'      => "+3SD",
-                'display'   => "Risiko Berat badan lebih",
-                'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-            ];
+            $base_line = NULL;
+            $interpretation = NULL;
         }
+
 
         $unit           = [
             'code'      => 'Kg',
@@ -404,6 +411,23 @@ class ObservationController extends Controller
         $observation_code   = "8302-2";
         $weight_code        = "29463-7";
         $id_pasien          = $request->id_pasien;
+        $pasien             = User::find($id_pasien);
+        $tanggal_lahir      = $pasien->lahir['tanggal'];
+        $birthDate          = new \DateTime($tanggal_lahir);
+        $today              = new \DateTime("today");
+        $y                  = $today->diff($birthDate)->y;
+        $m                  = $today->diff($birthDate)->m;
+        $d                  = $today->diff($birthDate)->d;
+        $usia               = [
+            'tahun'         => $y,
+            'bulan'         => $m,
+            'hari'          => $d
+        ];
+        if($y<1){
+            $usia = $m;
+        }else{
+            $usia = ($y*12)+$m;
+        }
         $weight             = Observation::where([
             'id_pasien'     => $id_pasien,
             'coding.code'   => $weight_code
@@ -415,13 +439,96 @@ class ObservationController extends Controller
             $create_bmi     = $this->bmi($berat_badan, $tinggi_badan, $id_pasien);
         }
         $value_periksa      = (float) $request->height;
-        $base_line          = NULL;
+        if($usia<=60){
+            $variabel           = $pasien->gender;
+            $variabel_1         = "Usia";
+            $nilai_variabel_1   = (string)$usia;
+            if($usia<24){
+                $variabel_2     = "Panjang Badan";
+            }else{
+                $variabel_2     = "Tinggi Badan";
+            }
+            $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
+            $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
+            $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
+            $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
+            $sd_1_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
+            $sd_2_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
+            $sd_3_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
+            $base_line          = [
+                '-3SD'      => (float) $sd_3_min->nilai_variabel_2,
+                '-2SD'      => (float) $sd_2_min->nilai_variabel_2,
+                '-1SD'      => (float) $sd_1_min->nilai_variabel_2,
+                'median'    => (float) $median->nilai_variabel_2,
+                '+1SD'      => (float) $sd_1->nilai_variabel_2,
+                '+2SD'      => (float) $sd_2->nilai_variabel_2,
+                '+3SD'      => (float) $sd_3->nilai_variabel_2,
+            ];
+            if($value_periksa < $sd_3_min->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<-3SD",
+                    'display'   => "Sangat pendek",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+            }else if($value_periksa < $sd_2_min->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<-2SD",
+                    'display'   => "Pendek",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+
+            }else if($value_periksa < $sd_1_min->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<-1SD",
+                    'display'   => "Normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+
+            }else if($value_periksa < $median->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "< Median",
+                    'display'   => "Normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+
+            }else if($value_periksa < $sd_1->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<+1SD",
+                    'display'   => "Normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+
+            }else if($value_periksa < $sd_2->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<+2SD",
+                    'display'   => "Normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+
+            }else if($value_periksa < $sd_3->nilai_variabel_2){
+                $interpretation     = [
+                    'code'      => "<+3SD",
+                    'display'   => "Normal",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+            }else{
+                $interpretation     = [
+                    'code'      => "+3SD",
+                    'display'   => "Tinggi",
+                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                ];
+            }
+
+        }else{
+            $base_line = NULL;
+            $interpretation = NULL;
+        }
+
         $unit               = [
             'code'      => 'cm',
             'display'   => 'cm',
             'system'    => 'http://unitsofmeasure.org'
         ];
-        $interpretation     = NULL;
         $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
         return response()->json($save->original, $save->original['status_code']);
 
@@ -682,8 +789,7 @@ class ObservationController extends Controller
             return response()->json($save->original, $save->original['status_code']);
         }
     }
-
-    private function base_line($variabel, $variabel_1, $nilai_variabel_1, $variabel_2="", $label){
+    private function base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2="", $label){
         $base_line = BaseLine::where([
             'variabel'          => $variabel,
             'variabel_1'        => $variabel_1,
