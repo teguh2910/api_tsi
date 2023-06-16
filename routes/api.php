@@ -158,3 +158,4 @@ Route::post('v1/sms', [ConsultantController::class,'sms']);
 
 Route::get('v1/family', [LinkedUserController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/family', [LinkedUserController::class,'store'])->middleware('auth:sanctum');
+Route::post('v1/family/user', [LinkedUserController::class,'store_by_id'])->middleware('auth:sanctum');

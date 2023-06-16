@@ -87,12 +87,72 @@ class LinkedUserController extends Controller
                 ]
             ];
             $add_data = $this->register($data_input);
-            $add_family = User::where('nik', $nik_dummy)->first();
-            return response($add_family);
+            return response($add_data->getOriginalContent());
         }
+    }
+    public function store_by_id(Request $request){
+        $validator              = Validator::make($request->all(), [
+            'nama_depan'        => 'required',
+            'nama_belakang'     => 'required',
+            'tanggal_lahir'     => 'required',
+            'tempat_lahir'      => 'required',
+            'hubungan_keluarga' => 'required',
+            'id_induk'          => 'id_induk'
+        ]);
+        $user = User::find($request->id_induk);
+        if ($validator->fails()){
+            $status_code = 422;
+            $data = [
+                'status_code'   => $status_code,
+                'message'       => 'Gagal Validasi',
+                "data"          => [
+                    "errors"     => $validator->errors(),
+                ]
+            ];
+            return response()->json($data,$status_code);
+        }else if($request->hubungan_keluarga != "Anak"){
+            $status_code = 419;
+            $data = [
+                'status_code'   => $status_code,
+                'message'       => 'Gagal Validasi',
+                "data"          => [
+                    "errors"     => [
+                        'hubungan_keluarga' => ['Hubungan keluarga harus Anak']
+                    ],
+                ]
+            ];
+            return response()->json($data,$status_code);
+        }else if(empty($user)){
+            $status_code = 404;
+            $data = [
+                'status_code'   => $status_code,
+                'message'       => 'Id Induk Salah',
+                "data"          => [
+                    "users"     => $user,
+                ]
+            ];
+            return response()->json($data,$status_code);
 
-
-
+        }else{
+            $status_code=201;
+            $nik_dummy  = random_int(111111111111,999999999999);
+            $data_input = [
+                "nama_depan"    => $request->nama_depan,
+                "nama_belakang" => $request->nama_belakang,
+                "nomor_telepon" => random_int(111111111111,999999999999),
+                "gender"        => $request->gender,
+                "nik"           => $nik_dummy,
+                "password"      => "password",
+                "tempat_lahir"  => $request->tempat_lahir,
+                "tanggal_lahir" => $request->tanggal_lahir,
+                "family"        => [
+                    'id_induk'  => Auth::id(),
+                    'hubungan_keluarga' => $request->hubungan_keluarga
+                ]
+            ];
+            $add_data = $this->register($data_input);
+            return response($add_data->getOriginalContent());
+        }
     }
     private function register($data){
         $body = json_encode($data);
