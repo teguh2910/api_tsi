@@ -39,6 +39,34 @@ class LinkedUserController extends Controller
             return response()->json($data,$status_code);
         }
     }
+    public function list_by_id(Request $request){
+        $id_induk   = $request->id_induk;
+        $user       = User::where('family.id_induk', $id_induk)->orderBy('lahir.tanggal', 'DESC');
+        $family     = UserResource::collection($user->get());
+        if($user->count() < 1){
+            $status_code = 404;
+            $data   = [
+                "status"        => "Not Found",
+                "status_code"   => 404,
+                "data"          => [
+                    'count'     => $user->count(),
+                    'family'    => $family,
+                ]
+            ];
+            return response()->json($data,$status_code);
+        }else{
+            $status_code = 200;
+            $data   = [
+                "status"        => "success",
+                "status_code"   => 200,
+                "data"          => [
+                    'count'     => $user->count(),
+                    'family'    => $family,
+                ]
+            ];
+            return response()->json($data,$status_code);
+        }
+    }
     public function store(Request $request){
         $validator              = Validator::make($request->all(), [
             'nama_depan'        => 'required',
