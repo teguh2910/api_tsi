@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class LinkedUserController extends Controller
 {
     public function index(){
-        $user       = User::where('family.id_induk', Auth::user()['_id']);
+        $user       = User::where('family.id_induk', Auth::user()['_id'])->orderBy('lahir.tanggal', 'DESC');
         $family     = UserResource::collection($user->get());
         if($user->count() < 1){
             $status_code = 404;
