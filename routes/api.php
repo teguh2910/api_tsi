@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\v1\DiastoleController;
 use App\Http\Controllers\Api\v1\EducationController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\KitController;
+use App\Http\Controllers\Api\v1\LinkedUserController;
 use App\Http\Controllers\Api\v1\LogUserKitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
 use App\Http\Controllers\Api\v1\ObservationController;
@@ -154,3 +155,6 @@ Route::get('v1/consultants', [ConsultantController::class,'index'])->middleware(
 Route::post('v1/consultants', [ConsultantController::class,'store'])->middleware('auth:sanctum');
 
 Route::post('v1/sms', [ConsultantController::class,'sms']);
+
+Route::get('v1/family', [LinkedUserController::class,'index'])->middleware('auth:sanctum');
+Route::post('v1/family', [LinkedUserController::class,'store'])->middleware('auth:sanctum');

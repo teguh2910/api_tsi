@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\City;
 use App\Models\Province;
 use App\Models\User;
+use GPBMetadata\Google\Api\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

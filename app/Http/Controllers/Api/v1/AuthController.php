@@ -295,6 +295,7 @@ class AuthController extends Controller
                 'otp'   => rand(100000,999999),
                 'exp'   => time()+(24*60*60)
             ],
+            'family'    => $request->family,
             'active'    => false,
             'level'     => 'user'
         ];
