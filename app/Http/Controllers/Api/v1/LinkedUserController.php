@@ -187,7 +187,9 @@ class LinkedUserController extends Controller
         $id_user    = $request->id_user;
         $user       = User::find($id_user);
         $unlink     = [
-            "family.is_active"    => false
+            "family"    => [
+                "is_active" => false
+            ]
         ];
         $update     = $user->update($unlink);
         return response($user);
