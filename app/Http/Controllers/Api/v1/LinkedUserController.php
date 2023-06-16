@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FamilyResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
@@ -14,7 +15,7 @@ class LinkedUserController extends Controller
 {
     public function index(){
         $user       = User::where('family.id_induk', Auth::user()['_id'])->orderBy('lahir.tanggal', 'DESC');
-        $family     = UserResource::collection($user->get());
+        $family     = FamilyResource::collection($user->get());
         if($user->count() < 1){
             $status_code = 404;
             $data   = [
@@ -42,7 +43,7 @@ class LinkedUserController extends Controller
     public function list_by_id(Request $request){
         $id_induk   = $request->id_induk;
         $user       = User::where('family.id_induk', $id_induk)->orderBy('lahir.tanggal', 'DESC');
-        $family     = UserResource::collection($user->get());
+        $family     = FamilyResource::collection($user->get());
         if($user->count() < 1){
             $status_code = 404;
             $data   = [
