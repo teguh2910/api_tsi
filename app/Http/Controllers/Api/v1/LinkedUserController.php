@@ -183,6 +183,15 @@ class LinkedUserController extends Controller
             return response($add_data->getOriginalContent());
         }
     }
+    public function unlink(Request $request){
+        $id_user    = $request->id_user;
+        $user       = User::find($id_user);
+        $unlink     = [
+            "famili"    => null
+        ];
+        $update     = $user->update($unlink);
+        return response($user);
+    }
     private function register($data){
         $body = json_encode($data);
         $curl = curl_init();
