@@ -188,6 +188,8 @@ class LinkedUserController extends Controller
         $user       = User::find($id_user);
         $unlink     = [
             "family"    => [
+                "id_induk"  => $user->family['id_induk'],
+                "hubungan_keluarga"  => $user->family['hubungan_keluarga'],
                 "is_active" => false
             ]
         ];
