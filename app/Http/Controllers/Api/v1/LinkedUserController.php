@@ -119,16 +119,13 @@ class LinkedUserController extends Controller
             return response($add_data->getOriginalContent());
         }
     }
-    public function store_by_id(Request $request){
+    public function linking(Request $request){
         $validator              = Validator::make($request->all(), [
-            'nama_depan'        => 'required',
-            'nama_belakang'     => 'required',
-            'tanggal_lahir'     => 'required',
-            'tempat_lahir'      => 'required',
-            'hubungan_keluarga' => 'required',
-            'id_induk'          => 'id_induk'
+            'id_user'   => 'required',
+            'id_induk'  => 'required'
         ]);
-        $user = User::find($request->id_induk);
+        $user       = User::find($request->id_user);
+        $user_induk = User::find($request->id_induk);
         if ($validator->fails()){
             $status_code = 422;
             $data = [
@@ -139,48 +136,35 @@ class LinkedUserController extends Controller
                 ]
             ];
             return response()->json($data,$status_code);
-        }else if($request->hubungan_keluarga != "Anak"){
-            $status_code = 419;
+        }else if(! empty($user) AND ! empty($user_induk)){
+            $family = [
+                'family'    =>[
+                    'id_induk'          => $request->id_induk,
+                    'hubungan_keluarga' => 'Anak',
+                    'is_active'         => true
+                ]
+
+            ];
+            $linking = $user->update($family);
+            $status_code = 200;
             $data = [
                 'status_code'   => $status_code,
-                'message'       => 'Gagal Validasi',
+                'message'       => 'Success',
                 "data"          => [
-                    "errors"     => [
-                        'hubungan_keluarga' => ['Hubungan keluarga harus Anak']
-                    ],
+                    "linking"   => "Success"
                 ]
             ];
             return response()->json($data,$status_code);
-        }else if(empty($user)){
+        }else{
             $status_code = 404;
             $data = [
                 'status_code'   => $status_code,
-                'message'       => 'Id Induk Salah',
+                'message'       => 'Not Found',
                 "data"          => [
-                    "users"     => $user,
+                    "user"      => $user,
                 ]
             ];
             return response()->json($data,$status_code);
-
-        }else{
-            $status_code=201;
-            $nik_dummy  = random_int(111111111111,999999999999);
-            $data_input = [
-                "nama_depan"    => $request->nama_depan,
-                "nama_belakang" => $request->nama_belakang,
-                "nomor_telepon" => random_int(111111111111,999999999999),
-                "gender"        => $request->gender,
-                "nik"           => $nik_dummy,
-                "password"      => "password",
-                "tempat_lahir"  => $request->tempat_lahir,
-                "tanggal_lahir" => $request->tanggal_lahir,
-                "family"        => [
-                    'id_induk'  => Auth::id(),
-                    'hubungan_keluarga' => $request->hubungan_keluarga
-                ]
-            ];
-            $add_data = $this->register($data_input);
-            return response($add_data->getOriginalContent());
         }
     }
     public function unlink(Request $request){
@@ -194,7 +178,15 @@ class LinkedUserController extends Controller
             ]
         ];
         $update     = $user->update($unlink);
-        return response($user);
+        $status_code = 200;
+        $data = [
+            'status_code'   => $status_code,
+            'message'       => 'Success',
+            "data"          => [
+                "Unlink"     => "Success",
+            ]
+        ];
+        return response()->json($data,$status_code);
     }
     private function register($data){
         $body = json_encode($data);
