@@ -21,6 +21,7 @@ class FamilyResource extends JsonResource
             'tanggal_lahir'     => $this->lahir['tanggal'],
             'tempat_lahir'      => $this->lahir['tempat'],
             'gender'            => $this->gender,
+            'hubungan_keluarga' => $this->family['hubungan_keluarga'],
             'status'            => $this->family['is_active'],
         ];
     }

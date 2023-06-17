@@ -111,8 +111,9 @@ class LinkedUserController extends Controller
                 "tempat_lahir"  => $request->tempat_lahir,
                 "tanggal_lahir" => $request->tanggal_lahir,
                 "family"        => [
-                    'id_induk'  => Auth::id(),
-                    'hubungan_keluarga' => $request->hubungan_keluarga
+                    'id_induk'          => Auth::id(),
+                    'hubungan_keluarga' => $request->hubungan_keluarga,
+                    'is_active'         => true
                 ]
             ];
             $add_data = $this->register($data_input);
