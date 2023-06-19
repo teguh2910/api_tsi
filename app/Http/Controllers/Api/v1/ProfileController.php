@@ -21,20 +21,8 @@ class ProfileController extends Controller
         }else{
             $status_nikah   = "";
         }
-
-        $data_user = [
-            'id'            => Auth::id(),
-            'nama_depan'    => Auth::user()['nama']['nama_depan'],
-            'nama_belakang' => Auth::user()['nama']['nama_belakang'],
-            'gender'        => Auth::user()['gender'],
-            'lahir'         => Auth::user()['lahir'],
-            'username'      => Auth::user()['username'],
-            'nik'           => Auth::user()['nik'],
-            'email'         => Auth::user()['kontak']['email'],
-            'nomor_telepon' => Auth::user()['kontak']['nomor_telepon'],
-            'status_pernikahan' => $status_nikah,
-            'kit'               => Auth::user()['kit'],
-            'alamat'        => [
+        if(! empty(Auth::user()['address'])){
+            $alamat = [
                 'provinsi'  => [
                     'id_provinsi'   => Auth::user()['address']['provinsi']['id_provinsi'],
                     'nama_provinsi' => Auth::user()['address']['provinsi']['nama_provinsi']
@@ -52,7 +40,24 @@ class ProfileController extends Controller
                     'id_kelurahan'      => Auth::user()['address']['kelurahan']['id_kelurahan'],
                     'nama_kelurahan'    => Auth::user()['address']['kelurahan']['nama_kelurahan'],
                 ],
-            ]
+            ];
+        }else{
+            $alamat = "";
+        }
+
+        $data_user = [
+            'id'            => Auth::id(),
+            'nama_depan'    => Auth::user()['nama']['nama_depan'],
+            'nama_belakang' => Auth::user()['nama']['nama_belakang'],
+            'gender'        => Auth::user()['gender'],
+            'lahir'         => Auth::user()['lahir'],
+            'username'      => Auth::user()['username'],
+            'nik'           => Auth::user()['nik'],
+            'email'         => Auth::user()['kontak']['email'],
+            'nomor_telepon' => Auth::user()['kontak']['nomor_telepon'],
+            'status_pernikahan' => $status_nikah,
+            'kit'               => Auth::user()['kit'],
+            'alamat'        => $alamat
         ];
         return response()->json([
             'status_code'       => 200,
