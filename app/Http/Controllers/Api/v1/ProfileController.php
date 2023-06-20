@@ -383,7 +383,15 @@ class ProfileController extends Controller
         $myObservation  = ObservationResource::collection($query_ovsrevation);
 
         return response($myObservation);
+    }
+    private function familyObservation($observation_code, $limit=1){
+        $query_ovsrevation = Observation::where([
+            'coding.code'   => $observation_code,
+            'id_pasien'     => Auth::id()
+        ])->->orderBy('time', 'DESC')->limit($limit)->get();
+        $myObservation  = ObservationResource::collection($query_ovsrevation);
 
-}
+        return response($myObservation);
+    }
 
 }
