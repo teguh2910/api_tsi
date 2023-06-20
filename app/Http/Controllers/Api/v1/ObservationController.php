@@ -292,18 +292,22 @@ class ObservationController extends Controller
             'bulan'         => $m,
             'hari'          => $d
         ];
+
+
         if($y<1){
             $usia = $m;
         }else{
             $usia = ($y*12)+$m;
         }
-        $variabel           = $pasien->gender;
+
+        $variabel           = ucwords($pasien->gender);
         $variabel_1         = "Usia";
-        $nilai_variabel_1   = (string)$usia;
+        $nilai_variabel_1   = (string) $usia;
         $variabel_2         = "Berat Badan";
         $label_median       = "0";
 
         $value_periksa      = (float) $request->weight;
+
         if($usia<=60){
             $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
             $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
@@ -312,6 +316,7 @@ class ObservationController extends Controller
             $sd_1_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
             $sd_2_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
             $sd_3_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
+
             $base_line          = [
                 '-3SD'      => $sd_3_min->nilai_variabel_2,
                 '-2SD'      => $sd_2_min->nilai_variabel_2,
@@ -322,6 +327,7 @@ class ObservationController extends Controller
                 '+3SD'      => $sd_3->nilai_variabel_2,
 
             ];
+
             if($value_periksa < $sd_3_min->nilai_variabel_2){
                 $interpretation     = [
                     'code'      => "<-3SD",
@@ -441,7 +447,7 @@ class ObservationController extends Controller
         }
         $value_periksa      = (float) $request->height;
         if($usia<=60){
-            $variabel           = $pasien->gender;
+            $variabel           = ucwords($pasien->gender);
             $variabel_1         = "Usia";
             $nilai_variabel_1   = (string)$usia;
             if($usia<24){
@@ -449,7 +455,9 @@ class ObservationController extends Controller
             }else{
                 $variabel_2     = "Tinggi Badan";
             }
+
             $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
+
             $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
             $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
             $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
@@ -465,6 +473,8 @@ class ObservationController extends Controller
                 '+2SD'      => (float) $sd_2->nilai_variabel_2,
                 '+3SD'      => (float) $sd_3->nilai_variabel_2,
             ];
+
+
             if($value_periksa < $sd_3_min->nilai_variabel_2){
                 $interpretation     = [
                     'code'      => "<-3SD",
