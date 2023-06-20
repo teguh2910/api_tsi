@@ -302,15 +302,16 @@ class ObservationController extends Controller
         $nilai_variabel_1   = (string)$usia;
         $variabel_2         = "Berat Badan";
         $label_median       = "0";
-        $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
-        $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
-        $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
-        $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
-        $sd_1_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
-        $sd_2_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
-        $sd_3_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
+
         $value_periksa      = (float) $request->weight;
         if($usia<=60){
+            $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
+            $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
+            $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
+            $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
+            $sd_1_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
+            $sd_2_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
+            $sd_3_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
             $base_line          = [
                 '-3SD'      => $sd_3_min->nilai_variabel_2,
                 '-2SD'      => $sd_2_min->nilai_variabel_2,
