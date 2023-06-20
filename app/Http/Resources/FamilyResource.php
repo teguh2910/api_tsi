@@ -24,6 +24,12 @@ class FamilyResource extends JsonResource
             'bulan'         => $m,
             'hari'          => $d
         ];
+            if(strlen($this->nik)>= 16){
+            $nik = $this->nik;
+            }else{
+                $nik = null;
+            }
+
         return [
             'id'                => $this->_id,
             'nama_depan'        => $this->nama['nama_depan'],
@@ -33,7 +39,10 @@ class FamilyResource extends JsonResource
             'gender'            => $this->gender,
             'hubungan_keluarga' => $this->family['hubungan_keluarga'],
             'status'            => $this->family['is_active'],
-            'usia'              => $usia
+            'usia'              => $usia,
+            'nik'               => $nik
+
+
         ];
     }
 }

@@ -100,13 +100,18 @@ class LinkedUserController extends Controller
             return response()->json($data,$status_code);
         }else{
             $status_code=201;
-            $nik_dummy  = random_int(111111111111,999999999999);
+            if(empty($request->nik)){
+                $nik  = random_int(111111111111,999999999999);
+            }else{
+                $nik    = $request->nik;
+            }
+
             $data_input = [
                 "nama_depan"    => $request->nama_depan,
                 "nama_belakang" => $request->nama_belakang,
                 "nomor_telepon" => random_int(111111111111,999999999999),
                 "gender"        => $request->gender,
-                "nik"           => $nik_dummy,
+                "nik"           => $nik,
                 "password"      => "password",
                 "tempat_lahir"  => $request->tempat_lahir,
                 "tanggal_lahir" => $request->tanggal_lahir,
