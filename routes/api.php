@@ -51,6 +51,8 @@ Route::get('/v1/profile', [ProfileController::class, 'index'])->middleware('auth
 Route::post('/v1/profile/username', [ProfileController::class, 'update_username'])->middleware('auth:sanctum');
 Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->middleware('auth:sanctum');
 Route::put('/v1/profile/identitas', [ProfileController::class, 'update_identitas'])->middleware('auth:sanctum');
+Route::get('/v1/profile/perangkat', [ProfileController::class, 'perangakat_active'])->middleware('auth:sanctum');
+Route::delete('/v1/profile/perangkat', [ProfileController::class, 'destroy_device'])->middleware('auth:sanctum');
 
 
 Route::get('/v1/over-view/observations', [ProfileController::class, 'observation'])->middleware('auth:sanctum');

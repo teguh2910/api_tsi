@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ObservationResource;
+use App\Http\Resources\TokenResource;
 use App\Models\Observation;
+use App\Models\Personal_access_token;
 use App\Models\User;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class ProfileController extends Controller
 {
@@ -187,6 +190,44 @@ class ProfileController extends Controller
         }
         $update_profile = $user->update($request->all());
 
+    }
+    public function perangakat_active(){
+        $token = PersonalAccessToken::where('tokenable_id', Auth::id());
+        $token_list = TokenResource::collection($token->get());
+        $data   = [
+            'status_code'   => 200,
+            'message'       => 'Success',
+            'data'          => [
+                'count'     => $token->count(),
+                'token'     => $token_list
+            ]
+        ];
+        return response()->json($data);
+
+    }
+    public function destroy_device(Request $request){
+        $id_token       = $request->id_token;
+        $token          = PersonalAccessToken::where('_id',$id_token)->first();
+        if(empty($token)){
+            $data = [
+                'status_code'   => 404,
+                'message'       => 'Not Found',
+                'data'          => [
+                    'token'             => $token
+                ]
+            ];
+            return response();
+        }
+        $delete_token   = $token->delete();
+        $data = [
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'deleting_status'   => $delete_token,
+                'token'             => $token
+            ]
+        ];
+        return response();
     }
     public function resume(){
         $tanggal_lahir = Auth::user()['lahir']['tanggal'];
