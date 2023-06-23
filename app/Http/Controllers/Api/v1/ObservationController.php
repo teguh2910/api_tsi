@@ -268,7 +268,10 @@ class ObservationController extends Controller
             'weight'    => 'required|numeric|min:1|max:300',
             'id_pasien' => 'required'
         ]);
-
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
+        $category_code      = 'vital-signs';
+        $observation_code   = "29463-7";
         if($validation->fails())
         {
             return response()->json([
@@ -276,127 +279,116 @@ class ObservationController extends Controller
                 'message'       => 'Gagal validasi',
                 'content'       => $validation->errors()
             ],422);
-        }
-        $category_code      = 'vital-signs';
-        $observation_code   = "29463-7";
-        $id_pasien          = $request->id_pasien;
-        $pasien             = User::find($id_pasien);
-        $tanggal_lahir      = $pasien->lahir['tanggal'];
-        $birthDate          = new \DateTime($tanggal_lahir);
-        $today              = new \DateTime("today");
-        $y                  = $today->diff($birthDate)->y;
-        $m                  = $today->diff($birthDate)->m;
-        $d                  = $today->diff($birthDate)->d;
-        $usia               = [
-            'tahun'         => $y,
-            'bulan'         => $m,
-            'hari'          => $d
-        ];
-
-
-        if($y<1){
-            $usia = $m;
+        }else if(empty($pasien )){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak ditemukan',
+                'data'          => [
+                    'pasien'    => $pasien
+                ]
+            ],404);
         }else{
-            $usia = ($y*12)+$m;
-        }
-
-        $variabel           = ucwords($pasien->gender);
-        $variabel_1         = "Usia";
-        $nilai_variabel_1   = (string) $usia;
-        $variabel_2         = "Berat Badan";
-        $label_median       = "0";
-
-        $value_periksa      = (float) $request->weight;
-
-        if($usia<=60){
-            $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
-            $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
-            $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
-            $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
-            $sd_1_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
-            $sd_2_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
-            $sd_3_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
-
-            $base_line          = [
-                '-3SD'      => $sd_3_min->nilai_variabel_2,
-                '-2SD'      => $sd_2_min->nilai_variabel_2,
-                '-1SD'      => $sd_1_min->nilai_variabel_2,
-                'median'    => $median->nilai_variabel_2,
-                '+1SD'      => $sd_1->nilai_variabel_2,
-                '+2SD'      => $sd_2->nilai_variabel_2,
-                '+3SD'      => $sd_3->nilai_variabel_2,
-
+            $tanggal_lahir      = $pasien->lahir['tanggal'];
+            $birthDate          = new \DateTime($tanggal_lahir);
+            $today              = new \DateTime("today");
+            $y                  = $today->diff($birthDate)->y;
+            $m                  = $today->diff($birthDate)->m;
+            $d                  = $today->diff($birthDate)->d;
+            $usia               = [
+                'tahun'         => $y,
+                'bulan'         => $m,
+                'hari'          => $d
             ];
-
-            if($value_periksa < $sd_3_min->nilai_variabel_2){
-                $interpretation     = [
-                    'code'      => "<-3SD",
-                    'display'   => "Berat badan sangat kurang",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
-            }else if($value_periksa < $sd_2_min->nilai_variabel_2){
-                $interpretation     = [
-                    'code'      => "<-2SD",
-                    'display'   => "Berat badan kurang",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
-
-            }else if($value_periksa < $sd_1_min->nilai_variabel_2){
-                $interpretation     = [
-                    'code'      => "<-1SD",
-                    'display'   => "Berat badan normal",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
-
-            }else if($value_periksa < $median->nilai_variabel_2){
-                $interpretation     = [
-                    'code'      => "< Median",
-                    'display'   => "Berat badan normal",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
-
-            }else if($value_periksa < $sd_1->nilai_variabel_2){
-                $interpretation     = [
-                    'code'      => "<+1SD",
-                    'display'   => "Berat badan normal",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
-
-            }else if($value_periksa < $sd_2->nilai_variabel_2){
-                $interpretation     = [
-                    'code'      => "<+2SD",
-                    'display'   => "Risiko Berat badan lebih",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
-
-            }else if($value_periksa < $sd_3->nilai_variabel_2){
-                $interpretation     = [
-                    'code'      => "<+3SD",
-                    'display'   => "Risiko Berat badan lebih",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
+            if($y<1){
+                $usia = $m;
             }else{
-                $interpretation     = [
-                    'code'      => "+3SD",
-                    'display'   => "Risiko Berat badan lebih",
-                    'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
-                ];
+                $usia = ($y*12)+$m;
             }
+            $variabel           = ucwords($pasien->gender);
+            $variabel_1         = "Usia";
+            $nilai_variabel_1   = (string) $usia;
+            $variabel_2         = "Berat Badan";
+            $value_periksa      = (float) $request->weight;
+            if($usia<=60){
+                $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
+                $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
+                $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
+                $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
+                $sd_1_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-1" )->getOriginalContent();
+                $sd_2_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-2" )->getOriginalContent();
+                $sd_3_min           = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "-3" )->getOriginalContent();
+                $base_line          = [
+                    '-3SD'      => $sd_3_min->nilai_variabel_2,
+                    '-2SD'      => $sd_2_min->nilai_variabel_2,
+                    '-1SD'      => $sd_1_min->nilai_variabel_2,
+                    'median'    => $median->nilai_variabel_2,
+                    '+1SD'      => $sd_1->nilai_variabel_2,
+                    '+2SD'      => $sd_2->nilai_variabel_2,
+                    '+3SD'      => $sd_3->nilai_variabel_2,
+                ];
+                if($value_periksa < $sd_3_min->nilai_variabel_2){
+                    $interpretation     = [
+                        'code'      => "<-3SD",
+                        'display'   => "Berat badan sangat kurang",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
+                }else if($value_periksa < $sd_2_min->nilai_variabel_2){
+                    $interpretation     = [
+                        'code'      => "<-2SD",
+                        'display'   => "Berat badan kurang",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
 
-        }else{
-            $base_line = NULL;
-            $interpretation = NULL;
+                }else if($value_periksa < $sd_1_min->nilai_variabel_2){
+                    $interpretation     = [
+                        'code'      => "<-1SD",
+                        'display'   => "Berat badan normal",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
+                }else if($value_periksa < $median->nilai_variabel_2){
+                    $interpretation     = [
+                        'code'      => "< Median",
+                        'display'   => "Berat badan normal",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
+
+                }else if($value_periksa < $sd_1->nilai_variabel_2){
+                    $interpretation     = [
+                        'code'      => "<+1SD",
+                        'display'   => "Berat badan normal",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
+                }else if($value_periksa < $sd_2->nilai_variabel_2){
+                    $interpretation     = [
+                        'code'      => "<+2SD",
+                        'display'   => "Risiko Berat badan lebih",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
+                }else if($value_periksa < $sd_3->nilai_variabel_2){
+                    $interpretation     = [
+                        'code'      => "<+3SD",
+                        'display'   => "Risiko Berat badan lebih",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
+                }else{
+                    $interpretation     = [
+                        'code'      => "+3SD",
+                        'display'   => "Risiko Berat badan lebih",
+                        'system'    => 'PERATURAN MENTERI KESEHATAN REPUBLIK INDONESIA NOMOR 2 TAHUN 2020 TENTANG STANDAR ANTROPOMETRI ANAK'
+                    ];
+                }
+            }else{
+                $base_line = NULL;
+                $interpretation = NULL;
+            }
+            $unit           = [
+                'code'      => 'Kg',
+                'display'   => 'Kg',
+                'system'    => 'http://unitsofmeasure.org'
+            ];
+            $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
+            return response()->json($save->original, $save->original['status_code']);
         }
-
-
-        $unit           = [
-            'code'      => 'Kg',
-            'display'   => 'Kg',
-            'system'    => 'http://unitsofmeasure.org'
-        ];
-
-        $save = $this->save($value_periksa, $unit, $id_pasien, $observation_code, $category_code, $base_line, $interpretation);
-        return response()->json($save->original, $save->original['status_code']);
     }
     public function height(Request $request)
     {
@@ -404,6 +396,8 @@ class ObservationController extends Controller
             'height'    => 'required|numeric|min:40|max:250',
             'id_pasien' => 'required'
         ]);
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
         if($validation->fails())
         {
             return response()->json([
@@ -413,12 +407,18 @@ class ObservationController extends Controller
                     'errors'    => $validation->errors()
                 ]
             ],422);
+        }elseif(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak ditemukan',
+                'data'          => [
+                    'pasien'    => $pasien
+                ]
+            ],404);
         }
         $category_code      = 'vital-signs';
         $observation_code   = "8302-2";
         $weight_code        = "29463-7";
-        $id_pasien          = $request->id_pasien;
-        $pasien             = User::find($id_pasien);
         $tanggal_lahir      = $pasien->lahir['tanggal'];
         $birthDate          = new \DateTime($tanggal_lahir);
         $today              = new \DateTime("today");
@@ -430,6 +430,7 @@ class ObservationController extends Controller
             'bulan'         => $m,
             'hari'          => $d
         ];
+
         if($y<1){
             $usia = $m;
         }else{
@@ -455,9 +456,7 @@ class ObservationController extends Controller
             }else{
                 $variabel_2     = "Tinggi Badan";
             }
-
             $median             = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "0" )->getOriginalContent();
-
             $sd_1               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "1" )->getOriginalContent();
             $sd_2               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "2" )->getOriginalContent();
             $sd_3               = $this->base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2, "3" )->getOriginalContent();
@@ -473,8 +472,6 @@ class ObservationController extends Controller
                 '+2SD'      => (float) $sd_2->nilai_variabel_2,
                 '+3SD'      => (float) $sd_3->nilai_variabel_2,
             ];
-
-
             if($value_periksa < $sd_3_min->nilai_variabel_2){
                 $interpretation     = [
                     'code'      => "<-3SD",
@@ -550,6 +547,8 @@ class ObservationController extends Controller
             'spo2'      => 'required|numeric|min:40|max:100',
             'id_pasien' => 'required'
         ]);
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
         if($validation->fails())
         {
             return response()->json([
@@ -559,6 +558,14 @@ class ObservationController extends Controller
                     'errors'    => $validation->errors()
                 ]
             ],422);
+        }elseif(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak ditemukan',
+                'data'          => [
+                    'pasien'    => $pasien
+                ]
+            ],404);
         }
         $category_code      = 'vital-signs';
         $observation_code   = "59408-5";
@@ -602,6 +609,8 @@ class ObservationController extends Controller
             'uric_acid'     => 'required|numeric|min:1|max:100',
             'id_pasien'     => 'required'
         ]);
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
         if($validation->fails())
         {
             return response()->json([
@@ -611,6 +620,14 @@ class ObservationController extends Controller
                     'errors'    => $validation->errors()
                 ]
             ],422);
+        }elseif(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak ditemukan',
+                'data'          => [
+                    'pasien'    => $pasien
+                ]
+            ],404);
         }
         $category_code      = 'laboratory'; //untuk category
         $observation_code   = "3084-1";     //untuk asam urat
@@ -653,6 +670,8 @@ class ObservationController extends Controller
             'cholesterol'   => 'required|numeric|min:10|max:600',
             'id_pasien'     => 'required'
         ]);
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
         if($validation->fails())
         {
             return response()->json([
@@ -662,6 +681,14 @@ class ObservationController extends Controller
                     'errors'    => $validation->errors()
                 ]
             ],422);
+        }elseif(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak ditemukan',
+                'data'          => [
+                    'pasien'    => $pasien
+                ]
+            ],404);
         }
         $category_code      = 'laboratory';
         $observation_code   = "2093-3";
@@ -706,6 +733,8 @@ class ObservationController extends Controller
             'glucose'       => 'required|numeric|min:10|max:600',
             'id_pasien'     => 'required'
         ]);
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
         if($validation->fails())
         {
             return response()->json([
@@ -715,6 +744,14 @@ class ObservationController extends Controller
                     'errors'    => $validation->errors()
                 ]
             ],422);
+        }elseif(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak ditemukan',
+                'data'          => [
+                    'pasien'    => $pasien
+                ]
+            ],404);
         }
         $category_code = 'laboratory';
         $code_glucose   = "2345-7";
@@ -756,6 +793,8 @@ class ObservationController extends Controller
             'glucose'       => 'required|numeric|min:10|max:600',
             'id_pasien'     => 'required'
         ]);
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
         if($validation->fails())
         {
             return response()->json([
@@ -765,40 +804,60 @@ class ObservationController extends Controller
                     'errors'    => $validation->errors()
                 ]
             ],422);
-        }else{
-            $category_code  = 'laboratory';
-            $code_glucose   = "2345-7";
-            $unit           = [
-                'code'      => 'mg/dL',
-                'display'   => 'mg/dL',
-                'system'    => 'http://unitsofmeasure.org'
-            ];
-            $id_pasien      = $request->id_pasien;
-            $value_periksa  = (float) $request->glucose;
-            $value_min      = 70;
-            $value_max      = 140;
-            $base_line      = [
-                'min'       => $value_min,
-                'max'       => $value_max
-            ];
-            if($value_periksa < $value_min ){
-                $interpretation_code       = 'L';
-                $interpretation_display    = "Low";
-            }elseif($value_periksa > $value_max){
-                $interpretation_code       = 'H';
-                $interpretation_display    = "High";
-            }else{
-                $interpretation_code       = 'N';
-                $interpretation_display    = "Normal";
-            }
-            $interpretation     = [
-                'code'      => $interpretation_code,
-                'display'   => $interpretation_display,
-                'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
-            ];
-            $save = $this->save($value_periksa, $unit, $id_pasien, $code_glucose, $category_code, $base_line, $interpretation);
-            return response()->json($save->original, $save->original['status_code']);
+        }elseif(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak ditemukan',
+                'data'          => [
+                    'pasien'    => $pasien
+                ]
+            ],404);
         }
+        if($validation->fails())
+        {
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'Gagal validasi',
+                'data'          => [
+                    'errors'    => $validation->errors()
+                ]
+            ],422);
+        }
+        $category_code  = 'laboratory';
+        $code_glucose   = "2345-7";
+        $unit           = [
+            'code'      => 'mg/dL',
+            'display'   => 'mg/dL',
+            'system'    => 'http://unitsofmeasure.org'
+        ];
+        $id_pasien      = $request->id_pasien;
+        $value_periksa  = (float) $request->glucose;
+        $value_min      = 70;
+        $value_max      = 140;
+        $base_line      = [
+            'min'       => $value_min,
+            'max'       => $value_max
+        ];
+        if($value_periksa < $value_min ){
+            $interpretation_code       = 'L';
+            $interpretation_display    = "Low";
+        }elseif($value_periksa > $value_max){
+            $interpretation_code       = 'H';
+            $interpretation_display    = "High";
+        }else{
+            $interpretation_code       = 'N';
+            $interpretation_display    = "Normal";
+        }
+        $interpretation     = [
+            'code'      => $interpretation_code,
+            'display'   => $interpretation_display,
+            'system'    => 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation'
+        ];
+        $save = $this->save($value_periksa, $unit, $id_pasien, $code_glucose, $category_code, $base_line, $interpretation);
+        return response()->json($save->original, $save->original['status_code']);
+    }
+    private function interpretasi(){
+
     }
     private function base_line_status_gizi($variabel, $variabel_1, $nilai_variabel_1, $variabel_2="", $label){
         $base_line = BaseLine::where([
