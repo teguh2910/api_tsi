@@ -114,6 +114,8 @@ class ObservationController extends Controller
             'heart_rate'    => 'required|numeric|min:10|max:500',
             'id_pasien'     => 'required'
         ]);
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
 
         if($validator->fails()){
             return response()->json([
@@ -124,23 +126,28 @@ class ObservationController extends Controller
                 ]
 
             ],422);
-        }
+        }else if(empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien Tidak Ditemukan',
+                'data'          => [
+                    "pasien"    => $pasien
+                ]
 
+            ],404);
+        }
         $save_systole = $this->systolic_private($request->systolic, $request->id_pasien);
         $data_sytole = [
             'status_code'   => $save_systole->original['status_code'],
             'message'       => $save_systole->original['message'],
             'data'          => $save_systole->original['data']
         ];
-
-
         $save_diastole = $this->diastolic_private($request->diastolic, $request->id_pasien);
         $data_diastole = [
             'status_code'   => $save_diastole->original['status_code'],
             'message'       => $save_diastole->original['message'],
             'data'          => $save_diastole->original['data']
         ];
-
         $save_hr = $this->nadi_private($request->heart_rate, $request->id_pasien);
         $data_hr = [
             'status_code'   => $save_hr->original['status_code'],
@@ -160,6 +167,8 @@ class ObservationController extends Controller
     }
 
     public function hearth_rate(Request $request){
+        $id_pasien          = $request->id_pasien;
+        $pasien             = User::where('_id',$id_pasien)->first();
         $validator      = Validator::make($request->all(), [
             'heart_rate'    => 'required|numeric|min:10|max:500',
             'id_pasien'     => 'required'
@@ -172,6 +181,14 @@ class ObservationController extends Controller
                     "errors"    => $validator->errors()
                 ]
             ],422);
+        }elseif (empty($pasien)){
+            return response()->json([
+                'status_code'   => 404,
+                'message'       => 'Pasien tidak ditemukan',
+                'data'          => [
+                    "pasien"    => $pasien
+                ]
+            ],404);
         }
         $save = $this->nadi_private($request->heart_rate, $request->id_pasien);
         return response()->json($save->original, $save->original['status_code']);

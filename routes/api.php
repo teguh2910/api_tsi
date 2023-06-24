@@ -14,12 +14,12 @@ use App\Http\Controllers\Api\v1\KitController;
 use App\Http\Controllers\Api\v1\LinkedUserController;
 use App\Http\Controllers\Api\v1\LogUserKitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
-use App\Http\Controllers\Api\v1\ObservationController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\ReligionController;
 use App\Http\Controllers\Api\v1\SystoleController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\WilayahController;
+use App\Http\Controllers\Api\v1\ObservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,12 +48,11 @@ Route::post('/v1/auth/forgotpassword',[AuthController::class,'forgot_password'])
 Route::put('/v1/auth/resetpassword',[AuthController::class,'update_password']);
 
 Route::get('/v1/profile', [ProfileController::class, 'index'])->middleware('auth:sanctum');
+Route::put('/v1/profile', [ProfileController::class, 'update'])->middleware('auth:sanctum');
 Route::post('/v1/profile/username', [ProfileController::class, 'update_username'])->middleware('auth:sanctum');
 Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->middleware('auth:sanctum');
-Route::put('/v1/profile/identitas', [ProfileController::class, 'update_identitas'])->middleware('auth:sanctum');
 Route::get('/v1/profile/perangkat', [ProfileController::class, 'perangakat_active'])->middleware('auth:sanctum');
 Route::delete('/v1/profile/perangkat', [ProfileController::class, 'destroy_device'])->middleware('auth:sanctum');
-
 
 Route::get('/v1/over-view/observations', [ProfileController::class, 'observation'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/resume', [ProfileController::class, 'resume'])->middleware('auth:sanctum');
@@ -70,7 +69,6 @@ Route::get('/v1/over-view/uric-acid', [ProfileController::class, 'uric_acid'])->
 Route::get('/v1/over-view/glucose', [ProfileController::class, 'glucose'])->middleware('auth:sanctum');
 
 Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');
-
 Route::post('/v1/files', [FileController::class, 'store']);
 Route::post('/v1/files/save', [FileController::class, 'save']);
 

@@ -17,6 +17,7 @@ class EducationResource extends JsonResource
 //        return parent::toArray($request);
         return [
             'id'            => $this->id,
+            'grade'         => $this->grade,
             'code'          => $this->kode,
             'pendidikan'    => $this->pendidikan,
             'level'         => $this->level,

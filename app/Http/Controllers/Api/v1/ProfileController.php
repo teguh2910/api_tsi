@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ObservationResource;
 use App\Http\Resources\TokenResource;
+use App\Models\Education;
+use App\Models\Marital_status;
 use App\Models\Observation;
 use App\Models\Personal_access_token;
+use App\Models\Religion;
 use App\Models\User;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
@@ -67,6 +70,63 @@ class ProfileController extends Controller
             'message'           => 'success',
             'content'           => $data_user
         ]);
+    }
+    public function update(Request $request)
+    {
+        $user           = Auth::user();
+        $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
+        $pendidikan     = Education::where('kode', $request->pendidikan)->first();
+        $agama          = Religion::where('_id', $request->id_agama)->first();
+        $validator      = Validator::make($request->all(), [
+            'nama_depan'    => 'required',
+            'nama_belakang' => 'required',
+            'gender'        => 'required',
+            'tanggal_lahir' => 'required',
+            'tempat_lahir'  => 'required',
+            'id_agama'      => 'required',
+            'status_menikah'=> 'required',
+            'pendidikan'    => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'gagal validasi',
+                'data'          => [
+                    'errors' => $validator->errors()
+                ]
+            ],422);
+        }
+        $data_update = [
+            'nama'      => [
+                'nama_depan'    => $request->nama_depan,
+                'nama_belakang' => $request->nama_belakang,
+            ],
+            'gelar'     => [
+                'gelar_depan'   => $request->gelar_depan,
+                'gelar_belakang'=> $request->gelar_belakang,
+            ],
+            'gender'    => $request->gender,
+            'lahir'     => [
+                'tanggal'   => $request->tanggal_lahir,
+                'tempat'    => $request->tempat_lahir
+            ],
+            'agama'     => [
+                'id'        => $agama->_id,
+                'name'      => $agama->name
+            ],
+            'status_menikah'    => [
+                'code'      => $status_menikah->code,
+                'display'   => $status_menikah->display
+            ],
+            'suku'          => $request->suku,
+            'warga_negara'  => $request->warga_negara,
+            'pendidikan'    => [
+                'kode'      => $pendidikan->kode,
+                'pendidikan'=> $pendidikan->pendidikan,
+            ]
+        ];
+        $update_profile = $user->update($request->all());
+
     }
     public function update_username(Request $request)
     {
@@ -173,24 +233,7 @@ class ProfileController extends Controller
             ]
         ],401);
     }
-    public function update_identitas(Request $request)
-    {
-        $user           = Auth::user();
-        $validator      = Validator::make($request->all(), [
-            'nik'       => 'required|numeric'
-        ]);
-        if($validator->fails()){
-            return response()->json([
-                'status_code'   => 422,
-                'message'       => 'gagal validasi',
-                'data'          => [
-                    'errors' => $validator->errors()
-                ]
-            ],422);
-        }
-        $update_profile = $user->update($request->all());
 
-    }
     public function perangakat_active(){
         $token = PersonalAccessToken::where('tokenable_id', Auth::id());
         $token_list = TokenResource::collection($token->get());
