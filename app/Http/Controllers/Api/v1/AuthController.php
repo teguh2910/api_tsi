@@ -19,6 +19,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
@@ -250,7 +251,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_depan'        => 'required',
             'nama_belakang'     => 'required',
-            'gender'            => 'required',
+            'gender'            => ['required',Rule::in(['male', 'female'])],
             'nik'               => 'integer|unique:users,nik',
             'email'             => 'email:rfc,dns|unique:users,kontak.email',
             'nomor_telepon'     => 'required|unique:users,kontak.nomor_telepon',
