@@ -54,6 +54,7 @@ class ProfileController extends Controller
 
         $data_user = [
             'id'            => Auth::id(),
+            'gelar'         => Auth::user()['gelar'],
             'nama_depan'    => Auth::user()['nama']['nama_depan'],
             'nama_belakang' => Auth::user()['nama']['nama_belakang'],
             'gender'        => Auth::user()['gender'],
@@ -62,14 +63,22 @@ class ProfileController extends Controller
             'nik'           => Auth::user()['nik'],
             'email'         => Auth::user()['kontak']['email'],
             'nomor_telepon' => Auth::user()['kontak']['nomor_telepon'],
+            'agama'         => Auth::user()['agama'],
+            'pendidikan'    => Auth::user()['pendidikan'],
+            'suku'          => Auth::user()['suku'],
+            'warga_negara'  => Auth::user()['warga_negara'],
+            'passport'      => Auth::user()['passport'],
+            'bpjs_kesehatan'=> Auth::user()['bpjs_kesehatan'],
             'status_pernikahan' => $status_nikah,
             'kit'               => Auth::user()['kit'],
-            'alamat'        => $alamat
+            'alamat'            => $alamat,
         ];
         return response()->json([
-            'status_code'       => 200,
-            'message'           => 'success',
-            'content'           => $data_user
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'user'      => $data_user
+            ]
         ]);
     }
     public function null_param(Request $request){
@@ -131,7 +140,8 @@ class ProfileController extends Controller
                 'kode'      => $pendidikan->kode,
                 'pendidikan'=> $pendidikan->pendidikan,
             ],
-            'pasport'       => $request->pasport
+            'passport'      => $request->passport,
+            'bpjs_kesehatan'=> $request->bpjs_kesehatan
         ];
         $update_profile = $user->update($data_update);
 
