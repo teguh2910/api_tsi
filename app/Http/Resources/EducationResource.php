@@ -18,7 +18,7 @@ class EducationResource extends JsonResource
         return [
             'id'            => $this->id,
             'grade'         => $this->grade,
-            'code'          => $this->kode,
+            'kode'          => $this->kode,
             'pendidikan'    => $this->pendidikan,
             'level'         => $this->level,
             'jenis'         => $this->jenis

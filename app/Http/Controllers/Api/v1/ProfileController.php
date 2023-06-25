@@ -15,6 +15,7 @@ use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class ProfileController extends Controller
@@ -71,22 +72,28 @@ class ProfileController extends Controller
             'content'           => $data_user
         ]);
     }
+    public function null_param(Request $request){
+        $user = User::where($request->param, null)->update([$request->param => $request->value]);
+        return response($user);
+    }
     public function update(Request $request)
     {
-        $user           = Auth::user();
-        $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
-        $pendidikan     = Education::where('kode', $request->pendidikan)->first();
-        $agama          = Religion::where('_id', $request->id_agama)->first();
+
         $validator      = Validator::make($request->all(), [
             'nama_depan'    => 'required',
             'nama_belakang' => 'required',
-            'gender'        => 'required',
+            'gender'        => ['required',Rule::in(['male', 'female'])],
             'tanggal_lahir' => 'required',
             'tempat_lahir'  => 'required',
-            'id_agama'      => 'required',
+            'agama'         => ['required',Rule::in(['Islam', 'Kristen', 'Katholik', 'Hindu', 'Konghuchu', 'Buddha', 'Aliran Kepercayaan'])],
             'status_menikah'=> 'required',
-            'pendidikan'    => 'required'
+            'pendidikan'    => 'required',
+            'warga_negara'  => Rule::in(['WNI', 'WNA'])
         ]);
+        $user           = Auth::user();
+        $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
+        $pendidikan     = Education::where('kode', $request->pendidikan)->first();
+        $agama          = Religion::where('name', $request->agama)->first();
         if($validator->fails()){
             return response()->json([
                 'status_code'   => 422,
@@ -123,9 +130,10 @@ class ProfileController extends Controller
             'pendidikan'    => [
                 'kode'      => $pendidikan->kode,
                 'pendidikan'=> $pendidikan->pendidikan,
-            ]
+            ],
+            'pasport'       => $request->pasport
         ];
-        $update_profile = $user->update($request->all());
+        $update_profile = $user->update($data_update);
 
     }
     public function update_username(Request $request)
