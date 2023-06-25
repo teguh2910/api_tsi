@@ -24,7 +24,7 @@ class ProfileController extends Controller
     public function index()
     {
         if(isset(Auth::user()['status_menikah'])){
-            $status_nikah = Auth::user()['status_menikah']['display'];
+            $status_nikah = Auth::user()['status_menikah'];
         }else{
             $status_nikah   = "";
         }
@@ -79,7 +79,7 @@ class ProfileController extends Controller
             'data'          => [
                 'user'      => $data_user
             ]
-        ]);
+        ],200);
     }
     public function null_param(Request $request){
         $user = User::where($request->param, null)->update([$request->param => $request->value]);
