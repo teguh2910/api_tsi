@@ -144,7 +144,15 @@ class ProfileController extends Controller
             'bpjs_kesehatan'=> $request->bpjs_kesehatan
         ];
         $update_profile = $user->update($data_update);
-
+        if($update_profile){
+            return response()->json([
+                'status_code'   => 200,
+                'message'       => 'success',
+                'data'          => [
+                    'user'      => $data_update
+                ]
+            ]);
+        }
     }
     public function update_username(Request $request)
     {
