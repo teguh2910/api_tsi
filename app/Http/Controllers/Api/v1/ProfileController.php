@@ -69,7 +69,7 @@ class ProfileController extends Controller
             'warga_negara'  => Auth::user()['warga_negara'],
             'passport'      => Auth::user()['passport'],
             'bpjs_kesehatan'=> Auth::user()['bpjs_kesehatan'],
-            'status_pernikahan' => $status_nikah,
+            'status_menikah' => $status_nikah,
             'kit'               => Auth::user()['kit'],
             'alamat'            => $alamat,
         ];
@@ -95,12 +95,12 @@ class ProfileController extends Controller
             'tanggal_lahir' => 'required',
             'tempat_lahir'  => 'required',
             'agama'         => ['required',Rule::in(['Islam', 'Kristen', 'Katholik', 'Hindu', 'Konghuchu', 'Buddha', 'Aliran Kepercayaan'])],
-            'status_pernikahan'=> 'required',
+            'status_menikah'=> 'required',
             'pendidikan'    => 'required',
             'warga_negara'  => Rule::in(['WNI', 'WNA'])
         ]);
         $user           = Auth::user();
-        $status_menikah = Marital_status::where('code', $request->status_pernikahan)->first();
+        $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
         $pendidikan     = Education::where('kode', $request->pendidikan)->first();
         $agama          = Religion::where('name', $request->agama)->first();
         if($validator->fails()){
