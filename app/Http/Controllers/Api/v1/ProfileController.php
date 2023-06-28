@@ -95,7 +95,7 @@ class ProfileController extends Controller
             'tanggal_lahir' => 'required',
             'tempat_lahir'  => 'required',
             'agama'         => ['required',Rule::in(['Islam', 'Kristen', 'Katholik', 'Hindu', 'Konghuchu', 'Buddha', 'Aliran Kepercayaan'])],
-            'status_menikah'=> 'required',
+            'status_pernikahan'=> 'required',
             'pendidikan'    => 'required',
             'warga_negara'  => Rule::in(['WNI', 'WNA'])
         ]);
