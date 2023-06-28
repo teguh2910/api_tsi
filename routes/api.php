@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\v1\ConsultationController;
 use App\Http\Controllers\Api\v1\CustomerController;
 use App\Http\Controllers\Api\v1\DiastoleController;
 use App\Http\Controllers\Api\v1\EducationController;
+use App\Http\Controllers\Api\v1\FirestoreController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\KitController;
 use App\Http\Controllers\Api\v1\LinkedUserController;
@@ -162,3 +163,5 @@ Route::post('v1/family', [LinkedUserController::class,'store'])->middleware('aut
 Route::get('v1/family/user', [LinkedUserController::class,'list_by_id'])->middleware('auth:sanctum');
 Route::post('v1/family/user', [LinkedUserController::class,'linking'])->middleware('auth:sanctum');
 Route::put('v1/family/user/unlink', [LinkedUserController::class,'unlink'])->middleware('auth:sanctum');
+
+Route::get('v1/firestore/users', [FirestoreController::class,'index'])->middleware('auth:sanctum');

@@ -27,7 +27,10 @@ class UserController extends Controller
             "status"        => "success",
             "status_code"   => 200,
             "time"          => time(),
-            "content"       => $user
+            "data"          => [
+                'count'     => User::count(),
+                'users'     => $user
+            ]
         ];
         return response()->json($data,200);
     }

@@ -468,7 +468,7 @@ class ProfileController extends Controller
     }
     public function observation(Request $request){
         $paginate       = $request->header('paginate');
-        $observation    = Observation::where('id_pasien', Auth::id())->paginate($paginate);
+        $observation    = Observation::where('id_pasien', Auth::id())->orderBy('time', 'DESC')->paginate($paginate);
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',

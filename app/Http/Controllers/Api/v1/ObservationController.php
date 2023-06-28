@@ -78,7 +78,7 @@ class ObservationController extends Controller
             $status_code    = 200;
             $message        = "success";
         }
-        $observation = ObservationResource::collection($query_observasi->orderBy($order_by, $sort)->paginate(2)) ;
+        $observation = ObservationResource::collection($query_observasi->orderBy($order_by, $sort)->paginate($request->paginate)) ;
         return response()->json([
             'status_code'   => $status_code,
             'message'       => $message,
