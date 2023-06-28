@@ -100,7 +100,7 @@ class ProfileController extends Controller
             'warga_negara'  => Rule::in(['WNI', 'WNA'])
         ]);
         $user           = Auth::user();
-        $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
+        $status_menikah = Marital_status::where('code', $request->status_pernikahan)->first();
         $pendidikan     = Education::where('kode', $request->pendidikan)->first();
         $agama          = Religion::where('name', $request->agama)->first();
         if($validator->fails()){
