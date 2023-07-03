@@ -139,7 +139,7 @@ class AuthController extends Controller
                     ];
                     return response()->json([
                         'status_code'   => $status_code,
-                        '$message'      => $message,
+                        'message'       => $message,
                         'data'          => $data
                     ], $status_code);
                 }

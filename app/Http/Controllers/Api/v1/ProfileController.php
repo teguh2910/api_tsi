@@ -474,6 +474,23 @@ class ProfileController extends Controller
             ]
         ],200);
     }
+    public function stunting(){
+        $height_code = "8302-2";
+        $stunting = $this->child_observation($height_code)->getOriginalContent();
+        return response($stunting);
+    }
+    public function status_gizi(){
+        $weight_code = "29463-7";
+        $status_gizi = $this->child_observation($weight_code)->getOriginalContent();
+        return response($status_gizi);
+    }
+    private function child_observation($code){
+        $observation = Observation::where([
+            'pasien.parent.id_induk'=> Auth::id(),
+            'coding.code'           => $code
+        ])->latest()->first();
+        return response($observation);
+    }
     public function observation(Request $request){
         $paginate       = $request->header('paginate');
         $observation    = Observation::where('id_pasien', Auth::id())->orderBy('time', 'DESC')->paginate($paginate);

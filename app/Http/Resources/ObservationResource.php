@@ -17,6 +17,7 @@ class ObservationResource extends JsonResource
         return [
             'id'            => $this->_id,
             'id_pasien'     => $this->id_pasien,
+            'pasien'        => $this->pasien,
             'id_petugas'    => $this->id_petugas,
             'atm_sehat'     => $this->atm_sehat,
             'coding'        => $this->coding,

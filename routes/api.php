@@ -69,6 +69,8 @@ Route::get('/v1/over-view/bmi', [ProfileController::class, 'bmi'])->middleware('
 Route::get('/v1/over-view/cholesterol', [ProfileController::class, 'cholesterol'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/uric-acid', [ProfileController::class, 'uric_acid'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/glucose', [ProfileController::class, 'glucose'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/statusGizi', [ProfileController::class, 'status_gizi'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/stunting', [ProfileController::class, 'stunting'])->middleware('auth:sanctum');
 
 Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');
 Route::post('/v1/files', [FileController::class, 'store']);

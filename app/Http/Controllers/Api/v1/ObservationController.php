@@ -212,9 +212,18 @@ class ObservationController extends Controller
     }
     public function diastole(Request $request){
         $validator      = Validator::make($request->all(), [
-            'diastolic'     => 'required|numeric|min:10|max:300',
+            'diastolic'     => 'required|numeric|min:10|max:200',
             'id_pasien'     => 'required'
         ]);
+        if($request->diastolic < 10 or $request->diastolic > 200){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'nilai diastolic bernilai antara 11-199',
+                'data'          => [
+                    "errors"    => $validator->errors()
+                ]
+            ],422);
+        }
         if($validator->fails()){
             return response()->json([
                 'status_code'   => 422,
@@ -233,6 +242,15 @@ class ObservationController extends Controller
             'suhu'      => 'required|numeric|min:35|max:45',
             'id_pasien' => 'required'
         ]);
+        if($request->suhu < 35 or $request->suhu > 43){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'nilai suhu harus bernilai antara 35.00-42.9',
+                'data'          => [
+                    "errors"    => $validator->errors()
+                ]
+            ],422);
+        }
         if($validator->fails()){
             return response()->json([
                 'status_code'   => 422,
@@ -289,6 +307,15 @@ class ObservationController extends Controller
         $pasien             = User::where('_id',$id_pasien)->first();
         $category_code      = 'vital-signs';
         $observation_code   = "29463-7";
+        if($request->weight < 1 or $request->weight > 300){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'nilai berat badan harus bernilai antara 1.00-299.9',
+                'data'          => [
+                    "errors"    => $validation->errors()
+                ]
+            ],422);
+        }
         if($validation->fails())
         {
             return response()->json([
@@ -415,6 +442,15 @@ class ObservationController extends Controller
         ]);
         $id_pasien          = $request->id_pasien;
         $pasien             = User::where('_id',$id_pasien)->first();
+        if($request->height < 40 or $request->height > 250){
+            return response()->json([
+                'status_code'   => 422,
+                'message'       => 'nilai berat badan harus bernilai antara 1.00-299.9',
+                'data'          => [
+                    "errors"    => $validation->errors()
+                ]
+            ],422);
+        }
         if($validation->fails())
         {
             return response()->json([
@@ -436,22 +472,12 @@ class ObservationController extends Controller
         $category_code      = 'vital-signs';
         $observation_code   = "8302-2";
         $weight_code        = "29463-7";
-        $tanggal_lahir      = $pasien->lahir['tanggal'];
-        $birthDate          = new \DateTime($tanggal_lahir);
-        $today              = new \DateTime("today");
-        $y                  = $today->diff($birthDate)->y;
-        $m                  = $today->diff($birthDate)->m;
-        $d                  = $today->diff($birthDate)->d;
-        $usia               = [
-            'tahun'         => $y,
-            'bulan'         => $m,
-            'hari'          => $d
-        ];
+        $umur               = $this->usia($pasien->lahir['tanggal'])->getOriginalContent();
 
-        if($y<1){
-            $usia = $m;
+        if($umur['tahun']<1){
+            $usia = $umur['bulan'];
         }else{
-            $usia = ($y*12)+$m;
+            $usia = ($umur['tahun']*12)+$umur['bulan'];
         }
         $weight             = Observation::where([
             'id_pasien'     => $id_pasien,
@@ -1069,6 +1095,15 @@ class ObservationController extends Controller
                 'value'         => $value,
                 'unit'          => $unit,
                 'id_pasien'     => $id_pasien,
+                'pasien'        => [
+                    'id'        => $pasien->_id,
+                    'nama'      => $pasien->nama,
+                    'gender'    => $pasien->gender,
+                    'nik'       => $pasien->nik,
+                    'lahir'     => $pasien->lahir,
+                    'usia'      => $this->usia($pasien->lahir['tanggal'])->getOriginalContent(),
+                    'parent'    => $pasien->family
+                ],
                 'id_petugas'    => Auth::id(),
                 'atm_sehat'     => $data_atm_sehat,
                 'time'          => time(),
@@ -1110,14 +1145,7 @@ class ObservationController extends Controller
     }
     private function user($id){
         $user = User::find($id);
-        $data_user  = [
-            "nama"      => $user->nama,
-            "ttl"       => $user->lahir,
-            "gender"    => $user->gender,
-            "nik"       => $user->nik,
-            "kontak"    => $user->kontak
-        ];
-        return response($data_user);
+        return response($user);
     }
 
     public function show($id)
@@ -1163,7 +1191,18 @@ class ObservationController extends Controller
         //
     }
 
-    private function string($usia)
+    private function usia($tgl_lahir)
     {
+        $birthDate      = new \DateTime($tgl_lahir);
+        $today          = new \DateTime("today");
+        $y              = $today->diff($birthDate)->y;
+        $m              = $today->diff($birthDate)->m;
+        $d              = $today->diff($birthDate)->d;
+        $usia           = [
+            'tahun'         => $y,
+            'bulan'         => $m,
+            'hari'          => $d
+        ];
+        return response($usia);
     }
 }
