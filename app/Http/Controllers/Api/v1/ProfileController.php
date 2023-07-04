@@ -474,31 +474,46 @@ class ProfileController extends Controller
             ]
         ],200);
     }
-    public function stunting(){
+    public function stunting(Request $request){
         $height_code = "8302-2";
-        $stunting = $this->child_observation($height_code)->getOriginalContent();
-        return response($stunting);
+        $stunting = $this->child_observation($height_code, $request->limit)->getOriginalContent();
+        $data = [
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'stunting'   => $stunting
+            ]
+        ];
+        return response($data);
     }
-    public function status_gizi(){
+    public function status_gizi(Request $request){
         $weight_code = "29463-7";
-        $status_gizi = $this->child_observation($weight_code)->getOriginalContent();
-        return response($status_gizi);
+        $status_gizi = $this->child_observation($weight_code, $request->limit)->getOriginalContent();
+        $data = [
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => [
+                'status_gizi'   => $status_gizi
+            ]
+        ];
+        return response()->json($data, 200);
     }
-    private function child_observation($code){
-        $observation = Observation::where([
+    private function child_observation($code, $limit=1){
+        $data_observation = Observation::where([
             'pasien.parent.id_induk'=> Auth::id(),
             'coding.code'           => $code
-        ])->latest()->first();
+        ])->orderBy('time', 'DESC')->limit($limit)->get();
+        $observation = ObservationResource::collection($data_observation);
         return response($observation);
     }
     public function observation(Request $request){
         $paginate       = $request->header('paginate');
-        $observation    = Observation::where('id_pasien', Auth::id())->orderBy('time', 'DESC')->paginate($paginate);
+        $observation    = Observation::where('id_pasien', Auth::id())->orWhere('pasien.parent.id_induk', Auth::id())->orderBy('time', 'DESC')->paginate($paginate);
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
             'data'          => [
-                'observations'   => $observation
+                'observations'   => ObservationResource::collection($observation)
             ]
         ],200);
     }

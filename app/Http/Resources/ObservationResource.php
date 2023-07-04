@@ -28,6 +28,7 @@ class ObservationResource extends JsonResource
             ],
             'base_line'     => $this->base_line,
             'interpretation'=> $this->interpretation,
+
         ];
     }
 }
