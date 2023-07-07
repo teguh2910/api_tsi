@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ObservationResource;
 use App\Models\Observation;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -78,22 +79,38 @@ class HealthOverViewController extends Controller
         $code_chole     = "2093-3";
         $code_UA        = "3084-1";
         $bmi_code       = "39156-5";
+        $family         = User::where('family.id_induk', Auth::id());
+        $count          = $family->count();
+
+        $data = [
+            'systole'           => $this->lates($code_sistole)->getOriginalContent(),
+            'diastole'          => $this->lates($code_diastolic)->getOriginalContent(),
+            'hearth_rate'       => $this->lates($hr_code)->getOriginalContent(),
+            'body_temperature'  => $this->lates($body_temp_code)->getOriginalContent(),
+            'body_weight'       => $this->lates($body_weight_code)->getOriginalContent(),
+            'body_height'       => $this->lates($code_height)->getOriginalContent(),
+            'oxygen_saturation' => $this->lates($code_spo2)->getOriginalContent(),
+            'blood_glucose'     => $this->lates($code_glucose)->getOriginalContent(),
+            'blood_cholesterole'=> $this->lates($code_chole)->getOriginalContent(),
+            'uric_acid'         => $this->lates($code_UA)->getOriginalContent(),
+            'bmi'               => $this->lates($bmi_code)->getOriginalContent(),
+        ];
+        if($count>0){
+            $x= 0;
+            while ($x < $count){
+                $data['status_gizi']= "Anak Ke ".$x+1;
+                $x++;
+            }
+
+        }
+
+
+
         return response()->json([
             'status_code'   => 200,
             'message'       => 'success',
-            'data'          => [
-                'systole'           => $this->lates($code_sistole)->getOriginalContent(),
-                'diastole'          => $this->lates($code_diastolic)->getOriginalContent(),
-                'hearth_rate'       => $this->lates($hr_code)->getOriginalContent(),
-                'body_temperature'  => $this->lates($body_temp_code)->getOriginalContent(),
-                'body_weight'       => $this->lates($body_weight_code)->getOriginalContent(),
-                'body_height'       => $this->lates($code_height)->getOriginalContent(),
-                'oxygen_saturation' => $this->lates($code_spo2)->getOriginalContent(),
-                'blood_glucose'     => $this->lates($code_glucose)->getOriginalContent(),
-                'blood_cholesterole'=> $this->lates($code_chole)->getOriginalContent(),
-                'uric_acid'         => $this->lates($code_UA)->getOriginalContent(),
-                'bmi'               => $this->lates($bmi_code)->getOriginalContent()
-            ]
+            'data'          => $data
+
         ]);
     }
     public function systole(Request $request){
