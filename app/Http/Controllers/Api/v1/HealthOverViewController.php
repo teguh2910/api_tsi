@@ -56,18 +56,9 @@ class HealthOverViewController extends Controller
             ]
         ]);
     }
+
     public function latest(){
-        $tanggal_lahir = Auth::user()['lahir']['tanggal'];
-        $birthDate = new \DateTime($tanggal_lahir);
-        $today  = new \DateTime("today");
-        $y      = $today->diff($birthDate)->y;
-        $m      = $today->diff($birthDate)->m;
-        $d      = $today->diff($birthDate)->d;
-        $usia   = [
-            'tahun'         => $y,
-            'bulan'         => $m,
-            'hari'          => $d
-        ];
+
         $code_sistole   = "8480-6";
         $code_diastolic = "8462-4";
         $hr_code        = "8867-4";
@@ -95,16 +86,6 @@ class HealthOverViewController extends Controller
             'uric_acid'         => $this->lates($code_UA)->getOriginalContent(),
             'bmi'               => $this->lates($bmi_code)->getOriginalContent(),
         ];
-        if($count>0){
-            $x= 0;
-            while ($x < $count){
-                $data['status_gizi']= "Anak Ke ".$x+1;
-                $x++;
-            }
-
-        }
-
-
 
         return response()->json([
             'status_code'   => 200,
@@ -246,8 +227,29 @@ class HealthOverViewController extends Controller
         ],200);
     }
     public function stunting(Request $request){
-        $height_code = "8302-2";
-        $stunting = $this->child_observation($height_code, $request->limit)->getOriginalContent();
+        $height_code    = "8302-2";
+        $id_pasien      = $request->id_anak;
+        $pasien         = User::where('_id', $id_pasien)->first();
+        if(empty($pasien)){
+            $data =[
+                'status_code'   => 404,
+                'message'       => 'ID anak tidak terdaftar'
+            ];
+            return response()->json($data, 404);
+        }elseif (! isset($pasien->family['id_induk'])) {
+            $data =[
+                'status_code'   => 404,
+                'message'       => 'ID anak bukan bagian dari keluarga',
+            ];
+            return response()->json($data, 404);
+        }elseif ($pasien->family['id_induk'] != Auth::id()){
+            $data =[
+                'status_code'   => 404,
+                'message'       => 'ID anak bukan bagian dari keluarga',
+            ];
+            return response()->json($data, 404);
+        }
+        $stunting       = $this->child_observation($height_code, $id_pasien, $request->limit)->getOriginalContent();
         $data = [
             'status_code'   => 200,
             'message'       => 'success',
@@ -258,8 +260,29 @@ class HealthOverViewController extends Controller
         return response($data);
     }
     public function status_gizi(Request $request){
-        $weight_code = "29463-7";
-        $status_gizi = $this->child_observation($weight_code, $request->limit)->getOriginalContent();
+        $id_pasien      = $request->id_anak;
+        $pasien         = User::where('_id', $id_pasien)->first();
+        if(empty($pasien)){
+            $data =[
+                'status_code'   => 404,
+                'message'       => 'ID anak tidak terdaftar'
+            ];
+            return response()->json($data, 404);
+        }elseif (! isset($pasien->family['id_induk'])) {
+            $data =[
+                'status_code'   => 404,
+                'message'       => 'ID anak bukan bagian dari keluarga',
+            ];
+            return response()->json($data, 404);
+        }elseif ($pasien->family['id_induk'] != Auth::id()){
+            $data =[
+                'status_code'   => 404,
+                'message'       => 'ID anak bukan bagian dari keluarga',
+            ];
+            return response()->json($data, 404);
+        }
+        $weight_code    = "29463-7";
+        $status_gizi    = $this->child_observation($weight_code, $id_pasien, $request->limit)->getOriginalContent();
         $data = [
             'status_code'   => 200,
             'message'       => 'success',
@@ -269,11 +292,12 @@ class HealthOverViewController extends Controller
         ];
         return response()->json($data, 200);
     }
-    private function child_observation($code, $limit=1){
+    private function child_observation($code,$id_pasien,$limit=1){
         $data_observation = Observation::where([
+            'id_pasien'             => $id_pasien,
             'pasien.parent.id_induk'=> Auth::id(),
             'coding.code'           => $code
-        ])->orderBy('time', 'DESC')->limit($limit)->get();
+        ])->where('pasien.usia.tahun', "<", 6)->orderBy('time', 'DESC')->limit($limit)->get();
         $observation = ObservationResource::collection($data_observation);
         return response($observation);
     }
@@ -304,5 +328,18 @@ class HealthOverViewController extends Controller
         ])->latest()->first();
 
         return response($myObservation);
+    }
+    private function usia($tanggal_lahir){
+        $birthDate  = new \DateTime($tanggal_lahir);
+        $today      = new \DateTime("today");
+        $y          = $today->diff($birthDate)->y;
+        $m          = $today->diff($birthDate)->m;
+        $d          = $today->diff($birthDate)->d;
+        $usia       = [
+            'tahun'         => $y,
+            'bulan'         => $m,
+            'hari'          => $d
+        ];
+        return response($usia);
     }
 }
