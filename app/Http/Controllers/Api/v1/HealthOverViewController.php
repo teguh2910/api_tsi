@@ -72,19 +72,37 @@ class HealthOverViewController extends Controller
         $bmi_code       = "39156-5";
         $family         = User::where('family.id_induk', Auth::id());
         $count          = $family->count();
-
+        $id_pasien      = Auth::id();
         $data = [
-            'systole'           => $this->lates($code_sistole)->getOriginalContent(),
-            'diastole'          => $this->lates($code_diastolic)->getOriginalContent(),
-            'hearth_rate'       => $this->lates($hr_code)->getOriginalContent(),
-            'body_temperature'  => $this->lates($body_temp_code)->getOriginalContent(),
-            'body_weight'       => $this->lates($body_weight_code)->getOriginalContent(),
-            'body_height'       => $this->lates($code_height)->getOriginalContent(),
-            'oxygen_saturation' => $this->lates($code_spo2)->getOriginalContent(),
-            'blood_glucose'     => $this->lates($code_glucose)->getOriginalContent(),
-            'blood_cholesterole'=> $this->lates($code_chole)->getOriginalContent(),
-            'uric_acid'         => $this->lates($code_UA)->getOriginalContent(),
-            'bmi'               => $this->lates($bmi_code)->getOriginalContent(),
+            'systole'           => $this->lates($code_sistole, $id_pasien)->getOriginalContent(),
+            'diastole'          => $this->lates($code_diastolic, $id_pasien)->getOriginalContent(),
+            'hearth_rate'       => $this->lates($hr_code, $id_pasien)->getOriginalContent(),
+            'body_temperature'  => $this->lates($body_temp_code, $id_pasien)->getOriginalContent(),
+            'body_weight'       => $this->lates($body_weight_code, $id_pasien)->getOriginalContent(),
+            'body_height'       => $this->lates($code_height, $id_pasien)->getOriginalContent(),
+            'oxygen_saturation' => $this->lates($code_spo2, $id_pasien)->getOriginalContent(),
+            'blood_glucose'     => $this->lates($code_glucose, $id_pasien)->getOriginalContent(),
+            'blood_cholesterole'=> $this->lates($code_chole, $id_pasien)->getOriginalContent(),
+            'uric_acid'         => $this->lates($code_UA, $id_pasien)->getOriginalContent(),
+            'bmi'               => $this->lates($bmi_code, $id_pasien)->getOriginalContent(),
+        ];
+
+        return response()->json([
+            'status_code'   => 200,
+            'message'       => 'success',
+            'data'          => $data
+
+        ]);
+    }
+    public function child_observation_latest(Request $request){
+        $body_weight_code   = "29463-7";
+        $code_height        = "8302-2";
+        $family             = User::where('family.id_induk', Auth::id());
+        $count              = $family->count();
+        $id_pasien          = $request->id_anak;
+        $data = [
+            'status_gizi'   => $this->lates($body_weight_code, $id_pasien)->getOriginalContent(),
+            'stunting'      => $this->lates($code_height, $id_pasien)->getOriginalContent(),
         ];
 
         return response()->json([
@@ -321,10 +339,10 @@ class HealthOverViewController extends Controller
 
         return response($myObservation);
     }
-    private function lates($observation_code){
+    private function lates($observation_code, $id_pasien){
         $myObservation  = Observation::where([
             'coding.code'   => $observation_code,
-            'id_pasien'     => Auth::id()
+            'id_pasien'     => $id_pasien
         ])->latest()->first();
 
         return response($myObservation);

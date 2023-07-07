@@ -73,6 +73,7 @@ Route::get('/v1/over-view/uric-acid', [HealthOverViewController::class, 'uric_ac
 Route::get('/v1/over-view/glucose', [HealthOverViewController::class, 'glucose'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/statusGizi', [HealthOverViewController::class, 'status_gizi'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/stunting', [HealthOverViewController::class, 'stunting'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/latestFamily', [HealthOverViewController::class, 'child_observation_latest'])->middleware('auth:sanctum');
 
 Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');
 Route::post('/v1/files', [FileController::class, 'store']);
