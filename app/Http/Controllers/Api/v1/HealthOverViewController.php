@@ -95,14 +95,31 @@ class HealthOverViewController extends Controller
         ]);
     }
     public function child_observation_latest(Request $request){
+        $code_sistole       = "8480-6";
+        $code_diastolic     = "8462-4";
+        $hr_code            = "8867-4";
+        $body_temp_code     = "8310-5";
         $body_weight_code   = "29463-7";
         $code_height        = "8302-2";
+        $code_spo2          = "59408-5";
+        $code_glucose       = "2345-7";
+        $bmi_code           = "39156-5";
+
         $family             = User::where('family.id_induk', Auth::id());
         $count              = $family->count();
         $id_pasien          = $request->id_anak;
         $data = [
-            'status_gizi'   => $this->lates($body_weight_code, $id_pasien)->getOriginalContent(),
-            'stunting'      => $this->lates($code_height, $id_pasien)->getOriginalContent(),
+            'status_gizi'       => $this->lates($body_weight_code, $id_pasien)->getOriginalContent(),
+            'stunting'          => $this->lates($code_height, $id_pasien)->getOriginalContent(),
+            'bmi'               => $this->lates($bmi_code, $id_pasien)->getOriginalContent(),
+            'spo2'              => $this->lates($code_spo2, $id_pasien)->getOriginalContent(),
+            'systole'           => $this->lates($code_sistole, $id_pasien)->getOriginalContent(),
+            'diastole'          => $this->lates($code_diastolic, $id_pasien)->getOriginalContent(),
+            'hearth_rate'       => $this->lates($hr_code, $id_pasien)->getOriginalContent(),
+            'body_temperature'  => $this->lates($body_temp_code, $id_pasien)->getOriginalContent(),
+            'blood_glucose'     => $this->lates($code_glucose, $id_pasien)->getOriginalContent(),
+
+
         ];
 
         return response()->json([
