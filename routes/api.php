@@ -71,9 +71,9 @@ Route::get('/v1/over-view/bmi', [HealthOverViewController::class, 'bmi'])->middl
 Route::get('/v1/over-view/cholesterol', [HealthOverViewController::class, 'cholesterol'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/uric-acid', [HealthOverViewController::class, 'uric_acid'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/glucose', [HealthOverViewController::class, 'glucose'])->middleware('auth:sanctum');
-Route::get('/v1/over-view/statusGizi', [HealthOverViewController::class, 'status_gizi'])->middleware('auth:sanctum');
-Route::get('/v1/over-view/stunting', [HealthOverViewController::class, 'stunting'])->middleware('auth:sanctum');
-Route::get('/v1/over-view/latestFamily', [HealthOverViewController::class, 'child_observation_latest'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/family/statusGizi', [HealthOverViewController::class, 'status_gizi'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/family/stunting', [HealthOverViewController::class, 'stunting'])->middleware('auth:sanctum');
+Route::get('/v1/over-view/family/latest', [HealthOverViewController::class, 'child_observation_latest'])->middleware('auth:sanctum');
 
 Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middleware('auth:sanctum');
 Route::post('/v1/files', [FileController::class, 'store']);
