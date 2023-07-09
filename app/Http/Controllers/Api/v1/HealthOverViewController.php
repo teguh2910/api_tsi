@@ -56,6 +56,28 @@ class HealthOverViewController extends Controller
             ]
         ]);
     }
+    public function family_resume(){
+        $user    = User::where('family.id_induk', Auth::id());
+        $data_user= $user->get();
+
+        $x = array();
+        $y = array();
+
+        for ($i = 1; $i <= $user->count(); $i++) {
+            $observation= Observation::where('id_pasien', $data_user[$i]['_id']);
+            for ($weeks=1; $weeks <= 4; $weeks++) {
+                $b[]= array(
+                    'Colname'                     =>  'Cash&Bank',
+                    'weeks'.$weeks                  =>  $weeks
+                );
+                $x = $x+$b;
+            }
+            $y = $y+$x;
+        }
+
+        $arr['table'] = $y;
+        echo json_encode($arr);
+    }
 
     public function latest(){
 
