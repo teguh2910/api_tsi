@@ -15,7 +15,7 @@
             <div class="card-body">
                 <p>Anda telah berhasil login dengan detail berikut:</p>
                 <p>IP : {{ $data_email['server']['ip'] }}</p>
-                <p>Browser : {{ $data_email['server']['browser'] }}</p>
+{{--                <p>Browser : {{ $data_email['server']['browser'] }}</p>--}}
                 <p>Time : {{ date('Y-m-d H:i:s') }}</p>
                 <p>Silahkan ganti password, jika kegiatan login ini tanpa otoritas dari pemilik akun.</p>
                 <p>Salam</p>
