@@ -75,7 +75,7 @@ class AuthController extends Controller
                         'content'   => auth()->user(),
                         'server'    => [
                             'ip'        => $_SERVER['REMOTE_ADDR'],
-                            'browser'   => $_SERVER['HTTP_USER_AGENT'],
+//                            'browser'   => $_SERVER['HTTP_USER_AGENT'],
                             'time'      => time()
                         ]
                     ];
