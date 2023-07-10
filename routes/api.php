@@ -13,12 +13,13 @@ use App\Http\Controllers\Api\v1\FirestoreController;
 use App\Http\Controllers\Api\v1\HealthOverViewController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\KitController;
-use App\Http\Controllers\Api\v1\KuesionerController;
 use App\Http\Controllers\Api\v1\LinkedUserController;
 use App\Http\Controllers\Api\v1\LogUserKitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
 use App\Http\Controllers\Api\v1\OfficerController;
 use App\Http\Controllers\Api\v1\ProfileController;
+use App\Http\Controllers\Api\v1\QuestionController;
+use App\Http\Controllers\Api\v1\QuestionnaireController;
 use App\Http\Controllers\Api\v1\ReligionController;
 use App\Http\Controllers\Api\v1\SystoleController;
 use App\Http\Controllers\Api\v1\UserController;
@@ -177,6 +178,10 @@ Route::put('v1/family/user/unlink', [LinkedUserController::class,'unlink'])->mid
 
 Route::get('v1/firestore/users', [FirestoreController::class,'index'])->middleware('auth:sanctum');
 
-Route::get('v1/kuesioners', [KuesionerController::class, 'index'])->middleware('auth:sanctum');
-Route::post('v1/kuesioners', [KuesionerController::class, 'store'])->middleware('auth:sanctum');
-Route::put('v1/kuesioners', [KuesionerController::class, 'update'])->middleware('auth:sanctum');
+Route::get('v1/questionnaire', [QuestionnaireController::class, 'index'])->middleware('auth:sanctum');
+Route::post('v1/questionnaire', [QuestionnaireController::class, 'store'])->middleware('auth:sanctum');
+Route::put('v1/questionnaire', [QuestionnaireController::class, 'update'])->middleware('auth:sanctum');
+
+Route::get('v1/questions', [QuestionController::class, 'index'])->middleware('auth:sanctum');
+Route::post('v1/questions', [QuestionController::class, 'store'])->middleware('auth:sanctum');
+Route::put('v1/questions', [QuestionController::class, 'update'])->middleware('auth:sanctum');

@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kuesioner;
+use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class KuesionerController extends Controller
+class QuestionnaireController extends Controller
 {
     public function index()
     {
-        $kuesioner = Kuesioner::all();
+        $kuesioner = Questionnaire::all();
         if($kuesioner->count() < 1){
             $satatus_code   = 404;
             $message        = 'Not Found';
@@ -30,9 +31,9 @@ class KuesionerController extends Controller
             ];
         }
         return response()->json([
-        'status_code'    => $satatus_code,
-        'message'        => $message,
-        'data'           => $data
+            'status_code'    => $satatus_code,
+            'message'        => $message,
+            'data'           => $data
         ], $satatus_code);
     }
     public function store(Request $request)
@@ -50,7 +51,7 @@ class KuesionerController extends Controller
                 'errors' => $validator->errors()
             ];
         }else{
-            $kuesioner      = new Kuesioner();
+            $kuesioner      = new Questionnaire();
             $data_kuesioner = [
                 "judul"             => $request->judul,
                 "status"            => $request->status,
@@ -62,9 +63,9 @@ class KuesionerController extends Controller
                     "kontak"    => Auth::user()['kontak'],
                 ]
             ];
-            $db_kuesioner = Kuesioner::where([
-               'judul'              => $request->judul,
-               'creator.user_id'    => Auth::id()
+            $db_kuesioner = Questionnaire::where([
+                'judul'              => $request->judul,
+                'creator.user_id'    => Auth::id()
             ]);
             if($db_kuesioner->count() > 0 ){
                 $satatus_code   = 422;
@@ -111,7 +112,7 @@ class KuesionerController extends Controller
             ];
         }else{
             $id_kuesioner   = $request->id_kuesioner;
-            $kuesioner      = Kuesioner::where('_id', $id_kuesioner)->first();
+            $kuesioner      = Questionnaire::where('_id', $id_kuesioner)->first();
             if(empty($kuesioner) ){
                 $satatus_code   = 404;
                 $message        = 'Not Found';

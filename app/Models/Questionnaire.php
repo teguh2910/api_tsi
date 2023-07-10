@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model ;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 
-class Kuesioner extends Model
+class Questionnaire extends Model
 {
     use HasFactory, HasApiTokens,SoftDeletes;
     protected $connection   = 'mongodb';
