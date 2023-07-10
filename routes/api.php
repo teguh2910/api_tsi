@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\v1\KitController;
 use App\Http\Controllers\Api\v1\LinkedUserController;
 use App\Http\Controllers\Api\v1\LogUserKitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
+use App\Http\Controllers\Api\v1\OfficerController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\ReligionController;
 use App\Http\Controllers\Api\v1\SystoleController;
@@ -152,6 +153,8 @@ Route::get('v1/kits/{id}', [KitController::class,'show'])->middleware('auth:sanc
 Route::post('/v1/kits/user/connect', [KitController::class,'link'])->middleware('auth:sanctum');
 Route::put('/v1/kits/user/unlink', [KitController::class,'unlink'])->middleware('auth:sanctum');
 
+Route::get('/v1/petugas', [OfficerController::class, 'index'])->middleware('auth:sanctum');
+Route::post('/v1/petugas', [OfficerController::class, 'store'])->middleware('auth:sanctum');
 
 Route::post('v1/logKit', [LogUserKitController::class,'store'])->middleware('auth:sanctum');
 
