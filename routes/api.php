@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\v1\FirestoreController;
 use App\Http\Controllers\Api\v1\HealthOverViewController;
 use App\Http\Controllers\Api\v1\HearthRateController;
 use App\Http\Controllers\Api\v1\KitController;
+use App\Http\Controllers\Api\v1\KuesionerController;
 use App\Http\Controllers\Api\v1\LinkedUserController;
 use App\Http\Controllers\Api\v1\LogUserKitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
@@ -175,3 +176,7 @@ Route::post('v1/family/user', [LinkedUserController::class,'linking'])->middlewa
 Route::put('v1/family/user/unlink', [LinkedUserController::class,'unlink'])->middleware('auth:sanctum');
 
 Route::get('v1/firestore/users', [FirestoreController::class,'index'])->middleware('auth:sanctum');
+
+Route::get('v1/kuesioners', [KuesionerController::class, 'index'])->middleware('auth:sanctum');
+Route::post('v1/kuesioners', [KuesionerController::class, 'store'])->middleware('auth:sanctum');
+Route::put('v1/kuesioners', [KuesionerController::class, 'update'])->middleware('auth:sanctum');
