@@ -8,7 +8,7 @@
         "php": "^8.0.2",
         "aws/aws-sdk-php": "^3.260",
         "google/cloud-firestore": "^1.35",
-        "google/cloud-storage": "^1.30",
+        "google/cloud-storage": "^1.33",
         "grpc/grpc": "^1.38",
         "guzzlehttp/guzzle": "^7.2",
         "jenssegers/mongodb": "^3.9",

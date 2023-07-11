@@ -14,4 +14,9 @@ class Question extends Model
     protected $primaryKey   = '_id';
     protected $dates        = ['deleted_at'];
     protected $guarded      = [];
+
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
 }

@@ -23,11 +23,23 @@ class AnswerController extends Controller
                 'errors' => $validator->errors(),
             ];
         }else{
-            $status_code    = 422;
-            $message        = "Gagal Validasi";
-            $data = [
-                'errors' => $validator->errors(),
-            ];
+            $question = Question::where('_id', $request->question_id);
+            if($question->count() < 1 ){
+                $status_code    = 404;
+                $message        = "Wrong question_id";
+                $data = [
+                    'questions' => ''
+                ];
+            }else{
+                $answer = Question::find($request->question_id)->answer;
+
+                $status_code    = 200;
+                $message        = "success";
+                $data = [
+                    'answer' => $answer
+                ];
+            }
+
         }
         $data_json = [
             "status_code"   => $status_code,
