@@ -17,7 +17,7 @@ class FileController extends Controller
     }
     public function store(Request $request){
         $validator = Validator::make($request->all(),[
-            'file'  => 'required|image|size:2000',
+            'file'  => 'required|image',
         ]);
         if ($validator->fails()) {
             $status_code    = 422;
