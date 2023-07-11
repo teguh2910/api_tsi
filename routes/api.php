@@ -86,6 +86,7 @@ Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middle
 Route::get('/v1/files', [FileController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/v1/files', [FileController::class, 'store'])->middleware('auth:sanctum');
 Route::get('/v1/file', [FileController::class, 'show'])->middleware('auth:sanctum');
+Route::post('/profile/foto', [FileController::class, 'store'])->middleware('auth:sanctum');
 
 Route::resource('/v1/education', EducationController::class)->middleware('auth:sanctum');
 Route::resource('/v1/users', UserController::class)->middleware('auth:sanctum');

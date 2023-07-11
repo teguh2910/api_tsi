@@ -70,8 +70,9 @@ class ProfileController extends Controller
             'passport'      => Auth::user()['passport'],
             'bpjs_kesehatan'=> Auth::user()['bpjs_kesehatan'],
             'status_menikah' => $status_nikah,
-            'kit'               => Auth::user()['kit'],
-            'alamat'            => $alamat,
+            'kit'           => Auth::user()['kit'],
+            'alamat'        => $alamat,
+            'foto'          => Auth::user()['foto']
         ];
         return response()->json([
             'status_code'   => 200,
