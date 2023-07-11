@@ -7,6 +7,7 @@ use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class FileController extends Controller
 {
@@ -15,6 +16,16 @@ class FileController extends Controller
 
     }
     public function store(Request $request){
+        $validator = Validator::make($request->all(),[
+            'file'  => 'required|image|size:2000',
+        ]);
+        if ($validator->fails()) {
+            $status_code    = 422;
+            $message        = "Gagal Validasi";
+            $data = [
+                'errors' => $validator->errors(),
+            ];
+        }
         $file = $request->file('file');
         $result     = Storage::disk('public')->putFileAs('image', $file, $file->hashName());
         $url        = Storage::disk('public')->url($result);
