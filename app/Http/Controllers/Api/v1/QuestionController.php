@@ -26,6 +26,7 @@ class QuestionController extends Controller
                 'errors' => $validator->errors(),
             ];
         }else{
+
             $kuesioner = Questionnaire::where('_id', $request->questionnaire_id);
             if($kuesioner->count() < 1){
                 $status_code    = 404;
@@ -35,7 +36,7 @@ class QuestionController extends Controller
                     'kuesioner' => $kuesioner->get(),
                 ];
             }else{
-                $questions      = Question::where('kuesioner.id', $request->questionnaire_id);
+                $questions      = Question::where('questionnaire.id', $request->questionnaire_id);
                 $status_code    = 200;
                 $message        = "success";
                 $data = [
@@ -66,26 +67,58 @@ class QuestionController extends Controller
             ];
         }else{
             $questionnaire = Questionnaire::where('_id', $request->questionnaire_id)->first();
-            $data_question = [
-                'questionnaire' => $questionnaire,
-                'question'      => $request->question,
-                'tipe_jawaban'  => $request->tipe_jawaban
-            ];
-            $question   = new Question();
-            $create     = $question->create($data_question);
-            if($create){
-                $status_code    = 200;
-                $message        = "success";
+            if($questionnaire->count() < 1){
+                $status_code    = 422;
+                $message        = "Wrong questionnaire id";
                 $data = [
-                    'question' => $data_question,
+                    'questionnaire_id' => $request->questionnaire_id,
                 ];
             }else{
-                $status_code    = 204;
-                $message        = "Un success";
-                $data = [
-                    'question' => $data_question,
-                ];
+                $db_question = Question::where([
+                    'questionnaire.id'  => $request->questionnaire_id,
+                    'question'          => $request->question
+                ]);
+                if($db_question->count() > 0 ){
+                    $status_code    = 422;
+                    $message        = "Tidak boleh ada pertanyaan yang sama dalam satu kuesioner";
+                    $data = [
+                        'question' => $request->question,
+                    ];
+                }else{
+                    if(empty($request->bobot)){
+                        $bobot = 1;
+                    }else{
+                        $bobot = $request->bobot;
+                    }
+                    $data_question = [
+                        'questionnaire' => [
+                            'id'                => $questionnaire->_id,
+                            'judul'             => $questionnaire->judul,
+                            'creator'           => $questionnaire->creator
+                        ],
+                        'question'      => $request->question,
+                        'tipe_jawaban'  => $request->tipe_jawaban,
+                        'bobot'         => $bobot
+                    ];
+                    $question   = new Question();
+                    $create     = $question->create($data_question);
+                    if($create){
+                        $status_code    = 200;
+                        $message        = "success";
+                        $data = [
+                            'question' => $data_question,
+                        ];
+                    }else{
+                        $status_code    = 204;
+                        $message        = "Un success";
+                        $data = [
+                            'question' => $data_question,
+                        ];
+                    }
+                }
             }
+
+
         }
         $data_json = [
             "status_code"   => $status_code,
