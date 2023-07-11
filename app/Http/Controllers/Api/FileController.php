@@ -36,7 +36,13 @@ class FileController extends Controller
                     'foto'  => url($url)
                 ]);
             }
-            return response()->json($data_file);
+            return response()->json([
+                'status_code'   => 200,
+                'message'       => 'success',
+                'data'          => [
+                    'file'      => url($url)
+                ]
+            ]);
         }
     }
     public function show(Request $request)
