@@ -63,7 +63,7 @@ class FileController extends Controller
     }
     public function profile(Request $request){
         $validator = Validator::make($request->all(),[
-            'file'  => 'required|mimes:jpg,bmp,png|max:200',
+            'file'  => 'required|mimes:jpg,bmp,png|max:2000',
         ]);
         $file = $request->file('file');
         if ($file->getSize() > 200000) {
