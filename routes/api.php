@@ -60,6 +60,8 @@ Route::post('/v1/profile/username', [ProfileController::class, 'update_username'
 Route::put('/v1/profile/alamat', [ProfileController::class, 'update_alamat'])->middleware('auth:sanctum');
 Route::get('/v1/profile/perangkat', [ProfileController::class, 'perangakat_active'])->middleware('auth:sanctum');
 Route::delete('/v1/profile/perangkat', [ProfileController::class, 'destroy_device'])->middleware('auth:sanctum');
+Route::post('/profile/foto', [FileController::class, 'profile'])->middleware('auth:sanctum');
+Route::get('/v1/profile/foto', [FileController::class, 'showFotoProfile'])->middleware('auth:sanctum');
 
 Route::get('/v1/over-view/latest', [HealthOverViewController::class, 'latest'])->middleware('auth:sanctum');
 Route::get('/v1/over-view/observations', [HealthOverViewController::class, 'observation'])->middleware('auth:sanctum');
@@ -86,7 +88,8 @@ Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middle
 Route::get('/files', [FileController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/files', [FileController::class, 'store'])->middleware('auth:sanctum');
 Route::get('/file', [FileController::class, 'show'])->middleware('auth:sanctum');
-Route::post('/profile/foto', [FileController::class, 'profile'])->middleware('auth:sanctum');
+Route::get('/file/private', [FileController::class, ''])->middleware('auth:sanctum');
+
 
 Route::resource('/v1/education', EducationController::class)->middleware('auth:sanctum');
 Route::resource('/v1/users', UserController::class)->middleware('auth:sanctum');
