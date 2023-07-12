@@ -3,6 +3,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-success"><b>Identitas</b></div>
+
                 <div class="card-body">
                     <table class="table table-sm table-striped">
                         <tr>
@@ -25,26 +26,7 @@
                                 @enderror
                             </td>
                         </tr>
-                        <tr>
-                            <th>Gelar Depan</th>
-                            <td>:</td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" name="gelar_depan" value="{{ old('gelar_depan', $users->gelar['gelar_depan'])  }}">
-                                @error('gelar_depan')
-                                <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Gelar Belakang</th>
-                            <td>:</td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" name="gelar_belakang" value="{{ old('gelar_belakang', $users->gelar['gelar_belakang']) }}">
-                                @error('gelar_belakang')
-                                <small class="text-danger">{{$message}}</small>
-                                @enderror
-                            </td>
-                        </tr>
+
                         <tr>
                             <th>NIK</th>
                             <td>:</td>

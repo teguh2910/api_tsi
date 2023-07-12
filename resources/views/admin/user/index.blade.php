@@ -1,3 +1,4 @@
+
 @extends('layout.admin')
 @section('content')
     <section class="content">
@@ -9,6 +10,8 @@
 
                         <div class="card-body">
                             <a href="{{ route('users.create') }}" class="btn btn-primary mb-2">Add User</a>
+
+
                             <table class="table table-sm mt-2" id="example1">
                                 <thead>
                                 <th>#</th>

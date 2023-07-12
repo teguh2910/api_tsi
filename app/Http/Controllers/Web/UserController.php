@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -85,6 +86,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
+
         $user = User::find($id);
         $data = [
             "title"     => "Detail User",
@@ -106,14 +108,19 @@ class UserController extends Controller
     public function edit($id)
     {
         $token          = 'Authorization: Bearer 645706809498aea6a30091c2|QJESpLWRUr1CRQTwjvYQ4L3ZiuCvirpyLQccCh3d';
+        $encryptedToken = encrypt($token);
+        $save_session   = Session::put('token', $encryptedToken);
+        $encryptedToken = Session::get('token');
+        $decryptedToken = decrypt($encryptedToken);
+
         $url            = 'https://dev.atm-sehat.com/api/v1/maritalStatus';
         $method         = 'GET';
-        $pernikahan     = json_decode($this->curl_get($token, $url, $method)->original);
+        $pernikahan     = json_decode($this->curl_get($decryptedToken, $url, $method)->original);
         $marital_status = $pernikahan->data->marital_status;
         $url            = 'https://dev.atm-sehat.com/api/v1/religion';
-        $agama          = json_decode($this->curl_get($token, $url, $method)->original)->data->religion;
+        $agama          = json_decode($this->curl_get($decryptedToken, $url, $method)->original)->data->religion;
         $url            = 'https://dev.atm-sehat.com/api/v1/wilayah/provinsi';
-        $provinces      = json_decode($this->curl_get($token, $url, $method)->original)->data->provinsi;
+        $provinces      = json_decode($this->curl_get($decryptedToken, $url, $method)->original)->data->provinsi;
         $user           = User::find($id);
         $data       = [
             "title"         => "Edit User",

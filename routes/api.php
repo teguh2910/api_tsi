@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\v1\ConsultantController;
 use App\Http\Controllers\Api\v1\ConsultationController;
 use App\Http\Controllers\Api\v1\CustomerController;
 use App\Http\Controllers\Api\v1\DiastoleController;
+use App\Http\Controllers\Api\v1\DrugController;
 use App\Http\Controllers\Api\v1\EducationController;
 use App\Http\Controllers\Api\v1\FirestoreController;
 use App\Http\Controllers\Api\v1\HealthOverViewController;
@@ -195,3 +196,6 @@ Route::put('v1/questions', [QuestionController::class, 'update'])->middleware('a
 
 Route::get('v1/answer', [AnswerController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/answer', [AnswerController::class, 'store'])->middleware('auth:sanctum');
+
+Route::get('v1/drugs', [DrugController::class, 'index'])->middleware('auth:sanctum');
+Route::post('v1/drugs', [DrugController::class, 'store'])->middleware('auth:sanctum');

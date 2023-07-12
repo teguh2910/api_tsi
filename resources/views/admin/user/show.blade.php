@@ -16,7 +16,7 @@
                                                     <th>Nama</th>
                                                     <td>:</td>
                                                     <td>@if(isset($users->gelar['gelar_depan']) and $users->gelar['gelar_depan'] !=''){{ $users->gelar['gelar_depan'] }}. @endif{{ $users->nama['nama_depan'] }} {{ $users->nama['nama_belakang'] }}@if(isset($users->gelar['gelar_belakang']) and $users->gelar['gelar_belakang'] !=''), {{ $users->gelar['gelar_belakang'] }}  @endif</td>
-                                                </tr>
+                                               </tr>
                                                 <tr>
                                                     <th>NIK</th>
                                                     <td>:</td>
