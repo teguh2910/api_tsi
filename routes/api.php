@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\v1\AnswerController;
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\v1\ChatController;
+use App\Http\Controllers\Api\v1\ChatRoomController;
 use App\Http\Controllers\Api\v1\CodeController;
 use App\Http\Controllers\Api\v1\ConsultantController;
 use App\Http\Controllers\Api\v1\ConsultationController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\v1\KitController;
 use App\Http\Controllers\Api\v1\LinkedUserController;
 use App\Http\Controllers\Api\v1\LogUserKitController;
 use App\Http\Controllers\Api\v1\MaritalStatusController;
+use App\Http\Controllers\Api\v1\ObservationController;
 use App\Http\Controllers\Api\v1\OfficerController;
 use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\Api\v1\QuestionController;
@@ -26,7 +28,6 @@ use App\Http\Controllers\Api\v1\ReligionController;
 use App\Http\Controllers\Api\v1\SystoleController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\WilayahController;
-use App\Http\Controllers\Api\v1\ObservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -155,6 +156,10 @@ Route::put('v1/consultations/{id}', [ConsultationController::class, 'update'])->
 
 Route::get('v1/chats', [ChatController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/chats', [ChatController::class,'store'])->middleware('auth:sanctum');
+
+Route::get('v1/chatRooms', [ChatRoomController::class,'index'])->middleware('auth:sanctum');
+Route::get('v1/chatRoom/user', [ChatRoomController::class,'user'])->middleware('auth:sanctum');
+Route::get('v1/chatRoom/show', [ChatRoomController::class,'show'])->middleware('auth:sanctum');
 
 Route::get('v1/kits', [KitController::class,'index'])->middleware('auth:sanctum');
 Route::post('v1/kits', [KitController::class,'store'])->middleware('auth:sanctum');
