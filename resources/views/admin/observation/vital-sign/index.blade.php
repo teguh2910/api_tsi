@@ -14,7 +14,7 @@
                                 <th>Nama Observasi</th>
                                 <th>Code</th>
                                 <th>Hasil</th>
-                                <th>Unit</th>
+                                <th>Interpretation</th>
                                 <th>Time</th>
                                 <th>Aksi</th>
                                 </thead>
@@ -22,11 +22,20 @@
                                 @foreach($observation as $data)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $data->coding['display'] }}</td>
+                                        <td>
+                                            {{ $data->coding['display'] }} <br>
+                                            @if(! empty($data->pasien))
+                                                {{ $data->pasien['nama']['nama_depan']. " ".$data->pasien['nama']['nama_belakang'] }}
+                                            @endif
+                                        </td>
                                         <td>{{ $data->coding['code'] }}</td>
-                                        <td>{{ round($data->value, 2) }}</td>
-                                        <td>{{ $data->unit['display'] }}</td>
-                                        <td>{{ date('Y-m-d H:i:s', $data->time) }}</td>
+                                        <td>{{ round($data->value, 2) }} <br> <small>{{ $data->unit['display'] }}</small></td>
+                                        <td>
+                                            @if(! empty($data->interpretation))
+                                                {{ $data->interpretation['display'] }}
+                                            @endif
+                                        </td>
+                                        <td>{{ date('Y-m-d', $data->time) }} <br> <small>{{ date('H:i:s', $data->time) }}</small> </td>
                                         <td><a href="" class="btn btn-sm btn-info">Detail</a></td>
                                     </tr>
                                 @endforeach

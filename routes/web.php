@@ -1,12 +1,15 @@
 <?php
 
+
 use App\Http\Controllers\Api\v1\CustomerController;
+use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BaseLineController;
 use App\Http\Controllers\web\CodeController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\Web\KitController;
 use App\Http\Controllers\web\MaritalStatusController;
+use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\ReligionController;
@@ -27,6 +30,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('login', [AuthController::class, 'postLogin'])->name('auth.postLogin');
+Route::get('register', [AuthController::class, 'register'])->name('auth.register');
+Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword');
+
+Route::get('message', [MessageController::class, 'index'])->name('message.index');
+
 Route::get('profile', [ProfileController::class,'profile'])->name('profile.index');
 Route::get('users', [UserController::class,'index'])->name('users.index');
 Route::get('user', [UserController::class,'create'])->name('users.create');

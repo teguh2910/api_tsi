@@ -42,7 +42,8 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('profile.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
+
+                        <i class="nav-icon fas fa-user-circle"></i>
                         <p>My Profile<span class="right badge badge-danger">New</span></p>
                     </a>
                 </li>

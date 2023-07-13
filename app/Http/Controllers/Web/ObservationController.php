@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ObservationController extends Controller
 {
     public function index(){
-        $bservation = Observation::orderBy('time', 'DESC')->paginate(5);
+        $bservation = Observation::orderBy('time', 'DESC')->get();
         $data = [
             "title"             => "Marital Status",
             "class"             => "Marital Status",

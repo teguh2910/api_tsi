@@ -1,4 +1,4 @@
-@extends('layout.admin')
+@extends('layout.user')
 @section('content')
     <!-- Main content -->
 
@@ -6,7 +6,6 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-3 col-md-4 col-sm-6">
-
                         <!-- Profile Image -->
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
@@ -15,11 +14,8 @@
                                          src="{{ $user->foto['url'] }}"
                                          alt="User profile picture">
                                 </div>
-
                                 <h3 class="profile-username text-center">{{ $user['nama']['nama_depan']." ".$user['nama']['nama_belakang'] }}</h3>
-
                                 <p class="text-muted text-center">{{ $user->nik }}</p>
-
                                 <ul class="list-group list-group-unbordered">
                                     <li class="list-group-item">
                                         <b>Tempat Lahir</b> <a class="float-right text-success">{{ $user->lahir['tempat'] }}</a>
@@ -38,7 +34,6 @@
                             <!-- /.card-body -->
                         </div>
                         <!-- /.card -->
-
                         <!-- About Me Box -->
                         <div class="card card-primary">
                             <div class="card-header">
@@ -46,31 +41,35 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-
                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Adderess</strong>
-
                                 <p class="text-muted">
-                                    Pesona Cilebut 2 Blok CB6 No. 30<br>
-                                    Cilebut Barat,  Sukaraja, Kab. Bogor, Jawa Barat                </p>
-
-                                <hr>
+                                    @if(!empty($user->address))
+                                        {{ $user->address['jalan'] }} No. {{ $user->address['nomor_rumah'] }} RT/RW : {{ $user->address['rukun_tetangga'] }} / {{ $user->address['rukun_warga'] }}<br>
+                                        {{ $user->address['kelurahan']['nama_kelurahan'] }},  {{ $user->address['kecamatan']['nama_kecamatan'] }}, {{ ucwords(strtolower($user->address['kota']['nama_kota'])) }}, {{ ucwords(strtolower($user->address['provinsi']['nama_provinsi'])) }}
+                                </p>
+                                @endif
+                                    <hr>
                                 <strong><i class="fas fa-book mr-1"></i> Education</strong>
-
                                 <p class="text-muted">
-                                    Ners <br>Universitas Binawan<br>2020-10-01                </p>
+                                    @if(!empty($user->pendidikan))
+                                        {{ $user->pendidikan['pendidikan'] }}
+                                    @endif
+                                </p>
+                                <hr>
+                                <strong><i class="fas fa-users"></i> Status Menikah</strong>
+                                <p class="text-muted">
+                                    {{ $user->status_menikah['display'] }}
+                                </p>
 
                                 <hr>
 
-                                <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
-
+                                <strong><i class="fas fa-bed"></i> BPJS</strong>
                                 <p class="text-muted">
-                                    PK1 Neurosains<br>
-                                    Perawat Terampil                </p>
-
-                                <hr>
-
-                                <strong><i class="fas fa-bed"></i> Ruangan</strong>
-                                <p class="text-muted">Komite Keperawatan</p>
+                                    @if(!empty($user->bpjs_kesehatan))
+                                        {{ $user->bpjs_kesehatan['nomor'] }} <br>
+                                        {{ $user->bpjs_kesehatan['type'] }}
+                                    @endif
+                                </p>
                             </div>
                             <!-- /.card-body -->
                         </div>
