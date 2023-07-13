@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\Web\KitController;
 use App\Http\Controllers\web\MaritalStatusController;
 use App\Http\Controllers\web\ObservationController;
+use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\ReligionController;
 use App\Http\Controllers\Web\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+Route::get('profile', [ProfileController::class,'profile'])->name('profile.index');
 Route::get('users', [UserController::class,'index'])->name('users.index');
 Route::get('user', [UserController::class,'create'])->name('users.create');
 Route::post('users', [UserController::class,'store'])->name('users.store');

@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="https://rspon.net/ppni/simk/user/" class="nav-link">
+                    <a href="{{ route('profile.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>My Profile<span class="right badge badge-danger">New</span></p>
                     </a>
