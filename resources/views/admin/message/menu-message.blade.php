@@ -15,28 +15,7 @@ $my_id      = "64ab60837fb2f5709001bbe2";
         </div>
         <div class="card-body p-0">
             <ul class="nav nav-pills flex-column">
-                <li class="nav-item active">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-inbox"></i> Inbox
-                        <span class="badge bg-primary float-right">12</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-envelope"></i> Sent
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-file-alt"></i> Drafts
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-filter"></i> Junk
-                        <span class="badge bg-warning float-right">65</span>
-                    </a>
-                </li>
+
                 <?php
                 $chat_rooms = \App\Models\ChatRoom::where([
                     'user1' => $my_id

@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- DataTables -->
     <link rel="stylesheet"
+          href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet"
           href="https://rspon.net/ppni/assets/AdminLTE/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet"
           href="https://rspon.net/ppni/assets/AdminLTE/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
@@ -21,6 +23,7 @@
           href="https://rspon.net/ppni/assets/AdminLTE/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="https://rspon.net/ppni/assets/AdminLTE/dist/css/adminlte.min.css">
+
 </head>
 
 <body class="hold-transition sidebar-mini">
