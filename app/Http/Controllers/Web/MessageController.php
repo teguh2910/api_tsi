@@ -7,6 +7,7 @@ use App\Http\Resources\ChatRoomResource;
 use App\Models\Chat;
 use App\Models\ChatRoom;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -87,5 +88,26 @@ class MessageController extends Controller
 //            echo $json_chat_input;
             return redirect("/message/$request->id_chat_room");
         }
+    }
+    public function guzzle(Request $request)
+    {
+        $chat_input = [
+            'id_chat_room'  => $request->id_chat_room,
+            'id_receiver'   => $request->id_receiver,
+            'message'       => $request->message
+        ];
+        $json_chat_input    = json_encode($chat_input);
+        $client     = new Client();
+        $headers    = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer 64ab62d159953fca6103a002|Vay5hQzTq8fPptJEdej0M5bBckzDlTe02nRjxDIL'
+        ];
+        $body       = $json_chat_input;
+        $url        = "https://dev.atm-sehat.com/api/v1/chats";
+        $method     = "POST";
+        $request    = new Request($method, $url, $headers, $body);
+        $res        = $client->sendAsync($request)->wait();
+        echo $res->getBody();
+
     }
 }

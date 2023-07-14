@@ -39,7 +39,7 @@ Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('a
 
 Route::get('messages', [MessageController::class, 'index'])->name('message.index');
 Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');
-Route::post('message', [MessageController::class, 'store_chat'])->name('message.room.store');
+Route::post('message', [MessageController::class, 'guzzle'])->name('message.room.store');
 
 Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
 
