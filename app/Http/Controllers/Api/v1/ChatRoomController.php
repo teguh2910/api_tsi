@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ChatRoomResource;
 use App\Models\Chat;
 use App\Models\ChatRoom;
 use Illuminate\Http\Request;
@@ -19,14 +20,14 @@ class ChatRoomController extends Controller
             $message        = "Not Found";
             $data = [
                 'count'     => $chat_rooms->count(),
-                'chat_rooms' => $chat_rooms,
+                'chat_rooms' => ChatRoomResource::collection($chat_rooms),
             ];
         }else{
             $status_code    = 200;
             $message        = "success";
             $data = [
                 'count'     => $chat_rooms->count(),
-                'chat_rooms' => $chat_rooms,
+                'chat_rooms' => ChatRoomResource::collection($chat_rooms),
             ];
         }
         $respons = [

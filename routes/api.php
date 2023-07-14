@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\v1\ChatRoomController;
 use App\Http\Controllers\Api\v1\CodeController;
 use App\Http\Controllers\Api\v1\ConsultantController;
 use App\Http\Controllers\Api\v1\ConsultationController;
+use App\Http\Controllers\Api\v1\CounselorController;
 use App\Http\Controllers\Api\v1\CustomerController;
 use App\Http\Controllers\Api\v1\DiastoleController;
 use App\Http\Controllers\Api\v1\DrugController;
@@ -204,3 +205,6 @@ Route::post('v1/answer', [AnswerController::class, 'store'])->middleware('auth:s
 
 Route::get('v1/drugs', [DrugController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/drugs', [DrugController::class, 'store'])->middleware('auth:sanctum');
+
+Route::get('v1/counselors', [CounselorController::class, 'index'])->middleware('auth:sanctum');
+Route::post('v1/counselors', [CounselorController::class, 'store'])->middleware('auth:sanctum');

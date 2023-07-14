@@ -34,12 +34,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                <li class="nav-item">
-                    <a href="https://rspon.net/ppni/simk/dashboard/" class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('profile.index') }}" class="nav-link">
 
@@ -56,21 +51,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('marital_status') }}" class="nav-link">
+                    <a href="{{ route('message.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>
                         <p>
-                            Master
+                            Messages
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('observation.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-calculator"></i>
-                        <p>
-                            Observation
-                        </p>
-                    </a>
-                </li>
+
                 <li class="nav-header">EXAMPLES</li>
 
                 <li class="nav-item">

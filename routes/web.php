@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\Web\KitController;
 use App\Http\Controllers\web\MaritalStatusController;
+use App\Http\Controllers\Web\MeetingController;
 use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
 use App\Http\Controllers\Web\ProfileController;
@@ -36,7 +37,10 @@ Route::post('login', [AuthController::class, 'postLogin'])->name('auth.postLogin
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword');
 
-Route::get('message', [MessageController::class, 'index'])->name('message.index');
+Route::get('messages', [MessageController::class, 'index'])->name('message.index');
+Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');
+
+Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
 
 Route::get('profile', [ProfileController::class,'profile'])->name('profile.index');
 Route::get('users', [UserController::class,'index'])->name('users.index');
