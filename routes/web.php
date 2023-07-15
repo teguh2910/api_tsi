@@ -33,7 +33,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('login', [AuthController::class, 'login'])->name('auth.login');
-Route::post('login', [AuthController::class, 'postLogin'])->name('auth.postLogin');
+Route::post('postLogin', [AuthController::class, 'postLogin'])->name('auth.postLogin');
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword');
 

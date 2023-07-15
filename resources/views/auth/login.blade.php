@@ -7,7 +7,8 @@
 
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session {{ $_SERVER['HTTP_USER_AGENT'] }}</p>
+                <p class="login-box-msg">Sign in to start your session</p>
+
                 <form action="{{ route('auth.postLogin') }}" method="post">
                     @csrf
                     <div class="mb-3">
