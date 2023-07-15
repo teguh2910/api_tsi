@@ -54,7 +54,7 @@ $my_id      = "64ab60837fb2f5709001bbe2";
                     ?>
                 @foreach($counselor as  $counselor)
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('message.user', ['id'=>$counselor->_id]) }}" class="nav-link">
                             <i class="far fa-circle text-danger"></i>
                             <strong> {{ $counselor->nama['nama_depan'] }} </strong>
                         </a>

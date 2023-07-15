@@ -55,59 +55,49 @@ class MessageController extends Controller
     }
     public function store_chat(Request $request)
     {
+        $id_chat_room = $request->id_chat_room;
         $chat_input = [
             'id_chat_room'  => $request->id_chat_room,
             'id_receiver'   => $request->id_receiver,
             'message'       => $request->message
         ];
         $json_chat_input    = json_encode($chat_input);
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://dev.atm-sehat.com/api/v1/chats',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>$json_chat_input,
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Authorization: Bearer 64ab62d159953fca6103a002|Vay5hQzTq8fPptJEdej0M5bBckzDlTe02nRjxDIL'
-            ),
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        if($response){
-
-            return redirect("/message/$request->id_chat_room");
-        }else{
-//            echo $json_chat_input;
-            return redirect("/message/$request->id_chat_room");
-        }
-    }
-    public function guzzle(Request $request)
-    {
-        $chat_input = [
-            'id_chat_room'  => $request->id_chat_room,
-            'id_receiver'   => $request->id_receiver,
-            'message'       => $request->message
-        ];
-        $json_chat_input    = json_encode($chat_input);
-        $client     = new Client();
-        $headers    = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer 64ab62d159953fca6103a002|Vay5hQzTq8fPptJEdej0M5bBckzDlTe02nRjxDIL'
-        ];
         $body       = $json_chat_input;
         $url        = "https://dev.atm-sehat.com/api/v1/chats";
         $method     = "POST";
-        $request    = new Request($method, $url, $headers, $body);
-        $res        = $client->sendAsync($request)->wait();
-        echo $res->getBody();
+        $client = new Client();
 
+        $response = $client->post($url, [
+            'headers' => [
+                'Authorization' => 'Bearer 64ab62d159953fca6103a002|Vay5hQzTq8fPptJEdej0M5bBckzDlTe02nRjxDIL',
+            ],
+            'form_params' => $chat_input
+        ]);
+        $statusCode = $response->getStatusCode();
+        $body = $response->getBody()->getContents();
+        $tujuan ="message/$request->id_chat_room";
+        if ($statusCode == 200) {
+            return redirect()->route('message.room',['id'=>$id_chat_room]);
+        } else {
+            // Error
+            return "Gagal mengirim formulir: " . $body;
+        }
+    }
+    public function user($id)
+    {
+        $client = new Client();
+        $url    = "https://dev.atm-sehat.com/api/v1/chatRoom/user?id_receiver=$id";
+        $header = [
+            'Authorization' => 'Bearer 64ab62d159953fca6103a002|Vay5hQzTq8fPptJEdej0M5bBckzDlTe02nRjxDIL',
+        ];
+        $response = $client->get($url, [
+            'headers' => $header
+        ]);
+        $statusCode = $response->getStatusCode();
+        if ($statusCode == 200) {
+            return redirect()->route('message.room',['id'=>$id]);
+        } else {
+            return "Gagal mengirim formulir: ";
+        }
     }
 }

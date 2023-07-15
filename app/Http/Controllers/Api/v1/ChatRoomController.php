@@ -73,7 +73,7 @@ class ChatRoomController extends Controller
             ]);
             if($chat_rooms->count() < 1){
                 $this->store(Auth::id(), $request->id_receiver);
-                $status_code    = 200;
+                $status_code    = 204;
                 $message        = "chat room created";
                 $data = [
                     'count'     => $chat_rooms->count(),

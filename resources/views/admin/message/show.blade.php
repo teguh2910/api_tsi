@@ -25,7 +25,7 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="direct-chat-messages">
+                        <div class="direct-chat-messages h-100">
                             @foreach($chats as $c )
                                 <?php
                                     $sender = \App\Models\User::find($c->id_sender)
@@ -40,10 +40,10 @@
                                 </div>
                             </div>
                             @endforeach
-
                         </div>
+
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer mb-5">
                         <form action="{{ route('message.room.store') }}" method="post">
                             @csrf
                             <div class="input-group">
@@ -58,7 +58,5 @@
                 </div>
             </div>
         </div>
-
-
     </section>
 @endsection
