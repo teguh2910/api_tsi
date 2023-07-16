@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Personal_access_token;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -68,9 +70,31 @@ class AuthController extends Controller
     }
     public function logout(Request $request)
     {
-        $request->session()->flush();
-        Auth::logout();
-        return redirect()->route('auth.login');
+        $session        = json_decode(decrypt(session('body')));
+//        dd($session);
+        $session_token  = $session->token->code;
+//        dd($session_token);
+        $words          = explode("|", $session_token);
+        $id_token       =  $words['0'];
+        $delete_token   = PersonalAccessToken::where('_id', $id_token)->delete();
+        if($delete_token){
+            $request->session()->flush();
+            Auth::logout();
+            return redirect()->route('auth.login');
+        }else{
+            dd($session);
+        }
+
+    }
+    public function token()
+    {
+        $token = "641654c99b95649322006944|Q2GWBEoZ8gnbeS3eS6XX1seAMdGHCaXpAgSgekcl";
+        $words = explode("|", $token);
+        echo $words['0'];
+
+//        foreach ($words as $word) {
+//            echo $word . "<br>";
+//        }
     }
 
 }

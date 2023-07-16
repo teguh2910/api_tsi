@@ -221,10 +221,30 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
-        return [
-            'message' => 'You have successfully logged out and the token was successfully deleted'
+        $token          = $request->bearerToken();
+        $words          = explode("|", $token);
+        $id_token       =  $words['0'];
+        $delete_token   = PersonalAccessToken::where('_id', $id_token)->delete();
+        if($delete_token){
+            $status_code    = 200;
+            $message        = "Token deleted";
+            $data           = [
+                'token'     => $token
+            ];
+        }else{
+            $status_code    = 204;
+            $message        = "Token not deleted";
+            $data           = [
+                'token'     => $token
+            ];
+        }
+
+        $response = [
+            'status_code'   => $status_code,
+            'message'       => $message,
+            'data'          => $data
         ];
+        return response()->json($response);
     }
 
     /**
@@ -385,7 +405,6 @@ class AuthController extends Controller
             ]);
         }
     }
-
     /**
      * Display the specified resource.
      *
@@ -485,7 +504,6 @@ class AuthController extends Controller
         }
 
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -597,7 +615,6 @@ class AuthController extends Controller
 
 
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -733,9 +750,6 @@ class AuthController extends Controller
         $aktifasi           = $user->update();
         return response($aktifasi);
     }
-
-
-
     public function update_user(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -771,4 +785,5 @@ class AuthController extends Controller
         }
 
     }
+
 }

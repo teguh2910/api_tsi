@@ -37,6 +37,7 @@ Route::post('postLogin', [AuthController::class, 'postLogin'])->name('auth.postL
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware('guest');
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::get('token', [AuthController::class, 'token'])->name('auth.token');
 
 Route::get('messages', [MessageController::class, 'index'])->name('message.index');
 Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');
