@@ -50,6 +50,7 @@ Route::get('/notAuthorized',[AuthController::class,'notAuthorised'])->name('notA
 Route::post('/v1/auth/login',[AuthController::class,'login']);
 Route::post('/v1/auth/login/petugas',[AuthController::class,'login_petugas']);
 Route::delete('/v1/auth/logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
+Route::delete('/v1/auth/logout/all',[AuthController::class,'logoutAll'])->middleware('auth:sanctum');
 Route::post('/v1/auth/register',[AuthController::class,'register']);
 Route::post('/v1/auth/aktifasi',[AuthController::class,'activation_request']);
 Route::put('/v1/auth/aktifasi',[AuthController::class,'aktifasi_akun']);

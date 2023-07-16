@@ -246,6 +246,31 @@ class AuthController extends Controller
         ];
         return response()->json($response);
     }
+    public function logoutAll(Request $request)
+    {
+        $token          = PersonalAccessToken::where('tokenable_id', Auth::id());
+        $delete_token   = $token->delete();
+        if($delete_token){
+            $status_code    = 200;
+            $message        = "Token deleted";
+            $data           = [
+                'token'     => $token->get()
+            ];
+        }else{
+            $status_code    = 204;
+            $message        = "Token not deleted";
+            $data           = [
+                'token'     => $request->bearerToken()
+            ];
+        }
+
+        $response = [
+            'status_code'   => $status_code,
+            'message'       => $message,
+            'data'          => $data
+        ];
+        return response()->json($response);
+    }
 
     /**
      * Halaman untuk melihat user yang sedang login
