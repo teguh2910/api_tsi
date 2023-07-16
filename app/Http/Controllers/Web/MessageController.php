@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ChatRoomResource;
 use App\Models\Chat;
 use App\Models\ChatRoom;
+use App\Models\Meeting;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -16,15 +17,13 @@ class MessageController extends Controller
 {
     public function index()
     {
-        $my_id      = "64ab60837fb2f5709001bbe2";
-        $chat_roms  = ChatRoom::where([
-            'user1' => $my_id
-        ])->orWhere([
-            'user2' => $my_id
+        $my_id      = Auth::id();
+        $chat_roms  = Meeting::where([
+            'is_active'    => true
         ]);
         $data_chat_room = ChatRoomResource::collection($chat_roms->get());
         $data = [
-            "title"         => "Marital Status",
+            "title"         => "Video Conference",
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",

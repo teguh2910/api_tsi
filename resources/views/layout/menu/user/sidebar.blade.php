@@ -1,16 +1,27 @@
+<?php
+use Illuminate\Support\Facades\Auth;
+$foto = \Illuminate\Support\Facades\Auth::user()['foto']
+?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="/" class="brand-link">
-        <img src="{{ env('APP_LOGO') }}" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">{{ env('APP_NAME') }}</span>
-    </a>
-
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="https://ppni.or.id/simk/id/image/foto/31720126348.jpg" class="img-circle elevation-2" alt="User Image">
+                @if($foto == null)
+                    <?php
+                    $url = "https://file.atm-sehat.com/storage/image/user-image-with-black-background.png";
+
+                    ?>
+
+                @else
+                    <?php
+                    $url = $foto['url'];
+                    ?>
+
+                @endif
+                    <img src="{{ $url }}" class="img-circle elevation-2" alt="User Image">
+
             </div>
             <div class="info">
                 <a href="#" class="d-block">Khairon</a>
