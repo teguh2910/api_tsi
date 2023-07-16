@@ -1,5 +1,6 @@
 <?php
-use Illuminate\Support\Facades\Auth;
+use App\Models\ChatRoom;
+use App\Models\User;use Illuminate\Support\Facades\Auth;
 ?>
 
 <div class="col-md-3">
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
             <ul class="nav nav-pills flex-column">
 
                 <?php
-                $chat_rooms = \App\Models\ChatRoom::where([
+                $chat_rooms = ChatRoom::where([
                     'user1' => Auth::id()
                 ])->orWhere([
                     'user2' => Auth::id()
@@ -25,12 +26,15 @@ use Illuminate\Support\Facades\Auth;
                     ?>
                 @foreach($chat_rooms as $cr)
                     <?php
-                        $user1 = \App\Models\User::find($cr->user1);
-                        $user2 = \App\Models\User::find($cr->user2);
+                        $user1 = User::find($cr->user1);
+                        $user2 = User::find($cr->user2);
                         ?>
                     <li class="nav-item">
                         <a href="{{ url('message/'.$cr->_id) }}" class="nav-link">
-                            <i class="fas fa-user-alt"></i>@if($cr->user1 == Auth::id()) {{ $user2->nama['nama_depan'] }}@else {{ $user1->nama['nama_depan'] }} @endif
+                            <i class="fas fa-user-alt"></i>
+                            @if($cr->user1 == Auth::id()) {{ $user2->nama['nama_depan'] }}
+                            @else {{ $user1->nama['nama_depan'] }}
+                            @endif
                         </a>
                     </li>
                 @endforeach
@@ -50,7 +54,7 @@ use Illuminate\Support\Facades\Auth;
         <div class="card-body p-0">
             <ul class="nav nav-pills flex-column">
                 <?php
-                $counselor  = \App\Models\User::where('counselor', true)->get();
+                $counselor  = User::where('counselor', true)->get();
                     ?>
                 @foreach($counselor as  $counselor)
                     <li class="nav-item">
