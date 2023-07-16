@@ -32,10 +32,11 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('login', [AuthController::class, 'login'])->name('auth.login');
+Route::get('login', [AuthController::class, 'login'])->name('auth.login')->middleware('guest');
 Route::post('postLogin', [AuthController::class, 'postLogin'])->name('auth.postLogin');
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
-Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword');
+Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware('guest');
+Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 Route::get('messages', [MessageController::class, 'index'])->name('message.index');
 Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');
@@ -44,7 +45,7 @@ Route::get('message/user/{id}', [MessageController::class, 'user'])->name('messa
 
 Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
 
-Route::get('profile', [ProfileController::class,'profile'])->name('profile.index');
+Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
 Route::get('users', [UserController::class,'index'])->name('users.index');
 Route::get('user', [UserController::class,'create'])->name('users.create');
 Route::post('users', [UserController::class,'store'])->name('users.store');

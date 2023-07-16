@@ -11,10 +11,8 @@ class ProfileController extends Controller
 {
     public function profile()
     {
-        $user_id        = json_decode(decrypt(session('body')))->token->user_id;
-        $id_user        = "64ab60837fb2f5709001bbe2";
-        $user           = User::find($user_id);
-        $observation    = Observation::where('id_pasien', $id_user)->orderBy('time', 'DESC');
+        $user           = Auth::user();
+        $observation    = Observation::where('id_pasien', Auth::id())->orderBy('time', 'DESC');
         $data = [
             "title"         => "Profile",
             "class"         => "user",

@@ -1,5 +1,6 @@
 @extends('layout.user')
 @section('content')
+
     <!-- Main content -->
 
         <section class="content">
@@ -8,13 +9,13 @@
                     <div class="col-lg-3 col-md-4 col-sm-6">
                         <!-- Profile Image -->
                         <div class="card card-primary card-outline">
+
                             <div class="card-body box-profile">
                                 <div class="text-center">
                                     @if($user->foto == null)
                                         <img class="profile-user-img img-fluid img-circle w-30"
                                              src="https://file.atm-sehat.com/storage/image/user-image-with-black-background.png"
                                              alt="User profile picture">
-
                                     @else
                                     <img class="profile-user-img img-fluid img-circle w-30"
                                          src="{{ $user->foto['url'] }}"
@@ -113,11 +114,9 @@
                                                             <td>{{ $loop->iteration }}</td>
                                                             <td>{{ $data->coding['display'] }}<br> <small>{{ date('Y-m-d H:i', $data->time) }}</small> </td>
                                                             <td>{{ $data->value }} <br> <small>{{ $data->unit['display'] }}</td>
-                                                            <td>{{ $data->interpretation['display'] }}</td>
+                                                            <td></td>
                                                             <td>
-                                                                @if($data->base_line != null)
-                                                                    {{ $data->base_line['min'] }} - {{ $data->base_line['max'] }}
-                                                                @endif
+
                                                             </td>
                                                         </tr>
                                                     @endforeach

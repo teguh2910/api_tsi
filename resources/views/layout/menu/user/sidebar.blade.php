@@ -86,7 +86,7 @@
 
 
                 <li class="nav-item">
-                    <a href="https://rspon.net/ppni/simk/auth/logout.php" class="nav-link">
+                    <a href="{{ route('auth.logout') }}" class="nav-link">
                         <i class="nav-icon far fa-circle text-warning"></i>
                         <p>Logout</p>
                     </a>

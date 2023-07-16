@@ -7,16 +7,30 @@
 
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
+
+                @if(session('gagal_login') != null)
+                    <p class="login-box-msg text-danger">{{ session('gagal_login') }}</p>
+
+                @else
+                    <p class="login-box-msg">Sign in to start your session</p>
+                @endif
+
 
                 <form action="{{ route('auth.postLogin') }}" method="post">
                     @csrf
                     <div class="mb-3">
-                        <input type="email" class="form-control" name="username" placeholder="Email">
+                        <input type="text" class="form-control" name="username" placeholder="Email" value="{{ old('username') }}">
+                        @error('username')
+                        <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <input type="password" class="form-control" name="password" placeholder="Password">
+                        @error('password')
+                        <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
+
                     <div class="row">
                         <div class="col-8">
                             <div class="icheck-primary">
