@@ -42,14 +42,7 @@
                         <p>My Profile<span class="right badge badge-danger">New</span></p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('users.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            Users
-                        </p>
-                    </a>
-                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('message.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>

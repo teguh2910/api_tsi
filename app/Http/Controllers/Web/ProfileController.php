@@ -19,10 +19,10 @@ class ProfileController extends Controller
             "title"         => "Profile",
             "class"         => "user",
             "sub_class"     => "profile",
-            "content"       => "layout.admin",
+            "content"       => "layout.user",
             "user"          => $user,
             "observation"   => $observation->get()
         ];
-        return view('admin.profile.profile', $data);
+        return view('user.profile.profile', $data);
     }
 }
