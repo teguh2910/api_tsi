@@ -11,17 +11,13 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                 @if($foto == null)
                     <?php
                     $url = "https://file.atm-sehat.com/storage/image/user-image-with-black-background.png";
-
                     ?>
-
                 @else
                     <?php
                     $url = $foto['url'];
                     ?>
-
                 @endif
                     <img src="{{ $url }}" class="img-circle elevation-2" alt="User Image">
-
             </div>
             <div class="info">
                 <a href="#" class="d-block">Khairon</a>
@@ -59,6 +55,14 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                         <i class="nav-icon fas fa-calculator"></i>
                         <p>
                             Messages
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('message.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>
+                            Kuesioner
                         </p>
                     </a>
                 </li>

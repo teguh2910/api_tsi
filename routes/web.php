@@ -13,6 +13,7 @@ use App\Http\Controllers\Web\MeetingController;
 use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
 use App\Http\Controllers\Web\ProfileController;
+use App\Http\Controllers\Web\QuestionnaireController;
 use App\Http\Controllers\Web\ReligionController;
 use App\Http\Controllers\Web\UserController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,10 @@ Route::post('message', [MessageController::class, 'store_chat'])->name('message.
 Route::get('message/user/{id}', [MessageController::class, 'user'])->name('message.user');
 
 Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
+
+Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
+Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');
+Route::post('questionnaire/store', [QuestionnaireController::class, 'store'])->name('questionnaire.store');
 
 Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
 Route::get('users', [UserController::class,'index'])->name('users.index');
