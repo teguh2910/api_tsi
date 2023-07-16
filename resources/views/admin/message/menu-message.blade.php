@@ -1,5 +1,5 @@
 <?php
-$my_id      = "64ab60837fb2f5709001bbe2";
+use Illuminate\Support\Facades\Auth;
 ?>
 
 <div class="col-md-3">
@@ -18,9 +18,9 @@ $my_id      = "64ab60837fb2f5709001bbe2";
 
                 <?php
                 $chat_rooms = \App\Models\ChatRoom::where([
-                    'user1' => $my_id
+                    'user1' => Auth::id()
                 ])->orWhere([
-                    'user2' => $my_id
+                    'user2' => Auth::id()
                 ])->get();
                     ?>
                 @foreach($chat_rooms as $cr)
@@ -30,7 +30,7 @@ $my_id      = "64ab60837fb2f5709001bbe2";
                         ?>
                     <li class="nav-item">
                         <a href="{{ url('message/'.$cr->_id) }}" class="nav-link">
-                            <i class="fas fa-user-alt"></i>@if($cr->user1 == $my_id) {{ $user2->nama['nama_depan'] }}@else {{ $user1->nama['nama_depan'] }} @endif
+                            <i class="fas fa-user-alt"></i>@if($cr->user1 == Auth::id()) {{ $user2->nama['nama_depan'] }}@else {{ $user1->nama['nama_depan'] }} @endif
                         </a>
                     </li>
                 @endforeach

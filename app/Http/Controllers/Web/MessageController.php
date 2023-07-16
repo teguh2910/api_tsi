@@ -9,6 +9,7 @@ use App\Models\ChatRoom;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class MessageController extends Controller
@@ -85,17 +86,33 @@ class MessageController extends Controller
     }
     public function user($id)
     {
+        $user = User::find($id);
+        $chat_rooms = ChatRoom::where([
+            'user1' => $id,
+            'user2' => Auth::id()
+        ])->orWhere([
+            'user2' => $id,
+            'user1' => Auth::id()
+        ]);
+//        dd($chat_rooms->first());
+        if($chat_rooms->count() < 1){
+
+        }
+        $session        = json_decode(decrypt(session('body')));
+//        dd($session);
+        $session_token  = $session->token->code;
+
         $client = new Client();
         $url    = "https://dev.atm-sehat.com/api/v1/chatRoom/user?id_receiver=$id";
         $header = [
-            'Authorization' => 'Bearer 64ab62d159953fca6103a002|Vay5hQzTq8fPptJEdej0M5bBckzDlTe02nRjxDIL',
+            'Authorization' => "Bearer $session_token",
         ];
         $response = $client->get($url, [
             'headers' => $header
         ]);
         $statusCode = $response->getStatusCode();
         if ($statusCode == 200) {
-            return redirect()->route('message.room',['id'=>$id]);
+            return redirect()->route('message.room', ['id'=>$id]);
         } else {
             return "Gagal mengirim formulir: ";
         }

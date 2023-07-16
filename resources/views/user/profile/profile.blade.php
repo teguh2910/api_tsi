@@ -171,11 +171,9 @@
                                                             <td>{{ $loop->iteration }}</td>
                                                             <td>{{ $data->coding['display'] }}<br> <small>{{ date('Y-m-d H:i', $data->time) }}</small> </td>
                                                             <td>{{ $data->value }} <br> <small>{{ $data->unit['display'] }}</td>
-                                                            <td>{{ $data->interpretation['display'] }}</td>
+                                                            <td></td>
                                                             <td>
-                                                                @if($data->base_line != null)
-                                                                    {{ $data->base_line['min'] }} - {{ $data->base_line['max'] }}
-                                                                @endif
+
                                                             </td>
                                                         </tr>
                                                     @endforeach
