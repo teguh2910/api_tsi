@@ -14,6 +14,11 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+        return view('auth.login');
+    }
     public function login()
     {
         $user = Auth::user();

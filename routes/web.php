@@ -29,10 +29,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
+//Route::get('/', function () {
+//    return view('welcome');
+//})->name('home');
+Route::get('/', [AuthController::class, 'index'])->name('home')->middleware('guest');
 Route::get('login', [AuthController::class, 'login'])->name('auth.login')->middleware('guest');
 Route::post('postLogin', [AuthController::class, 'postLogin'])->name('auth.postLogin');
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
