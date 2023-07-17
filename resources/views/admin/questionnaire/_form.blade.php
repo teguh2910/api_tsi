@@ -27,5 +27,14 @@
             @enderror
         </div>
     </div>
+    <div class="row mb-1">
+        <label class="col-sm-3">Status</label>
+        <div class="col-sm-9">
+            <select class="form-control" name="status">
+                <option value="draft">Draft</option>
+                <option value="publish">Publish</option>
+            </select>
+        </div>
+    </div>
 
 </div>

@@ -28,7 +28,7 @@ class MessageController extends Controller
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
         ];
-        return view('admin.message.index', $data);
+        return view('user.message.index', $data);
     }
     public function chat_room($id)
     {
@@ -89,15 +89,7 @@ class MessageController extends Controller
     public function user($id)
     {
         $user = User::find($id);
-        $chat_rooms = ChatRoom::where([
-            'user1' => $id,
-            'user2' => Auth::id()
-        ])->orWhere([
-            'user2' => $id,
-            'user1' => Auth::id()
-        ]);
         $session        = json_decode(decrypt(session('body')));
-//        dd($session);
         $session_token  = $session->token->code;
 
         $client = new Client();
@@ -110,7 +102,14 @@ class MessageController extends Controller
         ]);
         $statusCode = $response->getStatusCode();
         if ($statusCode == 200) {
-            return redirect()->route('message.room', ['id'=>$chat_rooms->first()->_id]);
+            $chat_rooms = ChatRoom::where([
+                'user1' => $id,
+                'user2' => Auth::id()
+            ])->orWhere([
+                'user2' => $id,
+                'user1' => Auth::id()
+            ]);
+            return redirect()->route('message.room', ['id'=>$chat_rooms->latest()->first()->_id]);
         } else {
             return "Gagal mengirim formulir: ";
         }

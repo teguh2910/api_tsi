@@ -1,4 +1,4 @@
-@extends('layout.admin')
+@extends('layout.user')
 @section('content')
     <section class="content">
         <div class="container-fluid">
@@ -28,8 +28,7 @@
                                 <thead>
                                 <th>#</th>
                                 <th>Questionnaire</th>
-                                <th>Question</th>
-                                <th>Responden</th>
+
                                 <th>Detail</th>
                                 </thead>
                                 <tbody>
@@ -37,9 +36,8 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $data->judul }}</td>
-                                        <td>{{ $data->question }}</td>
-                                        <td>@if(isset($data->owner)) {{ $data->owner['name'] }}@endif</td>
-                                        <td><a href="{{ route('questionnaire.show', ['id'=> $data->id]) }}" class="btn btn-sm btn-info">Detail</a></td>
+
+                                        <td><a href="{{ route('questionnaire.showByuser', ['id'=> $data->id]) }}" class="btn btn-sm btn-info">Detail</a></td>
                                     </tr>
                                 @endforeach
                                 </tbody>

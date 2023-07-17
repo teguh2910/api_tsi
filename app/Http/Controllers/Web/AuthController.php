@@ -69,16 +69,70 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
+    public function daftar(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_depan'    => 'required',
+            'nama_belakang' => 'required',
+            'email'         => 'required|email|unique:users,kontak.email',
+            'nik'           => 'required|numeric|digits:16|unique:users,nik',
+            'tempat_lahir'  => 'required',
+            'gender'        => 'required',
+            'tanggal_lahir' => 'required|date',
+            'nomor_telepon' => 'required|min_digits:10|unique:users,kontak.nomor_telepon',
+            'password'      =>'required'
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('auth.register')
+                ->withErrors($validator)
+                ->withInput();
+        }else{
+            $post=$request->all();
+            $url        = "https://dev.atm-sehat.com/api/v1/auth/register";
+            $client = new Client();
+            $response = $client->post($url, [
+                'form_params' => $post
+            ]);
+            $statusCode = $response->getStatusCode();
+            if($statusCode==201){
+                session()->flash('success', 'Success Registration');
+                return redirect()->route('auth.activate');
+            }
+        }
+    }
     public function forgotPassword()
     {
         return view('auth.forgotPassword');
     }
+    public function activate()
+    {
+        return view('auth.activate');
+    }
+    public function do_activate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'otp'    => 'required|numeric|digits:6',
+            'email'  => 'required|email',
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('auth.activate')
+                ->withErrors($validator)
+                ->withInput();
+        }else{
+            $post=$request->all();
+            $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
+            $client = new Client();
+            $response = $client->post($url, [
+                'form_params' => $request->all()
+            ]);
+            $statusCode = $response->getStatusCode();
+        }
+    }
     public function logout(Request $request)
     {
         $session        = json_decode(decrypt(session('body')));
-//        dd($session);
         $session_token  = $session->token->code;
-//        dd($session_token);
         $words          = explode("|", $session_token);
         $id_token       =  $words['0'];
         $delete_token   = PersonalAccessToken::where('_id', $id_token)->delete();
@@ -87,7 +141,7 @@ class AuthController extends Controller
             Auth::logout();
             return redirect()->route('auth.login');
         }else{
-            dd($session);
+            return redirect()->route('auth.login');
         }
 
     }

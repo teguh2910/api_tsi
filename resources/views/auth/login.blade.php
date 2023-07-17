@@ -54,6 +54,9 @@
                 <p class="mb-0">
                     <a href="{{ route('auth.register') }}" class="text-center">Register a new membership</a>
                 </p>
+                    <p class="mb-0">
+                        <a href="{{ route('auth.activate') }}" class="text-center">Activate Account</a>
+                    </p>
             </div>
 
         </div>

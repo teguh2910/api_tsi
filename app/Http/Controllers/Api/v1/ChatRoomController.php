@@ -77,7 +77,7 @@ class ChatRoomController extends Controller
                 $message        = "chat room created";
                 $data = [
                     'count'     => $chat_rooms->count(),
-                    'chat_rooms' => $chat_rooms,
+                    'chat_rooms' => $chat_rooms->first(),
                 ];
             }else{
                 $status_code    = 200;

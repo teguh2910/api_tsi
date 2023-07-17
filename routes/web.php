@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Api\v1\CustomerController;
+use App\Http\Controllers\Web\AnswerController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BaseLineController;
 use App\Http\Controllers\web\CodeController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Web\MeetingController;
 use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
 use App\Http\Controllers\Web\ProfileController;
+use App\Http\Controllers\Web\QuestionController;
 use App\Http\Controllers\Web\QuestionnaireController;
 use App\Http\Controllers\Web\ReligionController;
 use App\Http\Controllers\Web\UserController;
@@ -36,6 +38,9 @@ Route::get('/', [AuthController::class, 'index'])->name('home')->middleware('gue
 Route::get('login', [AuthController::class, 'login'])->name('auth.login')->middleware('guest');
 Route::post('postLogin', [AuthController::class, 'postLogin'])->name('auth.postLogin');
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
+Route::post('daftar', [AuthController::class, 'daftar'])->name('auth.daftar');
+Route::get('activate', [AuthController::class, 'activate'])->name('auth.activate');
+Route::post('activate', [AuthController::class, 'do_activate'])->name('auth.do_activate');
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware('guest');
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::get('token', [AuthController::class, 'token'])->name('auth.token');
@@ -50,6 +55,14 @@ Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
 Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');
 Route::post('questionnaire/store', [QuestionnaireController::class, 'store'])->name('questionnaire.store');
+Route::get('questionnaire/{id}/view', [QuestionnaireController::class, 'show'])->name('questionnaire.show');
+Route::get('questionnaire/status/publish', [QuestionnaireController::class, 'publish'])->name('questionnaire.publish');
+Route::get('questionnaire/{id}/detail', [QuestionnaireController::class, 'showByuser'])->name('questionnaire.showByuser');
+
+
+Route::post('question/store', [QuestionController::class, 'store'])->name('question.store');
+
+Route::post('answer/store', [AnswerController::class, 'store'])->name('answer.store');
 
 Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
 Route::get('users', [UserController::class,'index'])->name('users.index');

@@ -5,20 +5,67 @@
         <a href="../../index2.html"><b>{{ env('APP_NAME') }}</b></a>
     </div>
     <div class="card">
-        <div class="card-body register-card-body">
+        <div class="card-body">
             <p class="login-box-msg">Register a new membership</p>
-            <form action="{{ route('auth.postLogin') }}" method="post">
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Full name">
+            <form action="{{ route('auth.daftar') }}" method="post">
+                @csrf
+                <div class="mb-1">
+                    <input type="text" class="form-control" placeholder="Nama Depan" name="nama_depan" value="{{ old('nama_depan') }}">
+                    @error('nama_depan')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
-                <div class="mb-3">
-                    <input type="email" class="form-control" placeholder="Email">
+                <div class="mb-1">
+                    <input type="text" class="form-control" placeholder="Nama Belakang" name="nama_belakang" value="{{ old('nama_belakang') }}">
+                    @error('nama_belakang')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Password">
+                <div class="mb-1">
+                    <input type="number" class="form-control" placeholder="Nomor KTP" name="nik" value="{{ old('nik') }}">
+                    @error('nik')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Retype password">
+                <div class="mb-1">
+                    <input type="email" class="form-control" placeholder="Email" name="email" value="{{ old('email') }}">
+                    @error('email')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="mb-1">
+                    <input type="number" class="form-control" placeholder="Nomor Telfon" name="nomor_telepon" value="{{ old('nomor_telepon') }}">
+                    @error('nomor_telepon')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="mb-1">
+                    <input type="text" class="form-control" placeholder="Tempat Lahir" name="tempat_lahir" value="{{ old('tempat_lahir') }}">
+                    @error('tempat_lahir')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="mb-1">
+                    <input type="date" class="form-control" placeholder="Tanggal Lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}">
+                    @error('tanggal_lahir')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="mb-1">
+                    <select class="form-control" name="gender">
+                        <option value="">Gender</option>
+                        <option value="male">Laki-laki</option>
+                        <option value="female">Perempuan</option>
+                    </select>
+                    @error('gender')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="mb-1">
+                    <input type="password" class="form-control" placeholder="Password" name="password">
+                    @error('password')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
                 <div class="row">
                     <div class="col-8">
