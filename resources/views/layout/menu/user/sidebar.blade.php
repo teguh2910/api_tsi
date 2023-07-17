@@ -59,7 +59,7 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('message.index') }}" class="nav-link">
+                    <a href="{{ route('questionnaire.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>
                         <p>
                             Kuesioner

@@ -23,7 +23,7 @@
                             </div>
                         @endif
                         <div class="card-body">
-                            <a href="{{ route('kits.create') }}" class="btn btn-sm btn-primary mb-1">Add Data</a>
+                            <a href="{{ route('questionnaire.create') }}" class="btn btn-sm btn-primary mb-1">Add Data</a>
                             <table class="table table-sm mt-2" id="example1">
                                 <thead>
                                 <th>#</th>

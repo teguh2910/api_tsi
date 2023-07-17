@@ -38,6 +38,7 @@ class QuestionnaireController extends Controller
     {
         $session        = json_decode(decrypt(session('body')));
         $session_token  = $session->token->code;
+        $token          = 'Bearer '.$session_token;
         $validator = Validator::make($request->all(), [
             'judul'             => 'required',
             'tanggal_mulai'     => 'required|date',
@@ -51,7 +52,7 @@ class QuestionnaireController extends Controller
             $url        = "https://dev.atm-sehat.com/api/v1/questionnaire";
             $client = new Client();
             $response = $client->post($url, [
-                'Authorization' => 'Bearer '.$session_token,
+                'Authorization' => $token,
                 'form_params' => [
                     'judul'             => $request->judul,
                     'tanggal_mulai'     => $request->tanggal_mulai,
