@@ -47,7 +47,7 @@ class KitController extends Controller
                 $pasien = User::find($kit->pasien['id_pasien']);
                 return response()->json([
                     'status_code'   => 200,
-                    'message'       => 'Not Found',
+                    'message'       => 'success',
                     'data'          => [
                         'kit'       => $kit,
                         'pasien'    => [
@@ -59,6 +59,7 @@ class KitController extends Controller
                             'tanggal_lahir' => $pasien->lahir['tanggal'],
                             'email'         => $pasien->kontak['email'],
                             'nomor_telepon' => $pasien->kontak['nomor_telepon'],
+                            'foto'          => $pasien->foto,
                         ],
                     ]
                 ], 200);
