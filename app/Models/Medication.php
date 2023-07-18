@@ -7,7 +7,7 @@ use Jenssegers\Mongodb\Eloquent\Model;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 
-class Personal_access_token extends Model
+class Medication extends Model
 {
     use HasFactory, HasApiTokens,SoftDeletes;
     protected $connection   = 'mongodb';

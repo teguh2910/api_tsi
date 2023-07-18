@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\Web\KitController;
 use App\Http\Controllers\web\MaritalStatusController;
+use App\Http\Controllers\Web\MedicationController;
 use App\Http\Controllers\Web\MeetingController;
 use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
@@ -59,12 +60,14 @@ Route::get('questionnaire/{id}/view', [QuestionnaireController::class, 'show'])-
 Route::get('questionnaire/status/publish', [QuestionnaireController::class, 'publish'])->name('questionnaire.publish');
 Route::get('questionnaire/{id}/detail', [QuestionnaireController::class, 'showByuser'])->name('questionnaire.showByuser');
 
+Route::post('medication', [MedicationController::class, 'store'])->name('medication.store');
 
 Route::post('question/store', [QuestionController::class, 'store'])->name('question.store');
 
 Route::post('answer/store', [AnswerController::class, 'store'])->name('answer.store');
 
 Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
+Route::get('/profile/{id}', [ProfileController::class,'user'])->name('user.profile')->middleware('auth');
 Route::get('users', [UserController::class,'index'])->name('users.index');
 Route::get('user', [UserController::class,'create'])->name('users.create');
 Route::post('users', [UserController::class,'store'])->name('users.store');

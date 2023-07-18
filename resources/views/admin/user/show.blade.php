@@ -86,6 +86,7 @@
 
                         </div>
                         <div class="card-footer text-center">
+                            <a href="{{ route('user.profile', ['id'=> $users->id]) }}" class="btn btn-success">Profile</a>
                             <a href="{{ route('users.index') }}" class="btn btn-primary">Kembali</a>
                             <a href="{{ route('users.edit', ['id'=> $users->id]) }}" class="btn btn-success">Edit User</a>
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
@@ -123,6 +124,7 @@
                     </div>
                 </div>
             </div>
+        </div>
             <!-- /.container-fluid -->
     </section>
 @endsection

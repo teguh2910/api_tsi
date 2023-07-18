@@ -135,7 +135,7 @@ class AuthController extends Controller
         $session_token  = $session->token->code;
         $words          = explode("|", $session_token);
         $id_token       =  $words['0'];
-        $delete_token   = PersonalAccessToken::where('_id', $id_token)->delete();
+        $delete_token   = Personal_access_token::where('_id', $id_token)->delete();
         if($delete_token){
             $request->session()->flush();
             Auth::logout();

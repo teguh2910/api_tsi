@@ -66,7 +66,9 @@
                                 <hr>
                                 <strong><i class="fas fa-users"></i> Status Menikah</strong>
                                 <p class="text-muted">
-                                    {{ $user->status_menikah['display'] }}
+                                    @if($user->status_menikah != null)
+                                        {{ $user->status_menikah['display'] }}
+                                    @endif
                                 </p>
 
                                 <hr>
@@ -139,19 +141,42 @@
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                ...
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-primary">Save changes</button>
-                                                            </div>
+                                                            <form action="{{ route('medication.store') }}" method="post">
+                                                                @csrf
+                                                                <div class="modal-header bg-black">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Obat</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="form-group row">
+                                                                        <label class="col-sm-4 col-form-label">Nama Obat</label>
+                                                                        <div class="col-sm-8">
+                                                                            <select class="form-control" required name="drug">
+                                                                                <option value="" selected>---pilih---</option>
+                                                                                @foreach($drugs as $drug)
+                                                                                    <option value="{{ $drug->id }}">{{ $drug->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="col-sm-4 col-form-label">Dosis</label>
+                                                                        <div class="col-sm-8">
+                                                                            <input type="text" class="form-control" value="">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <input type="hidden" class="form-control" name="id_pasien" value="{{ $user->id }}">
+
+
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -166,15 +191,10 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    @foreach($observation as $data)
+                                                    @foreach($medication as $data)
                                                         <tr>
                                                             <td>{{ $loop->iteration }}</td>
-                                                            <td>{{ $data->coding['display'] }}<br> <small>{{ date('Y-m-d H:i', $data->time) }}</small> </td>
-                                                            <td>{{ $data->value }} <br> <small>{{ $data->unit['display'] }}</td>
-                                                            <td></td>
-                                                            <td>
-
-                                                            </td>
+                                                            <td>{{ $data->drug['name'] }}</td>
                                                         </tr>
                                                     @endforeach
                                                     </tbody>

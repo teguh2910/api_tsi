@@ -1,4 +1,4 @@
-@extends('layout.user')
+@extends('layout.admin')
 @section('content')
     <!-- Main content -->
 
@@ -10,9 +10,15 @@
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle w-30"
-                                         src="{{ $user->foto['url'] }}"
-                                         alt="User profile picture">
+                                    @if($user->foto == null)
+                                        <img class="profile-user-img img-fluid img-circle w-30"
+                                             src="https://file.atm-sehat.com/storage/image/user-image-with-black-background.png"
+                                             alt="User profile picture">
+                                    @else
+                                        <img class="profile-user-img img-fluid img-circle w-30"
+                                             src="{{ $user->foto['url'] }}"
+                                             alt="User profile picture">
+                                    @endif
                                 </div>
                                 <h3 class="profile-username text-center">{{ $user['nama']['nama_depan']." ".$user['nama']['nama_belakang'] }}</h3>
                                 <p class="text-muted text-center">{{ $user->nik }}</p>
@@ -58,7 +64,9 @@
                                 <hr>
                                 <strong><i class="fas fa-users"></i> Status Menikah</strong>
                                 <p class="text-muted">
-                                    {{ $user->status_menikah['display'] }}
+                                    @if($user->status_menikah != null)
+                                        {{ $user->status_menikah['display'] }}
+                                    @endif
                                 </p>
 
                                 <hr>
@@ -106,7 +114,12 @@
                                                             <td>{{ $loop->iteration }}</td>
                                                             <td>{{ $data->coding['display'] }}<br> <small>{{ date('Y-m-d H:i', $data->time) }}</small> </td>
                                                             <td>{{ $data->value }} <br> <small>{{ $data->unit['display'] }}</td>
-                                                            <td>{{ $data->interpretation['display'] }}</td>
+                                                            <td>
+                                                                @if($data->interpretation != null )
+                                                                    {{ $data->interpretation['display'] }}
+                                                                @endif
+
+                                                            </td>
                                                             <td>
                                                                 @if($data->base_line != null)
                                                                     {{ $data->base_line['min'] }} - {{ $data->base_line['max'] }}
@@ -161,17 +174,7 @@
                                                     </thead>
                                                     <tbody>
                                                     @foreach($observation as $data)
-                                                        <tr>
-                                                            <td>{{ $loop->iteration }}</td>
-                                                            <td>{{ $data->coding['display'] }}<br> <small>{{ date('Y-m-d H:i', $data->time) }}</small> </td>
-                                                            <td>{{ $data->value }} <br> <small>{{ $data->unit['display'] }}</td>
-                                                            <td>{{ $data->interpretation['display'] }}</td>
-                                                            <td>
-                                                                @if($data->base_line != null)
-                                                                    {{ $data->base_line['min'] }} - {{ $data->base_line['max'] }}
-                                                                @endif
-                                                            </td>
-                                                        </tr>
+
                                                     @endforeach
                                                     </tbody>
                                                 </table>
