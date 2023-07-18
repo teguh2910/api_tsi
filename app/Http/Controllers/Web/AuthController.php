@@ -145,6 +145,16 @@ class AuthController extends Controller
         }
 
     }
+
+    private function guzzle($data_post, $url)
+    {
+        //blm diimpementasikan
+        $client = new Client();
+        $response = $client->post($url, [
+            'form_params' => $data_post
+        ]);
+        return $response;
+    }
     public function token()
     {
         $token = "641654c99b95649322006944|Q2GWBEoZ8gnbeS3eS6XX1seAMdGHCaXpAgSgekcl";
