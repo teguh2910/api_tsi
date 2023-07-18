@@ -61,39 +61,43 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                 <li class="nav-item">
                     <a href="{{ route('questionnaire.publish') }}" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>
-                        <p>
-                            Kuesioner
-                        </p>
+                        <p>Kuesioner</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('medication.mine') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>Medication</p>
                     </a>
                 </li>
 
-                <li class="nav-header">EXAMPLES</li>
+                <li class="nav-header">Medication</li>
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon far fa-envelope"></i>
                         <p>
-                            Dokumen
+                            Medication
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="https://rspon.net/ppni/simk/regulasi" class="nav-link">
+                            <a href="{{ route('drugs.index') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Regulasi</p>
+                                <p>Daftar Obat</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="https://rspon.net/ppni/simk/form" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Formulir Keperawatan</p>
+                                <p>Jenis Obat</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="../mailbox/read-mail.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Read</p>
+                                <p>Sediaan Obat</p>
                             </a>
                         </li>
                     </ul>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\AnswerController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BaseLineController;
 use App\Http\Controllers\web\CodeController;
+use App\Http\Controllers\Web\DrugController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\Web\KitController;
@@ -60,6 +61,10 @@ Route::get('questionnaire/{id}/view', [QuestionnaireController::class, 'show'])-
 Route::get('questionnaire/status/publish', [QuestionnaireController::class, 'publish'])->name('questionnaire.publish');
 Route::get('questionnaire/{id}/detail', [QuestionnaireController::class, 'showByuser'])->name('questionnaire.showByuser');
 
+Route::get('drugs', [DrugController::class, 'index'])->name('drugs.index');
+Route::post('drugs', [DrugController::class, 'store'])->name('drugs.store');
+
+Route::get('medication', [MedicationController::class, 'mine'])->name('medication.mine');
 Route::post('medication', [MedicationController::class, 'store'])->name('medication.store');
 
 Route::post('question/store', [QuestionController::class, 'store'])->name('question.store');

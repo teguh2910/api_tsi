@@ -26,15 +26,13 @@ class QuestionnaireController extends Controller
     }
     public function create()
     {
-//        $questionnaire = Questionnaire::find($id);
         $data = [
             "title"         => "Questionnaire",
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
-            "content"       => "layout.admin",
-//            "questionnaire" => $questionnaire
+            "content"       => "layout.admin"
         ];
-        return view('admin.questionnaire.create', $data);
+        return view('user.questionnaire.create', $data);
     }
     public function store(Request $request)
     {

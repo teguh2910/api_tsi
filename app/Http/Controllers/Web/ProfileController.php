@@ -45,7 +45,6 @@ class ProfileController extends Controller
             "medication"    => $medication->get(),
             "drugs"         => $drug
         ];
-//        dd($data);
         return view('user.profile.profile', $data);
     }
 }
