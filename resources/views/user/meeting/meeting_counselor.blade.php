@@ -21,7 +21,7 @@
                     <select class="form-control" name="attendee">
                         <option>---Select---</option>
                         @foreach($users as $data)
-                            <option value="{{ $data->id }}">{{ $data->nik }} -- {{ $data->nama['nama_depan'] }}</option>
+                            <option value="{{ $data->id }}">{{ $data->nama['nama_depan'] }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -49,7 +49,7 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $meeting->topic }}</td>
-                    <td><button class="btn btn-sm btn-primary">Config</button></td>
+                    <td><a href="{{ route('meeting.show', ['id'=>$meeting->id]) }}" class="btn btn-sm btn-warning">Detail</a></td>
                 </tr>
             @endforeach
             </tbody>

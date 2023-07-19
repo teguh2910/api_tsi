@@ -42,14 +42,14 @@
             <thead>
             <th>#</th>
             <th>Topic</th>
-            <th>Start</th>
+            <th>Detail</th>
             </thead>
             <tbody>
             @foreach($pasien_meeting as $meeting)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $meeting->topic }}</td>
-                    <td><button class="btn btn-sm btn-primary">Start</button></td>
+                    <td><a href="{{ route('meeting.show', ['id'=>$meeting->id]) }}" class="btn btn-sm btn-warning">Detail</a></td>
                 </tr>
             @endforeach
 

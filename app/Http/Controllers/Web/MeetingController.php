@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Meeting;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -74,13 +75,15 @@ class MeetingController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }else{
-            $topic      = "Tele Konsultasi E-TBC $nama";
-            $date_start = $request->date_start;
-            $time_start = $request->time_start;
-            $host       = Auth::id();
-            $attendee   = $request->attendee;
-            $time       = strtotime($request->date_start." ".$request->time_start);
-            $date_time  = date('Y-m-d H:i:s', $time);
+            $date_start     = $request->date_start;
+            $time_start     = $request->time_start;
+            $host           = Auth::id();
+            $attendee       = $request->attendee;
+            $pasien         = User::find($attendee);
+            $nama_attendee  = $pasien->nama['nama_depan'];
+            $topic          = "Tele Konsultasi E-TBC $nama_attendee";
+            $time           = strtotime($request->date_start." ".$request->time_start);
+            $date_time      = date('Y-m-d H:i:s', $time);
             $data_meeting = [
                 "topic"         => $topic,
                 "date_start"    => $date_start,
@@ -93,7 +96,7 @@ class MeetingController extends Controller
             $meeting    = new Meeting();
             $create     = $meeting->create($data_meeting);
             if($create){
-                session()->flash('success', 'E Konsultasi TBC telah diajukan');
+                session()->flash('success', "E Konsultasi TBC $nama_attendee telah diajukan");
                 return redirect()->route('message.index');
             }
         }

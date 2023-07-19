@@ -18,7 +18,7 @@ class MessageController extends Controller
     public function index()
     {
         $today = date('Y-m-d');
-        $time   = time()-(15*60);
+        $time   = time()-(45*60);
         $pasien_meeting   = Meeting::where([
             'attendee'      => Auth::id(),
             'date_start'    => $today,

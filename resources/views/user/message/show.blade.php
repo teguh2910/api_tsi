@@ -27,13 +27,21 @@
                     <div class="card-body">
                         <div class="direct-chat-messages h-100">
                             @foreach($chats as $c )
-                                <?php
-                                    $sender = \App\Models\User::find($c->id_sender)
-                                    ?>
+                                @php
+                                    $sender = \App\Models\User::find($c->id_sender);
+                                    $today = date('Y-m-d');
+                                    $date_chat = date('Y-m-d', strtotime($c->created_at));
+                                    if($date_chat == $today){
+                                        $time = date('H:i', strtotime($c->created_at));
+                                    }else{
+                                        $time = date('Y-m-d H:i', strtotime($c->created_at));
+                                    }
+
+                                @endphp
                             <div class="direct-chat-msg @if($c->id_sender == $my_id)right @else left @endif">
                                 <div class="direct-chat-infos clearfix">
                                     <span class="direct-chat-name @if($c->id_sender == $my_id)float-right @else float-left  @endif">{{ $sender->nama['nama_depan']." ".$sender->nama['nama_belakang'] }}</span>
-                                    <span class="direct-chat-timestamp @if($c->id_sender == $my_id)float-left @else float-right @endif">23 Jan 2:00 pm</span>
+                                    <span class="direct-chat-timestamp @if($c->id_sender == $my_id)float-left @else float-right @endif">{{ $time }}</span>
                                 </div>
                                 <div class="direct-chat-text">
                                     {{ $c->message }}
