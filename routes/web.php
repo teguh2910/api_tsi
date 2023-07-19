@@ -64,6 +64,8 @@ Route::post('meeting/{id}/update', [MeetingController::class, 'update'])->name('
 Route::get('zoom/masters', [ZoomMasterController::class, 'index'])->name('zoom.master.index');
 Route::get('zoom/master', [ZoomMasterController::class, 'create'])->name('zoom.master.create');
 Route::post('zoom/master', [ZoomMasterController::class, 'store'])->name('zoom.master.store');
+Route::get('zoom/master/{id}/edit', [ZoomMasterController::class, 'edit'])->name('zoom.master.edit');
+Route::post('zoom/master/{id}/update', [ZoomMasterController::class, 'update'])->name('zoom.master.update');
 
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
 Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');

@@ -44,7 +44,11 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('meeting.validation', ['id'=>$meeting->id]) }}" class="btn btn-primary">Validasi</a>
+                        <a href="{{ route('message.index') }}" class="btn btn-danger">Back</a>
+                        @if($user->counselor == true)
+                            <a href="{{ route('meeting.validation', ['id'=>$meeting->id]) }}" class="btn btn-primary">Validasi</a>
+                        @endif
+
                         @if(! empty($meeting->url))
                             <a href="{{ $meeting->url }}" class="btn btn-primary" target="_blank">Start</a>
                         @else

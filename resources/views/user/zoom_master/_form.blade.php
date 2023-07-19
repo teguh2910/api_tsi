@@ -1,8 +1,8 @@
 <div class="card-body">
     <div class="row mb-1">
-        <label class="col-sm-3">Nama Room</label>
+        <label class="col-sm-3">Nama Room </label>
         <div class="col-sm-9">
-            <input type="text" class="form-control" name="room_name" value="{{ old('room_name') }}">
+            <input type="text" class="form-control" name="room_name" value="{{ $zoom_master->room_name, old('room_name') }}">
             @error('room_name')
             <small class="text-danger">{{$message}}</small>
             @enderror
@@ -11,13 +11,13 @@
     <div class="row mb-1">
         <label class="col-sm-3">ID Meeting & Passcode</label>
         <div class="col-sm-5">
-            <input type="number" class="form-control" name="id_meeting" value="{{ old('id_meeting') }}">
+            <input type="number" class="form-control" name="id_meeting" value="{{ $zoom_master->id_meeting, old('id_meeting') }}">
             @error('id_meeting')
             <small class="text-danger">{{$message}}</small>
             @enderror
         </div>
         <div class="col-sm-4">
-            <input type="number" class="form-control" name="pass_code" value="{{ old('pass_code') }}">
+            <input type="number" class="form-control" name="pass_code" value="{{ $zoom_master->pass_code, old('pass_code') }}">
             @error('pass_code')
             <small class="text-danger">{{$message}}</small>
             @enderror
@@ -26,7 +26,7 @@
     <div class="row mb-1">
         <label class="col-sm-3">URL</label>
         <div class="col-sm-9">
-            <input type="text" class="form-control" name="url" value="{{ old('url') }}">
+            <input type="text" class="form-control" name="url" value="{{ $zoom_master->url, old('url') }}">
             @error('url')
             <small class="text-danger">{{$message}}</small>
             @enderror
@@ -35,7 +35,7 @@
     <div class="row mb-1">
         <label class="col-sm-3">Kadaluarsa</label>
         <div class="col-sm-9">
-            <input type="date" class="form-control" name="expired" value="{{ old('expired') }}">
+            <input type="date" class="form-control" name="expired" value="{{ $zoom_master->expired, old('expired') }}">
             @error('expired')
             <small class="text-danger">{{$message}}</small>
             @enderror

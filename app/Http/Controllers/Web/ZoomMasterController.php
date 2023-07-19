@@ -25,7 +25,7 @@ class ZoomMasterController extends Controller
     }
     public function create()
     {
-        $zoomMaster = ZoomMaster::all();
+        $zoomMaster = new ZoomMaster();
         $data = [
             "title"         => "Master Zoom",
             "class"         => "Marital Status",
@@ -47,5 +47,29 @@ class ZoomMasterController extends Controller
             return redirect()->route('zoom.master.index');
         }
     }
+    public function edit($id)
+    {
+        $zoomMaster = ZoomMaster::find($id);
+//        dd( $zoomMaster);
+        $data = [
+            "title"         => "Master Zoom",
+            "class"         => "Marital Status",
+            "sub_class"     => "Get All",
+            "content"       => "layout.admin",
+            "zoom_master"   => $zoomMaster
+        ];
 
+        return view('user.zoom_master.edit', $data);
+    }
+    public function update(Request $request, $id)
+    {
+        $zoom_master = ZoomMaster::find($id);
+        $data_post = $request->all();
+        $data_post['creator']=Auth::id();
+        $update = $zoom_master->update($data_post);
+        if($update){
+            session()->flash('success', 'Master Zoom Telah behasil diubah');
+            return redirect()->route('zoom.master.index');
+        }
+    }
 }

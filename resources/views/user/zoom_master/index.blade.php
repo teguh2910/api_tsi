@@ -45,7 +45,7 @@
                                         <td>{{ $data->expired }}</td>
                                         <td>{{ $data->status }}</td>
                                         <td>{{ $data->url }}</td>
-                                        <td><a href="" class="btn btn-sm btn-info">Detail</a> </td>
+                                        <td><a href="{{ route('zoom.master.edit', ['id'=>$data->id]) }}" class="btn btn-sm btn-info">Edit</a> </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

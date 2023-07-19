@@ -120,13 +120,15 @@ class MeetingController extends Controller
     }
     public function show($id)
     {
-        $meeting = Meeting::find($id);
+        $user       = Auth::user();
+        $meeting    = Meeting::find($id);
         $data = [
             "title"     => "Meeting",
             "class"     => "Meeting",
             "sub_class" => "Show",
             "content"   => "layout.admin",
-            "meeting"   => $meeting
+            "meeting"   => $meeting,
+            "user"      => $user
         ];
 
         return view('user.meeting.show', $data);
