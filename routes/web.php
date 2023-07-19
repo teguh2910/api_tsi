@@ -53,6 +53,7 @@ Route::post('message', [MessageController::class, 'store_chat'])->name('message.
 Route::get('message/user/{id}', [MessageController::class, 'user'])->name('message.user');
 
 Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
+Route::post('meetings', [MeetingController::class, 'store_by_pasien'])->name('meeting.store_by_pasien');
 
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
 Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');

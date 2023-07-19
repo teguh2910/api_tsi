@@ -17,17 +17,19 @@ class MessageController extends Controller
 {
     public function index()
     {
-        $my_id      = Auth::id();
-        $chat_roms  = Meeting::where([
-            'is_active'    => true
-        ]);
-        $data_chat_room = ChatRoomResource::collection($chat_roms->get());
+        $today = date('Y-m-d');
+        $my_meeting_today   = Meeting::where([
+            'attendee'      => Auth::id(),
+            'date_start'    => $today
+            ]);
         $data = [
             "title"         => "Video Conference",
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
+            "my_meetings"   => $my_meeting_today->get()
         ];
+
         return view('user.message.index', $data);
     }
     public function chat_room($id)
