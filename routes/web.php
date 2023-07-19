@@ -58,6 +58,8 @@ Route::post('meeting/pasien/store', [MeetingController::class, 'store_by_pasien'
 Route::post('meeting/counselor/store', [MeetingController::class, 'store_by_counselor'])->name('meeting.store_by_pasien');
 Route::get('meeting/host/mine', [MeetingController::class, 'mine'])->name('meeting.host.mine');
 Route::get('meeting/{id}/show', [MeetingController::class, 'show'])->name('meeting.show');
+Route::get('meeting/{id}/validation', [MeetingController::class, 'validation'])->name('meeting.validation');
+Route::post('meeting/{id}/update', [MeetingController::class, 'update'])->name('meeting.update');
 
 Route::get('zoom/masters', [ZoomMasterController::class, 'index'])->name('zoom.master.index');
 Route::get('zoom/master', [ZoomMasterController::class, 'create'])->name('zoom.master.create');

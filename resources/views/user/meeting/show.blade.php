@@ -19,25 +19,39 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <label class="col-sm-3">Tanggal</label>
-                            <div class="col-sm-9">: {{ $meeting->date_time }}</div>
+                            <label class="col-sm-3 col-form-label">Tanggal</label>
+                            <div class="col-sm-9">
+                                <input type="datetime-local" class="form-control form-control-sm" readonly value="{{ $meeting->date_time }}">
+                            </div>
                         </div>
                         <div class="row">
                             <label class="col-sm-3 col-form-label">ID Meeting</label>
-                            <div class="col-sm-9">: {{ $meeting->id_meting }}</div>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control form-control-sm" readonly value="{{ $meeting->id_meeting }}">
+                            </div>
                         </div>
                         <div class="row">
                             <label class="col-sm-3 col-form-label">Passcode</label>
-                            <div class="col-sm-9">: {{ $meeting->pas_code }}
-
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control form-control-sm" readonly value="{{ $meeting->pass_code }}">
                             </div>
                         </div>
                         <div class="row">
                             <label class="col-sm-3 col-form-label">Url</label>
-                            <div class="col-sm-9">: {{ $meeting->url }}</div>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control form-control-sm" readonly value="{{ $meeting->url }}">
+                            </div>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <a href="{{ route('meeting.validation', ['id'=>$meeting->id]) }}" class="btn btn-primary">Validasi</a>
+                        @if(! empty($meeting->url))
+                            <a href="{{ $meeting->url }}" class="btn btn-primary" target="_blank">Start</a>
+                        @else
+                            <a href="{{ route('meeting.show', ['id'=>$meeting->id]) }}" class="btn btn-warning">Tunggu Validasi</a>
+                        @endif
 
+                    </div>
                 </div>
             </div>
             <div class="col-md-3">

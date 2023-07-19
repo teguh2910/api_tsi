@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Meeting;
 use App\Models\User;
+use App\Models\ZoomMaster;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -129,5 +130,37 @@ class MeetingController extends Controller
         ];
 
         return view('user.meeting.show', $data);
+    }
+    public function validation($id)
+    {
+        $zoom_master = ZoomMaster::all();
+        $meeting = Meeting::find($id);
+        $data = [
+            "title"     => "Meeting",
+            "class"     => "Meeting",
+            "sub_class" => "Show",
+            "content"   => "layout.admin",
+            "meeting"   => $meeting,
+            "zoom_master"=> $zoom_master
+        ];
+        return view('user.meeting.validation', $data);
+    }
+    public function update(Request $request, $id)
+    {
+        $meeting = Meeting::find($id);
+        $zoom_master = ZoomMaster::find($request->zoom_master);
+        $data_update = [
+            'id_meeting'    => $zoom_master->id_meeting,
+            'pass_code'     => $zoom_master->pass_code,
+            'url'           => $zoom_master->url,
+            'zoom'          => [
+                'id'        => $zoom_master->id,
+                'room_name' => $zoom_master->room_name
+            ]
+        ];
+        $update = $meeting->update($data_update);
+        if($update){
+            return redirect()->route('meeting.show',['id'=>$id]);
+        }
     }
 }
