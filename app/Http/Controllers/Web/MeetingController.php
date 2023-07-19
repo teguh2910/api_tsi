@@ -30,7 +30,7 @@ class MeetingController extends Controller
             'time_start'    => 'required',
             'host'          => 'required'
         ]);
-        $user = Auth::user();
+
         $nama = Auth::user()['nama']['nama_depan'];
         if ($validator->fails()) {
             return redirect()->route('meeting.index')
@@ -60,6 +60,44 @@ class MeetingController extends Controller
             }
         }
     }
+    public function store_by_counselor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'date_start'    => 'required|date',
+            'time_start'    => 'required',
+            'attendee'      => 'required'
+        ]);
+
+        $nama = Auth::user()['nama']['nama_depan'];
+        if ($validator->fails()) {
+            return redirect()->route('meeting.index')
+                ->withErrors($validator)
+                ->withInput();
+        }else{
+            $topic      = "Tele Konsultasi E-TBC $nama";
+            $date_start = $request->date_start;
+            $time_start = $request->time_start;
+            $host       = Auth::id();
+            $attendee   = $request->attendee;
+            $time       = strtotime($request->date_start." ".$request->time_start);
+            $date_time  = date('Y-m-d H:i:s', $time);
+            $data_meeting = [
+                "topic"         => $topic,
+                "date_start"    => $date_start,
+                "time_start"    => $time_start,
+                "time"          => $time,
+                "date_time"     => $date_time,
+                "host"          => $host,
+                "attendee"      => $attendee
+            ];
+            $meeting    = new Meeting();
+            $create     = $meeting->create($data_meeting);
+            if($create){
+                session()->flash('success', 'E Konsultasi TBC telah diajukan');
+                return redirect()->route('message.index');
+            }
+        }
+    }
     public function mine()
     {
         $time   = time()-(15*60);
@@ -76,5 +114,17 @@ class MeetingController extends Controller
 
         return view('user.meeting.host', $data);
     }
+    public function show($id)
+    {
+        $meeting = Meeting::find($id);
+        $data = [
+            "title"     => "Meeting",
+            "class"     => "Meeting",
+            "sub_class" => "Show",
+            "content"   => "layout.admin",
+            "meeting"   => $meeting
+        ];
 
+        return view('user.meeting.show', $data);
+    }
 }

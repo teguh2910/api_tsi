@@ -11,7 +11,7 @@
     <div class="card-body p-0">
         <ul class="nav nav-pills flex-column">
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('message.index') }}" class="nav-link">
                     <i class="far fa-circle text-warning"></i> Hari Ini
                 </a>
             </li>
@@ -27,12 +27,7 @@
                     Yang Lalu
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('meeting.host.mine') }}" class="nav-link">
-                    <i class="far fa-circle text-primary"></i>
-                    My Meeting
-                </a>
-            </li>
+
         </ul>
     </div>
 

@@ -6,7 +6,7 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row mb-5">
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
                         <!-- Profile Image -->
                         <div class="card card-primary card-outline">
 
@@ -14,7 +14,7 @@
                                 <div class="text-center">
                                     @if($user->foto == null)
                                         <img class="profile-user-img img-fluid img-circle w-30"
-                                             src="https://file.atm-sehat.com/storage/image/user-image-with-black-background.png"
+                                             src="https://file.atm-sehat.com/storage/image/ZQC6SOX05hA0enLhvPWrEfVxMv9zzm9Sc7qp2EQO.jpg"
                                              alt="User profile picture">
                                     @else
                                     <img class="profile-user-img img-fluid img-circle w-30"

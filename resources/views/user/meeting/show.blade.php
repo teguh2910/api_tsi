@@ -10,18 +10,14 @@
                 </button>
             </div>
         @endif
-            <div class="row">
-                <div class="col-md-3">
-                    @include('user.message.menu-message')
-                </div>
-                <div class="col-md-9">
-                    @if($user->counselor == true)
-                        @include('user.meeting.meeting_counselor')
-                    @else
-                        @include('user.meeting.meeting_pasien')
-                    @endif
-
-                </div>
+        <div class="row">
+            <div class="col-md-3">
+                @include('user.message.menu-message')
             </div>
-        </section>
+            <div class="col-md-9">
+
+
+            </div>
+        </div>
+    </section>
 @endsection

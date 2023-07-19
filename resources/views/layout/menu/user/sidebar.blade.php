@@ -10,7 +10,7 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
             <div class="image">
                 @if($foto == null)
                     <?php
-                    $url = "https://file.atm-sehat.com/storage/image/user-image-with-black-background.png";
+                    $url = "https://file.atm-sehat.com/storage/image/ZQC6SOX05hA0enLhvPWrEfVxMv9zzm9Sc7qp2EQO.jpg";
                     ?>
                 @else
                     <?php

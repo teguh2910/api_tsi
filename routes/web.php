@@ -54,7 +54,8 @@ Route::post('message', [MessageController::class, 'store_chat'])->name('message.
 Route::get('message/user/{id}', [MessageController::class, 'user'])->name('message.user');
 
 Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
-Route::post('meetings', [MeetingController::class, 'store_by_pasien'])->name('meeting.store_by_pasien');
+Route::post('meeting/pasien/store', [MeetingController::class, 'store_by_pasien'])->name('meeting.store_by_pasien');
+Route::post('meeting/counselor/store', [MeetingController::class, 'store_by_counselor'])->name('meeting.store_by_pasien');
 Route::get('meeting/host/mine', [MeetingController::class, 'mine'])->name('meeting.host.mine');
 Route::get('meeting/{id}/show', [MeetingController::class, 'show'])->name('meeting.show');
 

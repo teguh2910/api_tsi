@@ -19,19 +19,26 @@ class MessageController extends Controller
     {
         $today = date('Y-m-d');
         $time   = time()-(15*60);
-        $my_meeting_today   = Meeting::where([
+        $pasien_meeting   = Meeting::where([
             'attendee'      => Auth::id(),
             'date_start'    => $today,
-
             ])->where('time', ">", $time);
-        $counselor = User::where('counselor', true);
+        $counselor_meeting = Meeting::where([
+            'host'          => Auth::id(),
+            'date_start'    => $today,
+        ])->where('time', ">", $time);
+        $counselor  = User::where('counselor', true)->where('_id', '!=', Auth::id());
+        $users      = User::orderBy('nama.nama_depan')->get();
         $data = [
-            "title"         => "Video Conference",
-            "class"         => "Marital Status",
-            "sub_class"     => "Get All",
-            "content"       => "layout.admin",
-            "my_meetings"   => $my_meeting_today->get(),
-            "counselor"     => $counselor->get()
+            "title"             => "Video Conference",
+            "class"             => "Marital Status",
+            "sub_class"         => "Get All",
+            "content"           => "layout.admin",
+            "pasien_meeting"    => $pasien_meeting->get(),
+            "counselor"         => $counselor->get(),
+            "user"              => Auth::user(),
+            "counselor_meeting" => $counselor_meeting->get(),
+            "users"             => $users
         ];
 
         return view('user.message.index', $data);
