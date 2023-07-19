@@ -5,7 +5,7 @@
 
         <section class="content">
             <div class="container-fluid">
-                <div class="row">
+                <div class="row mb-5">
                     <div class="col-lg-3 col-md-4 col-sm-6">
                         <!-- Profile Image -->
                         <div class="card card-primary card-outline">
@@ -100,15 +100,13 @@
                                     <div class="active tab-pane" id="observation">
                                         <div class="card">
                                             <div class="card-body">
-                                                <table class="table table-striped table-sm" id="exaple1">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Observation</th>
-                                                        <th>Value</th>
-                                                        <th>Interpretation</th>
-                                                        <th>Base Line</th>
-                                                    </tr>
+                                                <table class="table table-striped table-sm" id="example1">
+                                                    <thead class="bg-secondary">
+                                                    <th>No</th>
+                                                    <th>Observation</th>
+                                                    <th>Value</th>
+                                                    <th>Interpretation</th>
+                                                    <th>Base Line</th>
                                                     </thead>
                                                     <tbody>
                                                     @foreach($observation as $data)
@@ -117,9 +115,7 @@
                                                             <td>{{ $data->coding['display'] }}<br> <small>{{ date('Y-m-d H:i', $data->time) }}</small> </td>
                                                             <td>{{ $data->value }} <br> <small>{{ $data->unit['display'] }}</td>
                                                             <td></td>
-                                                            <td>
-
-                                                            </td>
+                                                            <td></td>
                                                         </tr>
                                                     @endforeach
                                                     </tbody>

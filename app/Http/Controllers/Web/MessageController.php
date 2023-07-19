@@ -18,23 +18,27 @@ class MessageController extends Controller
     public function index()
     {
         $today = date('Y-m-d');
+        $time   = time()-(15*60);
         $my_meeting_today   = Meeting::where([
             'attendee'      => Auth::id(),
-            'date_start'    => $today
-            ]);
+            'date_start'    => $today,
+
+            ])->where('time', ">", $time);
+        $counselor = User::where('counselor', true);
         $data = [
             "title"         => "Video Conference",
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
-            "my_meetings"   => $my_meeting_today->get()
+            "my_meetings"   => $my_meeting_today->get(),
+            "counselor"     => $counselor->get()
         ];
 
         return view('user.message.index', $data);
     }
     public function chat_room($id)
     {
-        $my_id      = "64ab60837fb2f5709001bbe2";
+        $my_id      = Auth::id();
         $chat_room  = ChatRoom::find($id);
         if($chat_room->user1 == $my_id){
             $partner = User::find($chat_room->user2) ;
@@ -53,7 +57,7 @@ class MessageController extends Controller
             "partner"       => $partner
 
         ];
-        return view('admin.message.show', $data);
+        return view('user.message.show', $data);
     }
     public function store_chat(Request $request)
     {
@@ -69,9 +73,7 @@ class MessageController extends Controller
         $method     = "POST";
         $client = new Client();
         $session        = json_decode(decrypt(session('body')));
-//        dd($session);
         $session_token  = $session->token->code;
-
         $response = $client->post($url, [
             'headers' => [
                 'Authorization' => 'Bearer '.$session_token,

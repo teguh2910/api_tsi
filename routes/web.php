@@ -20,6 +20,7 @@ use App\Http\Controllers\Web\QuestionController;
 use App\Http\Controllers\Web\QuestionnaireController;
 use App\Http\Controllers\Web\ReligionController;
 use App\Http\Controllers\Web\UserController;
+use App\Http\Controllers\Web\ZoomMasterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,13 +48,19 @@ Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('a
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::get('token', [AuthController::class, 'token'])->name('auth.token');
 
-Route::get('messages', [MessageController::class, 'index'])->name('message.index');
+Route::get('messages', [MessageController::class, 'index'])->name('message.index')->middleware('auth');
 Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');
 Route::post('message', [MessageController::class, 'store_chat'])->name('message.room.store');
 Route::get('message/user/{id}', [MessageController::class, 'user'])->name('message.user');
 
 Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
 Route::post('meetings', [MeetingController::class, 'store_by_pasien'])->name('meeting.store_by_pasien');
+Route::get('meeting/host/mine', [MeetingController::class, 'mine'])->name('meeting.host.mine');
+Route::get('meeting/{id}/show', [MeetingController::class, 'show'])->name('meeting.show');
+
+Route::get('zoom/masters', [ZoomMasterController::class, 'index'])->name('zoom.master.index');
+Route::get('zoom/master', [ZoomMasterController::class, 'create'])->name('zoom.master.create');
+Route::post('zoom/master', [ZoomMasterController::class, 'store'])->name('zoom.master.store');
 
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
 Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');

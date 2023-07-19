@@ -20,7 +20,7 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                     <img src="{{ $url }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Khairon</a>
+                <a href="#" class="d-block">{{ Auth::user()['nama']['nama_depan'] }}</a>
             </div>
         </div>
 
@@ -68,6 +68,12 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                     <a href="{{ route('medication.mine') }}" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>
                         <p>Medication</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('zoom.master.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>Zoom Master</p>
                     </a>
                 </li>
 

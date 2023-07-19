@@ -1,11 +1,11 @@
 @extends('layout.user')
 @section('content')
-    <?php
-    $my_id      = "64ab60837fb2f5709001bbe2";
-    ?>
+
     <section class="content">
         <div class="row">
-            @include('admin.message.menu-message')
+            <div class="col-md-3">
+                @include('user.message.menu-message')
+            </div>
             <div class="col-md-9">
                 <div class="card direct-chat direct-chat-success">
                     <div class="card-header">

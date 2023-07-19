@@ -23,20 +23,29 @@
                             </div>
                         @endif
                         <div class="card-body">
-                            <a href="{{ route('questionnaire.create') }}" class="btn btn-sm btn-primary mb-1">Add Data</a>
+                            <a href="{{ route('zoom.master.create') }}" class="btn btn-sm btn-primary mb-1">Add Data</a>
                             <table class="table table-sm mt-2" id="example1">
                                 <thead>
                                 <th>#</th>
-                                <th>Questionnaire</th>
+                                <th>Rom Name</th>
+                                <th>ID Meeting</th>
+                                <th>Passcode</th>
+                                <th>Expired</th>
+                                <th>Status</th>
+                                <th>Url</th>
                                 <th>Detail</th>
                                 </thead>
                                 <tbody>
-                                @foreach($questionnaire as $data)
+                                @foreach($zoom_masters as $data)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $data->judul }}</td>
-
-                                        <td><a href="{{ route('questionnaire.showByuser', ['id'=> $data->id]) }}" class="btn btn-sm btn-info">Detail</a></td>
+                                        <td>{{ $data->room_name }}</td>
+                                        <td>{{ $data->id_meeting }}</td>
+                                        <td>{{ $data->pass_code }}</td>
+                                        <td>{{ $data->expired }}</td>
+                                        <td>{{ $data->status }}</td>
+                                        <td>{{ $data->url }}</td>
+                                        <td><a href="" class="btn btn-sm btn-info">Detail</a> </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -46,6 +55,6 @@
                 </div>
             </div>
         </div>
-            <!-- /.container-fluid -->
+        <!-- /.container-fluid -->
     </section>
 @endsection

@@ -60,5 +60,21 @@ class MeetingController extends Controller
             }
         }
     }
+    public function mine()
+    {
+        $time   = time()-(15*60);
+        $meetings = Meeting::where([
+            'host'  => Auth::id()
+        ]);
+        $data = [
+            "title"     => "Master Zoom",
+            "class"     => "Marital Status",
+            "sub_class" => "Get All",
+            "content"   => "layout.admin",
+            "meetings"  => $meetings->get()
+        ];
+
+        return view('user.meeting.host', $data);
+    }
 
 }
