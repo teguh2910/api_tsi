@@ -120,13 +120,20 @@ class AuthController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }else{
-            $post=$request->all();
+            $post_data  = $request->all();
             $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
-            $client = new Client();
-            $response = $client->post($url, [
-                'form_params' => $request->all()
+            $client     = new Client();
+            $response   = $client->put($url, [
+                'form_params' => $post_data
             ]);
             $statusCode = $response->getStatusCode();
+            if($statusCode == 200){
+                echo "Sukses aktivasi";
+            }elseif($statusCode == 500){
+                $response_decode = json_decode($response);
+                session()->flash('errors', $response_decode);
+                return back();
+            }
         }
     }
     public function logout(Request $request)
@@ -142,6 +149,7 @@ class AuthController extends Controller
             return redirect()->route('auth.login');
         }else{
             return redirect()->route('auth.login');
+
         }
 
     }

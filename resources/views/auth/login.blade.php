@@ -2,20 +2,16 @@
 @section('content')
     <div class="login-box">
         <div class="login-logo">
-            <a href="../../index2.html"><b>{{ env('APP_NAME') }}</b></a>
+            <a href="#"><b>{{ env('APP_NAME') }}</b></a>
         </div>
 
         <div class="card">
             <div class="card-body login-card-body">
-
                 @if(session('gagal_login') != null)
                     <p class="login-box-msg text-danger">{{ session('gagal_login') }}</p>
-
                 @else
                     <p class="login-box-msg">Sign in to start your session</p>
                 @endif
-
-
                 <form action="{{ route('auth.postLogin') }}" method="post">
                     @csrf
                     <div class="mb-3">
@@ -40,11 +36,9 @@
                                 </label>
                             </div>
                         </div>
-
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
-
                     </div>
                 </form>
 
