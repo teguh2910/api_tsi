@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\AnswerController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BaseLineController;
 use App\Http\Controllers\web\CodeController;
+use App\Http\Controllers\Web\CounselorController;
 use App\Http\Controllers\Web\DrugController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
@@ -47,6 +48,7 @@ Route::post('activate', [AuthController::class, 'do_activate'])->name('auth.do_a
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware('guest');
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::get('token', [AuthController::class, 'token'])->name('auth.token');
+Route::post('forgotPassword', [AuthController::class, 'getPassword'])->name('auth.getPassword');
 
 Route::get('messages', [MessageController::class, 'index'])->name('message.index')->middleware('auth');
 Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');
@@ -66,6 +68,10 @@ Route::get('zoom/master', [ZoomMasterController::class, 'create'])->name('zoom.m
 Route::post('zoom/master', [ZoomMasterController::class, 'store'])->name('zoom.master.store');
 Route::get('zoom/master/{id}/edit', [ZoomMasterController::class, 'edit'])->name('zoom.master.edit');
 Route::post('zoom/master/{id}/update', [ZoomMasterController::class, 'update'])->name('zoom.master.update');
+
+Route::get('counselors', [CounselorController::class, 'index'])->name('counselor.index');
+Route::post('counselors', [CounselorController::class, 'store'])->name('counselor.store');
+Route::get('counselor/{id}/show', [CounselorController::class, 'show'])->name('counselor.show');
 
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
 Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');

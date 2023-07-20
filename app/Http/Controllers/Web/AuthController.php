@@ -104,6 +104,30 @@ class AuthController extends Controller
     {
         return view('auth.forgotPassword');
     }
+    public function getPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nomor_telepon' => 'required|numeric',
+            'email'         => 'required|email',
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('auth.forgotPassword')
+                ->withErrors($validator)
+                ->withInput();
+        }else{
+            $post_data  = $request->all();
+            $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
+            $client     = new Client();
+            $response   = $client->post($url, [
+                'form_params' => $post_data
+            ]);
+            $statusCode = $response->getStatusCode();
+            if($statusCode == 200){
+                echo "Permohonan reset password telah diterima";
+            }
+        }
+    }
     public function activate()
     {
         return view('auth.activate');
@@ -129,10 +153,8 @@ class AuthController extends Controller
             $statusCode = $response->getStatusCode();
             if($statusCode == 200){
                 echo "Sukses aktivasi";
-            }elseif($statusCode == 500){
-                $response_decode = json_decode($response);
-                session()->flash('errors', $response_decode);
-                return back();
+            }else{
+                echo $statusCode;
             }
         }
     }

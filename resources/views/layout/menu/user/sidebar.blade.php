@@ -76,6 +76,12 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                         <p>Zoom Master</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('counselor.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>Counselor</p>
+                    </a>
+                </li>
 
                 <li class="nav-header">Medication</li>
 

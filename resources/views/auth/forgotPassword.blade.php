@@ -8,9 +8,19 @@
     <div class="card">
         <div class="card-body login-card-body">
             <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
-            <form action="recover-password.html" method="post">
+            <form action="{{ route('auth.getPassword') }}" method="post">
+                @csrf
                 <div class="mb-3">
-                    <input type="email" class="form-control" placeholder="Email">
+                    <input type="number" class="form-control" placeholder="Nomor Telepon" name="nomor_telepon">
+                    @error('nomor_telepon')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <input type="email" class="form-control" placeholder="Email" name="email">
+                    @error('email')
+                    <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
                 <div class="row">
                     <div class="col-12">
