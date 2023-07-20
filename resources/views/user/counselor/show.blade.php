@@ -14,10 +14,25 @@
                 @endif
                 <div class="card">
                     <div class="card-header">
-                        <a href="" class="btn btn-sm btn-primary">Add New Patient</a>
+                        <div class="row">
+                            <label class="col-sm-2">Nama</label>
+                            <div class="col-sm-10">{{ $counselor->nama['nama_depan']." ".$counselor->nama['nama_belakang']}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-2">Email</label>
+                            <div class="col-sm-10">{{ $counselor->kontak['email'] }}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-2">Nomor Telepon</label>
+                            <div class="col-sm-10">{{ $counselor->kontak['nomor_telepon'] }}</div>
+                        </div>
+                    </div>
+                    <div class="card-header">
+                        <b>Daftar Pasien Kelolaan</b>
                     </div>
                     <div class="card-body">
-                        <table class="table table-sm" id="example1">
+                        <a href="{{ route('pasien.tbc.create.counselor', ['id'=>$counselor->id]) }}" class="btn btn-sm btn-primary mb-2">Add New Patient</a>
+                        <table class="table table-sm">
                             <thead>
                             <th>#</th>
                             <th>Nama</th>
@@ -39,6 +54,9 @@
                             @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('counselor.index') }}" class="btn btn-danger">Back</a>
                     </div>
                 </div>
             </div>

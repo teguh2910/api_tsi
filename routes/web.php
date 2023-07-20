@@ -16,6 +16,7 @@ use App\Http\Controllers\Web\MedicationController;
 use App\Http\Controllers\Web\MeetingController;
 use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
+use App\Http\Controllers\Web\PasienTbcController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\QuestionController;
 use App\Http\Controllers\Web\QuestionnaireController;
@@ -72,6 +73,9 @@ Route::post('zoom/master/{id}/update', [ZoomMasterController::class, 'update'])-
 Route::get('counselors', [CounselorController::class, 'index'])->name('counselor.index');
 Route::post('counselors', [CounselorController::class, 'store'])->name('counselor.store');
 Route::get('counselor/{id}/show', [CounselorController::class, 'show'])->name('counselor.show');
+
+Route::get('patient/tbc/create/{id}/counselor', [PasienTbcController::class, 'create'])->name('pasien.tbc.create.counselor');
+Route::post('patient/tbc/search/{id}/counselor', [PasienTbcController::class, 'search'])->name('pasien.tbc.search.counselor');
 
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
 Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');

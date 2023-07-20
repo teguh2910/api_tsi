@@ -16,9 +16,9 @@ class CounselorController extends Controller
         $counselor = User::where('counselor', true);
         $users = User::OrderBy('nama.nama_depan', 'ASC')->get();
         $data = [
-            "title"         => "Profile",
+            "title"         => "Daftar Konselor TBC",
             "class"         => "user",
-            "sub_class"     => "profile",
+            "sub_class"     => "counselor",
             "content"       => "layout.user",
             "counselors"    => $counselor->get(),
             "user"          => Auth::user(),
