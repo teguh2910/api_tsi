@@ -13,6 +13,7 @@ use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\Web\KitController;
 use App\Http\Controllers\web\MaritalStatusController;
 use App\Http\Controllers\Web\MedicationController;
+use App\Http\Controllers\Web\MedicationScheduleController;
 use App\Http\Controllers\Web\MeetingController;
 use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
@@ -98,6 +99,8 @@ Route::post('drugs', [DrugController::class, 'store'])->name('drugs.store')->mid
 Route::get('medication', [MedicationController::class, 'mine'])->name('medication.mine')->middleware('auth');
 Route::get('medication/{id}/show', [MedicationController::class, 'show'])->name('medication.show')->middleware('auth');
 Route::post('medication', [MedicationController::class, 'store'])->name('medication.store')->middleware('auth');
+
+Route::post('medication/schedule/{id}/store', [MedicationScheduleController::class, 'store'])->name('medication.schedule.store')->middleware('auth');
 
 Route::post('question/store', [QuestionController::class, 'store'])->name('question.store')->middleware('auth');
 

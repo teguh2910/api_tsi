@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Drug;
 use App\Models\Medication;
+use App\Models\MedicationSchedule;
 use App\Models\Observation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -93,13 +94,18 @@ class MedicationController extends Controller
     public function show($id)
     {
         $medication = Medication::find($id);
+        $jadwal     = MedicationSchedule::where([
+            'medication.id' => $medication->id
+        ])->orderBy('time', 'ASC');
         $data = [
             "title"         => "Medication Detail",
             "class"         => "medication",
             "sub_class"     => "detail",
             "content"       => "layout.user",
             "medication"    => $medication,
-            "user"          => Auth::user()
+            "user"          => Auth::user(),
+            "jadwal"        => $jadwal->get(),
+            "count_jadwal"  => $jadwal->count()
         ];
         return view('user.medication.show', $data);
     }
