@@ -29,7 +29,7 @@ class AnswerController extends Controller
             ];
             $session        = json_decode(decrypt(session('body')));
             $session_token  = $session->token->code;
-            $url        = "https://dev.atm-sehat.com/api/v1/answer";
+            $url            = env('APP_API_EXTERNAL'). "/api/v1/answer";
             $header = [
                 'Authorization' => "Bearer $session_token",
             ];

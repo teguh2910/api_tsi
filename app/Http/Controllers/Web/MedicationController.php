@@ -32,10 +32,11 @@ class MedicationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'drug'      => 'required',
-            'dosage'    => 'required',
-            'unit'      => 'required',
-            'qty'       => 'required'
+            'drug'          => 'required',
+            'frequency'     => 'required',
+            'unit_frequency'=> 'required',
+            'dosage'        => 'required',
+            'unit_dosage'   => 'required',
         ]);
         $medication = new Medication();
         if ($validator->fails()) {
@@ -68,10 +69,17 @@ class MedicationController extends Controller
                     'pasien'    => $data_pasien,
                     'drug'      => $data_obat,
                     'dosage'    => [
-                        'frekwensi' => (int) $request->dosage,
-                        'unit'      => $request->unit
+                        'dosage'        => (float) $request->dosage,
+                        'unit_dosage'   => $request->unit_dosage
                     ],
-                    'qty'       => (int) $request->qty
+                    'frequency' => [
+                        'frequency'         => (float) $request->frequency,
+                        'unit_frequency'    => $request->unit_frequency
+                    ],
+                    'qty'       => [
+                        'qty'       => (int) $request->qty,
+                        'unit_qty'  => $request->unit_qty,
+                    ]
                 ];
                 $create = $medication->create($post_data);
                 if($create){
@@ -81,6 +89,19 @@ class MedicationController extends Controller
             }
 
         }
+    }
+    public function show($id)
+    {
+        $medication = Medication::find($id);
+        $data = [
+            "title"         => "Medication Detail",
+            "class"         => "medication",
+            "sub_class"     => "detail",
+            "content"       => "layout.user",
+            "medication"    => $medication,
+            "user"          => Auth::user()
+        ];
+        return view('user.medication.show', $data);
     }
 
 }

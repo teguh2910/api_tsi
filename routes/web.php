@@ -56,51 +56,52 @@ Route::get('password/reset/request', [AuthController::class, 'reset_password'])-
 Route::post('password/reset/do', [AuthController::class, 'do_reset_password'])->name('auth.do.reset.password');
 
 
-Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth');
 Route::get('token', [AuthController::class, 'token'])->name('auth.token');
 
 Route::get('messages', [MessageController::class, 'index'])->name('message.index')->middleware('auth');
-Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');
-Route::post('message', [MessageController::class, 'store_chat'])->name('message.room.store');
-Route::get('message/user/{id}', [MessageController::class, 'user'])->name('message.user');
+Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room')->middleware('auth');
+Route::post('message', [MessageController::class, 'store_chat'])->name('message.room.store')->middleware('auth');
+Route::get('message/user/{id}', [MessageController::class, 'user'])->name('message.user')->middleware('auth');
 
-Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index');
-Route::post('meeting/pasien/store', [MeetingController::class, 'store_by_pasien'])->name('meeting.store_by_pasien');
-Route::post('meeting/counselor/store', [MeetingController::class, 'store_by_counselor'])->name('meeting.store_by_pasien');
-Route::get('meeting/host/mine', [MeetingController::class, 'mine'])->name('meeting.host.mine');
-Route::get('meeting/{id}/show', [MeetingController::class, 'show'])->name('meeting.show');
-Route::get('meeting/{id}/validation', [MeetingController::class, 'validation'])->name('meeting.validation');
-Route::post('meeting/{id}/update', [MeetingController::class, 'update'])->name('meeting.update');
+Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index')->middleware('auth');
+Route::post('meeting/pasien/store', [MeetingController::class, 'store_by_pasien'])->name('meeting.store_by_pasien')->middleware('auth');
+Route::post('meeting/counselor/store', [MeetingController::class, 'store_by_counselor'])->name('meeting.store_by_pasien')->middleware('auth');
+Route::get('meeting/host/mine', [MeetingController::class, 'mine'])->name('meeting.host.mine')->middleware('auth');
+Route::get('meeting/{id}/show', [MeetingController::class, 'show'])->name('meeting.show')->middleware('auth');
+Route::get('meeting/{id}/validation', [MeetingController::class, 'validation'])->name('meeting.validation')->middleware('auth');
+Route::post('meeting/{id}/update', [MeetingController::class, 'update'])->name('meeting.update')->middleware('auth');
 
-Route::get('zoom/masters', [ZoomMasterController::class, 'index'])->name('zoom.master.index');
-Route::get('zoom/master', [ZoomMasterController::class, 'create'])->name('zoom.master.create');
-Route::post('zoom/master', [ZoomMasterController::class, 'store'])->name('zoom.master.store');
-Route::get('zoom/master/{id}/edit', [ZoomMasterController::class, 'edit'])->name('zoom.master.edit');
-Route::post('zoom/master/{id}/update', [ZoomMasterController::class, 'update'])->name('zoom.master.update');
+Route::get('zoom/masters', [ZoomMasterController::class, 'index'])->name('zoom.master.index')->middleware('auth');
+Route::get('zoom/master', [ZoomMasterController::class, 'create'])->name('zoom.master.create')->middleware('auth');
+Route::post('zoom/master', [ZoomMasterController::class, 'store'])->name('zoom.master.store')->middleware('auth');
+Route::get('zoom/master/{id}/edit', [ZoomMasterController::class, 'edit'])->name('zoom.master.edit')->middleware('auth');
+Route::post('zoom/master/{id}/update', [ZoomMasterController::class, 'update'])->name('zoom.master.update')->middleware('auth');
 
-Route::get('counselors', [CounselorController::class, 'index'])->name('counselor.index');
-Route::post('counselors', [CounselorController::class, 'store'])->name('counselor.store');
-Route::get('counselor/{id}/show', [CounselorController::class, 'show'])->name('counselor.show');
+Route::get('counselors', [CounselorController::class, 'index'])->name('counselor.index')->middleware('auth');
+Route::post('counselors', [CounselorController::class, 'store'])->name('counselor.store')->middleware('auth');
+Route::get('counselor/{id}/show', [CounselorController::class, 'show'])->name('counselor.show')->middleware('auth');
 
-Route::get('patient/tbc/create/{id}/counselor', [PasienTbcController::class, 'create'])->name('pasien.tbc.create.counselor');
-Route::post('patient/tbc/search/{id}/counselor', [PasienTbcController::class, 'search'])->name('pasien.tbc.search.counselor');
+Route::get('patient/tbc/create/{id}/counselor', [PasienTbcController::class, 'create'])->name('pasien.tbc.create.counselor')->middleware('auth');
+Route::post('patient/tbc/search/{id}/counselor', [PasienTbcController::class, 'search'])->name('pasien.tbc.search.counselor')->middleware('auth');
 
-Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index');
-Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create');
-Route::post('questionnaire/store', [QuestionnaireController::class, 'store'])->name('questionnaire.store');
-Route::get('questionnaire/{id}/view', [QuestionnaireController::class, 'show'])->name('questionnaire.show');
-Route::get('questionnaire/status/publish', [QuestionnaireController::class, 'publish'])->name('questionnaire.publish');
-Route::get('questionnaire/{id}/detail', [QuestionnaireController::class, 'showByuser'])->name('questionnaire.showByuser');
+Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index')->middleware('auth');
+Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create')->middleware('auth');
+Route::post('questionnaire/store', [QuestionnaireController::class, 'store'])->name('questionnaire.store')->middleware('auth');
+Route::get('questionnaire/{id}/view', [QuestionnaireController::class, 'show'])->name('questionnaire.show')->middleware('auth');
+Route::get('questionnaire/status/publish', [QuestionnaireController::class, 'publish'])->name('questionnaire.publish')->middleware('auth');
+Route::get('questionnaire/{id}/detail', [QuestionnaireController::class, 'showByuser'])->name('questionnaire.showByuser')->middleware('auth');
 
-Route::get('drugs', [DrugController::class, 'index'])->name('drugs.index');
-Route::post('drugs', [DrugController::class, 'store'])->name('drugs.store');
+Route::get('drugs', [DrugController::class, 'index'])->name('drugs.index')->middleware('auth');
+Route::post('drugs', [DrugController::class, 'store'])->name('drugs.store')->middleware('auth');
 
-Route::get('medication', [MedicationController::class, 'mine'])->name('medication.mine');
-Route::post('medication', [MedicationController::class, 'store'])->name('medication.store');
+Route::get('medication', [MedicationController::class, 'mine'])->name('medication.mine')->middleware('auth');
+Route::get('medication/{id}/show', [MedicationController::class, 'show'])->name('medication.show')->middleware('auth');
+Route::post('medication', [MedicationController::class, 'store'])->name('medication.store')->middleware('auth');
 
-Route::post('question/store', [QuestionController::class, 'store'])->name('question.store');
+Route::post('question/store', [QuestionController::class, 'store'])->name('question.store')->middleware('auth');
 
-Route::post('answer/store', [AnswerController::class, 'store'])->name('answer.store');
+Route::post('answer/store', [AnswerController::class, 'store'])->name('answer.store')->middleware('auth');
 
 Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
 Route::get('/profile/{id}', [ProfileController::class,'user'])->name('user.profile')->middleware('auth');

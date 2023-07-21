@@ -50,12 +50,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label">Dosis</label>
+                                                    <label class="col-sm-4 col-form-label">Frekwensi</label>
                                                     <div class="col-sm-4" mb-2>
-                                                        <input type="number" class="form-control" name="dosage">
+                                                        <input type="number" class="form-control" name="frequency">
                                                     </div>
                                                     <div class="col-sm-4">
-                                                        <select class="form-control" required name="unit">
+                                                        <select class="form-control" required name="unit_frequency">
                                                             <option value="Daily" selected>Kali Per Hari</option>
                                                             <option value="Hourly">Kali Per Jam</option>
                                                             <option value="Weekly">Kali Per Minggu</option>
@@ -63,11 +63,32 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label">Qty</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" class="form-control" name="qty">
+                                                    <label class="col-sm-4 col-form-label">Dosis</label>
+                                                    <div class="col-sm-4" mb-2>
+                                                        <input type="number" class="form-control" name="dosage">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-control" required name="unit_dosage">
+                                                            <option value="tab" selected>Tablet</option>
+                                                            <option value="kap">Kapsul</option>
+                                                            <option value="powder">Puyer</option>
+                                                        </select>
                                                     </div>
                                                 </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-4 col-form-label">Obat Tersedia</label>
+                                                    <div class="col-sm-4" mb-2>
+                                                        <input type="number" class="form-control" name="qty">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-control" required name="unit_qty">
+                                                            <option value="tab" selected>Tablet</option>
+                                                            <option value="kap">Kapsul</option>
+                                                            <option value="powder">Puyer</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
 
                                             </div>
                                             <div class="modal-footer">
@@ -82,8 +103,8 @@
                                 <thead>
                                 <th>#</th>
                                 <th>Drug</th>
-                                <th>Dosis</th>
-                                <th>Qty</th>
+                                <th>Frequency</th>
+                                <th>Dosage</th>
                                 <th>Detail</th>
                                 </thead>
                                 <tbody>
@@ -92,15 +113,17 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->drug['name'] }}</td>
                                     <td>
-                                        {{ $data->dosage['frekwensi'] }}
-                                        @if($data->dosage['unit'] == "Hourly")
+                                        {{ $data->frequency['frequency'] }}
+                                        @if($data->frequency['unit_frequency'] == "Hourly")
                                             {{ "Kali/Jam" }}
-                                        @elseif($data->dosage['unit'] == "Daily")
+                                        @elseif($data->frequency['unit_frequency'] == "Daily")
                                             {{ "Kali/Hari" }}
+                                        @elseif($data->frequency['unit_frequency'] == "Weekly")
+                                            {{ "Kali/Minggu" }}
                                         @endif
                                     </td>
-                                    <td>{{ $data->qty }}</td>
-                                    <td><a href="" class="btn btn-sm btn-info">Detail</a></td>
+                                    <td>{{ $data->dosage['dosage'] }} {{ $data->dosage['unit_dosage'] }}</td>
+                                    <td><a href="{{ route('medication.show', ['id'=>$data->id]) }}" class="btn btn-sm btn-info">Detail</a></td>
                                 </tr>
                                 @endforeach
                                 </tbody>
