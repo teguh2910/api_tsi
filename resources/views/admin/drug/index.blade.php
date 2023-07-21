@@ -86,6 +86,7 @@
                                 <th>Kekuatan</th>
                                 <th>Satuan</th>
                                 <th>Sediaan</th>
+                                <th>Action</th>
                                 </thead>
                                 <tbody>
                                 @foreach($drugs as $data)
@@ -95,6 +96,33 @@
                                         <td>{{ $data->totalVolume['volume'] }}</td>
                                         <td>{{ $data->totalVolume['unit'] }}</td>
                                         <td>{{ $data->doseForm }}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" onclick="showConfirmation{{ $data->id }}()">Delete</button>
+                                            <div class="modal fade" id="{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete {{ $data->name }}?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                            <a href="{{ route('drugs.destroy', ['id'=>$data->id]) }}" class="btn btn-danger">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <script>
+                                                function showConfirmation{{ $data->id }}() {
+                                                    $('#{{ $data->id }}').modal('show');
+                                                }
+                                            </script>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

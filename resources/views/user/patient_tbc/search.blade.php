@@ -45,6 +45,7 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-3 col-form-label">
                                                     <button type="submit" class="btn btn-primary">Save</button>
+                                                    <a href="{{ route('pasien.tbc.mine') }}" class="btn btn-danger">My Patient</a>
                                                 </label>
 
                                             </div>

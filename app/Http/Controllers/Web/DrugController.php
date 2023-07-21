@@ -49,11 +49,25 @@ class DrugController extends Controller
                 ],
                 'category'      => $request->category,
             ];
+            $drug = Drug::where('name', $request->name);
+            if($drug->count() > 0){
+                session()->flash('danger', 'Obat sudah ada di database');
+                return redirect()->back();
+            }
             $create = $drug->create($data_post);
             if($create){
+                session()->flash('success', 'Obat berhasil ditambahkan');
                 return redirect()->back();
             }
         }
 
+    }
+    public function destroy($id)
+    {
+        $destroy = Drug::where('_id', $id)->delete();
+        if($destroy){
+            session()->flash('success', 'Sukses menghapus data obat');
+            return back();
+        }
     }
 }

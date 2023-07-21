@@ -84,8 +84,10 @@ Route::post('counselors', [CounselorController::class, 'store'])->name('counselo
 Route::get('counselor/{id}/show', [CounselorController::class, 'show'])->name('counselor.show')->middleware('auth');
 Route::get('counselor/{id}/delete', [CounselorController::class, 'destroy'])->name('counselor.destroy')->middleware('auth');
 
+Route::get('patient/tbc/mine', [PasienTbcController::class, 'mine'])->name('pasien.tbc.mine')->middleware('auth');
 Route::get('patient/tbc/create/{id}/counselor', [PasienTbcController::class, 'create'])->name('pasien.tbc.create.counselor')->middleware('auth');
-Route::post('patient/tbc/search/{id}/counselor', [PasienTbcController::class, 'search'])->name('pasien.tbc.search.counselor')->middleware('auth');
+Route::post('patient/tbc/search/{id}/counselor', [PasienTbcController::class, 'store'])->name('pasien.tbc.search.counselor')->middleware('auth');
+Route::get('patient/tbc/{id}/destroy', [PasienTbcController::class, 'destroy'])->name('pasien.tbc.destroy')->middleware('auth');
 
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index')->middleware('auth');
 Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create')->middleware('auth');
@@ -96,6 +98,7 @@ Route::get('questionnaire/{id}/detail', [QuestionnaireController::class, 'showBy
 
 Route::get('drugs', [DrugController::class, 'index'])->name('drugs.index')->middleware('auth');
 Route::post('drugs', [DrugController::class, 'store'])->name('drugs.store')->middleware('auth');
+Route::get('drugs/{id}/delete', [DrugController::class, 'destroy'])->name('drugs.destroy')->middleware('auth');
 
 Route::get('medication', [MedicationController::class, 'mine'])->name('medication.mine')->middleware('auth');
 Route::get('medication/{id}/show', [MedicationController::class, 'show'])->name('medication.show')->middleware('auth');

@@ -82,6 +82,12 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                         <p>Counselor</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('pasien.tbc.mine') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>My Patient</p>
+                    </a>
+                </li>
 
                 <li class="nav-header">Medication</li>
 
@@ -101,13 +107,13 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://rspon.net/ppni/simk/form" class="nav-link">
+                            <a href="" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Jenis Obat</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="../mailbox/read-mail.html" class="nav-link">
+                            <a href="" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Sediaan Obat</p>
                             </a>

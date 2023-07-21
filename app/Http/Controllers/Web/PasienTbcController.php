@@ -10,6 +10,33 @@ use Illuminate\Support\Facades\Validator;
 
 class PasienTbcController extends Controller
 {
+    public function index()
+    {
+        $data = [
+            "title"         => "Profile",
+            "class"         => "user",
+            "sub_class"     => "profile",
+            "content"       => "layout.user",
+            "medications"   => $medication->get(),
+            "drugs"         => $drug,
+            "user"          => Auth::user()
+        ];
+        return view('user.pasien_tbc.index', $data);
+    }
+    public function mine()
+    {
+        $pasien_tbc = User::where('tbc.counselor', Auth::id());
+        $data = [
+            "title"         => "Pasien",
+            "class"         => "user",
+            "sub_class"     => "tbc",
+            "content"       => "layout.user",
+            "pasien_tbc"    => $pasien_tbc->get(),
+            "user"          => Auth::user()
+        ];
+        return view('user.patient_tbc.mine', $data);
+
+    }
     public function create(Request $request,$id_counselor)
     {
         $counselor  = User::find($id_counselor);
@@ -28,7 +55,7 @@ class PasienTbcController extends Controller
         ];
         return view('user.patient_tbc.search', $data);
     }
-    public function search(Request $request, $id_counselor)
+    public function store(Request $request, $id_counselor)
     {
 
         $validator = Validator::make($request->all(), [
@@ -53,24 +80,25 @@ class PasienTbcController extends Controller
                 $create_new_patien = $pasien->update($data_update);
                 if($create_new_patien){
                     session()->flash('success', 'Sukses menambahkan pasien baru');
-                    return redirect()->route('counselor.show', ['id'=>$id_counselor]);
+                    return back();
                 }
             }
         }
-
-
-
     }
-    public function store(Request $request, $id_counselor)
+    public function destroy($id)
     {
-        $validator = Validator::make($request->all(), [
-            'id_pasien'      => 'required',
-        ]);
-        $pasien = User::where('_id', $request->id_pasien);
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+        $pasien_tbc = User::where('_id', $id);
+        if($pasien_tbc->count() < 1){
+            session()->flash('danger', 'Pasien salah');
+            return back();
+        }else{
+            $data_update = [
+                'tbc'   => null
+            ];
+            $update = $pasien_tbc->update($data_update);
+            session()->flash('success', 'Pasien berhasil dihapus');
+            return back();
         }
     }
+
 }
