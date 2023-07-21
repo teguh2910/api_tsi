@@ -46,10 +46,18 @@ Route::get('register', [AuthController::class, 'register'])->name('auth.register
 Route::post('daftar', [AuthController::class, 'daftar'])->name('auth.daftar');
 Route::get('activate', [AuthController::class, 'activate'])->name('auth.activate');
 Route::post('activate', [AuthController::class, 'do_activate'])->name('auth.do_activate');
+
+//request otp untuk rest password
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware('guest');
+Route::post('getPassword', [AuthController::class, 'getPassword'])->name('auth.getPassword');
+
+//update password dengan OTP
+Route::get('password/reset/request', [AuthController::class, 'reset_password'])->name('auth.request.reset.password');
+Route::post('password/reset/do', [AuthController::class, 'do_reset_password'])->name('auth.do.reset.password');
+
+
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::get('token', [AuthController::class, 'token'])->name('auth.token');
-Route::post('forgotPassword', [AuthController::class, 'getPassword'])->name('auth.getPassword');
 
 Route::get('messages', [MessageController::class, 'index'])->name('message.index')->middleware('auth');
 Route::get('message/{id}', [MessageController::class, 'chat_room'])->name('message.room');

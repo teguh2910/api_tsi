@@ -7,11 +7,15 @@
 
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Enter OTP and email to activate this account.</p>
                 @if(session('success') != null)
                     <p class="login-box-msg text-success">{{ session('success') }}</p>
+                @elseif(session('danger') != null)
+                    <p class="login-box-msg text-danger">{{ session('danger') }}</p>
+                @else
+                    <p class="login-box-msg">Enter OTP and email from your email.</p>
                 @endif
-                <form action="{{ route('auth.do_activate') }}" method="post">
+
+                <form action="{{ route('auth.do.reset.password') }}" method="post">
                     @csrf
                     <div class="mb-1">
                         <input type="number" class="form-control" placeholder="OTP" name="otp" value="{{ old('otp') }}">
@@ -19,16 +23,30 @@
                         <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>
+
                     <div class="mb-1">
-                        <input type="email" class="form-control" placeholder="Email" name="email" value="{{ old('email') }}">
-                        @error('email')
+                        <input type="email" class="form-control" placeholder="Username" name="username" value="{{ old('username') }}">
+                        @error('username')
+                        <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                    <div class="mb-1">
+                        <input type="password" class="form-control" placeholder="Password" name="password">
+                        @error('password')
+                        <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                    <div class="mb-1">
+                        <input type="password" class="form-control" placeholder="Passwor Confirm" name="password_confirmation">
+                        @error('password_confirmation')
                         <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block">Activate Now</button>
+                            <button type="submit" class="btn btn-primary btn-block">Create New Password</button>
                         </div>
+
                     </div>
                 </form>
                 <p class="mt-3 mb-1">

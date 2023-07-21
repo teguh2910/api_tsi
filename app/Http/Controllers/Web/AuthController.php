@@ -72,15 +72,14 @@ class AuthController extends Controller
     public function daftar(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama_depan'    => 'required',
-            'nama_belakang' => 'required',
-            'email'         => 'required|email|unique:users,kontak.email',
-            'nik'           => 'required|numeric|digits:16|unique:users,nik',
-            'tempat_lahir'  => 'required',
-            'gender'        => 'required',
-            'tanggal_lahir' => 'required|date',
-            'nomor_telepon' => 'required|min_digits:10|unique:users,kontak.nomor_telepon',
-            'password'      =>'required'
+            'nama_depan'        => 'required',
+            'nama_belakang'     => 'required',
+            'gender'            => ['required',Rule::in(['male', 'female'])],
+            'nik'               => 'integer|unique:users,nik',
+            'email'             => 'email:rfc,dns|unique:users,kontak.email',
+            'nomor_telepon'     => 'required|unique:users,kontak.nomor_telepon',
+            'tempat_lahir'      => 'required',
+            'tanggal_lahir'     => 'required|date'
         ]);
         if ($validator->fails()) {
             return redirect()->route('auth.register')
@@ -111,10 +110,40 @@ class AuthController extends Controller
             'email'         => 'required|email',
 
         ]);
+        $user = User::where([
+            'kontak.nomor_telepon'  => $request->nomor_telepon,
+            'kontak.email'          => $request->email
+        ]);
+        $data_user = $user->first();
         if ($validator->fails()) {
             return redirect()->route('auth.forgotPassword')
                 ->withErrors($validator)
                 ->withInput();
+        }elseif($user->count() < 1) {
+            session()->flash('danger', 'User tidak ditemukan');
+            return redirect()->route('auth.forgotPassword')
+                ->withInput();
+        }elseif (isset($data_user->forgot_password)){
+            $otp        = $data_user->forgot_password['code'];
+            $exp_otp    = $data_user->forgot_password['exp'];
+            if($exp_otp > time()){
+                $sisa_waktu = (round(($exp_otp-time())/60,0))." menit";
+                session()->flash('danger', "Anda masih memiliki OTP aktif, silahkan periksa email anda, sisa waktu $sisa_waktu");
+                return redirect()->route('auth.forgotPassword')
+                    ->withInput();
+            }else{
+                $post_data  = $request->all();
+                $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
+                $client     = new Client();
+                $response   = $client->post($url, [
+                    'form_params' => $post_data
+                ]);
+                $statusCode = $response->getStatusCode();
+                if($statusCode == 200){
+                    session()->flash('success', 'Permohonan reset akun telah diterima, periksa email anda');
+                    return redirect()->route('auth.forgotPassword');
+                }
+            }
         }else{
             $post_data  = $request->all();
             $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
@@ -124,7 +153,53 @@ class AuthController extends Controller
             ]);
             $statusCode = $response->getStatusCode();
             if($statusCode == 200){
-                echo "Permohonan reset password telah diterima";
+                session()->flash('success', 'Permohonan reset akun telah diterima, periksa email anda');
+                return redirect()->route('auth.forgotPassword');
+            }
+        }
+
+    }
+
+    public function reset_password()
+    {
+        return view('auth.reset_password');
+    }
+    public function do_reset_password(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'otp'       => 'required|numeric|digits:6',
+            'username'  => 'required|email',
+            'password'  => 'required|confirmed',
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }else{
+            $user = User::where([
+                'forgot_password.code'  => $request->otp,
+                'username'              => $request->username
+            ]);
+            $data_user = $user->first();
+            if($user->count() < 1){
+                session()->flash('danger', 'User tidak ditemukan');
+                return redirect()->back()->withInput();
+            }elseif($data_user->forgot_password['exp'] < time()){
+                session()->flash('danger', 'OTP Kadaluarsa');
+                return redirect()->back()->withInput();
+            }else{
+                $post_data  = $request->all();
+                $url        = "https://dev.atm-sehat.com/api/v1/auth/resetpassword";
+                $client     = new Client();
+                $response   = $client->put($url, [
+                    'form_params' => $post_data
+                ]);
+                $statusCode = $response->getStatusCode();
+                if($statusCode == 200){
+                    session()->flash('success', 'Password berhasil direset');
+                    return redirect()->route('auth.login');
+                }
             }
         }
     }
