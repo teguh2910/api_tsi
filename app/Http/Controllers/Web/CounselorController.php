@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Medication;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -29,24 +30,30 @@ class CounselorController extends Controller
     }
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id_user'      => 'required',
-        ]);
-        $counselor = User::where('_id', $request->id_user);
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }else{
-            $data_ubah = [
-                'counselor' => true
-            ];
-            $create = $counselor->update($data_ubah);
-            if($create){
-                session()->flash('success', 'Sukses menambahkan konselor baru');
+        try {
+            $session        = json_decode(decrypt(session('body')));
+            $session_token  = $session->token->code;
+            $url = "https://dev.atm-sehat.com/api/v1/counselors?id_user=".$request->id_user;
+            $client = new Client();
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $session_token,
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+            $statusCode = $response->getStatusCode();
+            if($statusCode != 200){
+                session()->flash('danger', 'Gagal menambahkan konselor');
+                return redirect()->back();
+            }else{
+                session()->flash('success', 'Sukses menambahkan konselor');
                 return redirect()->back();
             }
+        }catch (GuzzleHttp\Exception\RequestException $e) {
+            // Handle any exceptions or errors that might occur during the request.
+            // For example, if the request failed or the endpoint returned an error status code.
         }
+
     }
     public function show($id)
     {
@@ -64,5 +71,14 @@ class CounselorController extends Controller
             "pasien"        => $pasien
         ];
         return view('user.counselor.show', $data);
+    }
+    public function destroy($id)
+    {
+        $counselor = User::where('_id', $id)->first();
+        $update = $counselor->update([
+            'counselor'     => false
+        ]);
+        session()->flash('success', 'Sukses menhapus konselor');
+        return redirect()->back();
     }
 }

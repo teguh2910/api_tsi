@@ -39,13 +39,29 @@ class CounselorController extends Controller
         $id_user    = $request->id_user;
         $user       = User::where('_id', $id_user);
         if($user->count() < 1 ){
-            echo "ID salah";
+            $status_code    = 404;
+            $message        = "Not Found";
+            $data           = [
+                'count'     => $user,
+                'counselor' => $user->first()
+            ];
         }else{
             $user->update([
                 'counselor' => true
             ]);
-            echo "berhasil dibuat";
+            $status_code    = 200;
+            $message        = "success";
+            $data           = [
+                'count'     => $user,
+                'counselor' => $user->first()
+            ];
         }
+        $response = [
+            'status_code'   => $status_code,
+            'message'       => $message,
+            'data'          => $data
+        ];
+        return response($response, $status_code);
     }
     private function curl()
     {

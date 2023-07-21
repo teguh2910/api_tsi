@@ -82,6 +82,7 @@ Route::post('zoom/master/{id}/update', [ZoomMasterController::class, 'update'])-
 Route::get('counselors', [CounselorController::class, 'index'])->name('counselor.index')->middleware('auth');
 Route::post('counselors', [CounselorController::class, 'store'])->name('counselor.store')->middleware('auth');
 Route::get('counselor/{id}/show', [CounselorController::class, 'show'])->name('counselor.show')->middleware('auth');
+Route::get('counselor/{id}/delete', [CounselorController::class, 'destroy'])->name('counselor.destroy')->middleware('auth');
 
 Route::get('patient/tbc/create/{id}/counselor', [PasienTbcController::class, 'create'])->name('pasien.tbc.create.counselor')->middleware('auth');
 Route::post('patient/tbc/search/{id}/counselor', [PasienTbcController::class, 'search'])->name('pasien.tbc.search.counselor')->middleware('auth');

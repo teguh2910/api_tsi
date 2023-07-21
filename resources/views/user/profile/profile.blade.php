@@ -11,7 +11,7 @@
                         <div class="card card-primary card-outline">
 
                             <div class="card-body box-profile">
-                                <div class="text-center">
+                                <div class="text-center ">
                                     @if($user->foto == null)
                                         <img class="profile-user-img img-fluid img-circle w-30"
                                              src="https://file.atm-sehat.com/storage/image/ZQC6SOX05hA0enLhvPWrEfVxMv9zzm9Sc7qp2EQO.jpg"
@@ -22,7 +22,9 @@
                                          alt="User profile picture">
                                     @endif
                                 </div>
-                                <h3 class="profile-username text-center">{{ $user['nama']['nama_depan']." ".$user['nama']['nama_belakang'] }}</h3>
+                                <h3 class="profile-username text-center @if(! empty($user->tbc)) bg-warning @endif">
+                                    {{ $user['nama']['nama_depan']." ".$user['nama']['nama_belakang'] }}
+                                </h3>
                                 <p class="text-muted text-center">{{ $user->nik }}</p>
                                 <ul class="list-group list-group-unbordered">
                                     <li class="list-group-item">

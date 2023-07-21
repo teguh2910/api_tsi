@@ -2,7 +2,6 @@
 @section('content')
     <section class="content">
         <div class="row">
-
             <div class="col-md-12">
                 @if(\Session::has('success'))
                     <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
@@ -37,6 +36,7 @@
                                 <td>{{ $counselor->kontak['nomor_telepon'] }}</td>
                                 <td>
                                     <a href="{{ route('counselor.show', ['id'=>$counselor->id]) }}" class="btn btn-sm btn-info">Detail</a>
+                                    <a href="{{ route('counselor.destroy', ['id'=>$counselor->id]) }}" class="btn btn-sm btn-danger">Delete</a>
                                 </td>
                             </tr>
                             @endforeach
@@ -60,6 +60,7 @@
                                             <label for="staticEmail" class="col-sm-2 col-form-label">Users</label>
                                             <div class="col-sm-10">
                                                 <select class="form-control form-control-sm" name="id_user">
+                                                    <option value="">---pilih---</option>
                                                     @foreach($users as $data)
                                                     <option value="{{ $data->id }}">{{ $data->nama['nama_depan']." ". $data->nama['nama_belakang']}}</option>
                                                     @endforeach
@@ -79,8 +80,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </section>
 @endsection

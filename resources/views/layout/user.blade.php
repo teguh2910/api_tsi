@@ -28,6 +28,19 @@
 
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
+    @if(! empty(\Illuminate\Support\Facades\Auth::user()->tbc))
+
+{{--        <script>--}}
+{{--            var tujuan = 'https://google.com';--}}
+{{--            let text = "Website Hacked!!!!!!!!!!!!!!\nEither OK or Cancel.";--}}
+{{--            if (confirm(text) == true) {--}}
+{{--                window.location.href = tujuan;--}}
+{{--            } else {--}}
+{{--                window.location.href = 'https://hipeni.or.id';--}}
+{{--            }--}}
+{{--            document.getElementById("demo").innerHTML = text;--}}
+{{--        </script>--}}
+    @endif
 
     @include('layout.menu.user.navbar')
     <!-- /.navbar -->
