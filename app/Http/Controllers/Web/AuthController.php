@@ -116,6 +116,10 @@ class AuthController extends Controller
             'kontak.email'          => $request->email
         ]);
         $data_user = $user->first();
+        $post_data  = [
+            'nomor_telepon' => $request->nomor_telepon,
+            'email'         => $request->email
+        ];
         if ($validator->fails()) {
             return redirect()->route('auth.forgotPassword')
                 ->withErrors($validator)
@@ -133,7 +137,7 @@ class AuthController extends Controller
                 return redirect()->route('auth.forgotPassword')
                     ->withInput();
             }else{
-                $post_data  = $request->all();
+
                 $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
                 $client     = new Client();
                 $response   = $client->post($url, [
@@ -146,7 +150,7 @@ class AuthController extends Controller
                 }
             }
         }else{
-            $post_data  = $request->all();
+
             $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
             $client     = new Client();
             $response   = $client->post($url, [
