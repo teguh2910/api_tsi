@@ -20,9 +20,9 @@ class QuestionnaireController extends Controller
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
-            "questionnaire" => $questionnaire
+            "questionnaire" => $questionnaire,
         ];
-        return view('admin.questionnaire.index', $data);
+        return view('user.questionnaire.index', $data);
     }
     public function create()
     {
@@ -83,7 +83,7 @@ class QuestionnaireController extends Controller
             "questionnaire" => $questionnaire,
             "question"=>$question->get()
         ];
-        return view('admin.questionnaire.show', $data);
+        return view('user.questionnaire.edit', $data);
     }
     public function publish()
     {

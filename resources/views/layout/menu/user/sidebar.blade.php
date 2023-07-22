@@ -70,56 +70,66 @@ $foto = \Illuminate\Support\Facades\Auth::user()['foto']
                         <p>Medication</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('zoom.master.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-calculator"></i>
-                        <p>Zoom Master</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('counselor.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-calculator"></i>
-                        <p>Counselor</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('pasien.tbc.mine') }}" class="nav-link">
-                        <i class="nav-icon fas fa-calculator"></i>
-                        <p>My Patient</p>
-                    </a>
-                </li>
+                @if(Auth::user()['counselor']==true)
+                    <li class="nav-item">
+                        <a href="{{ route('questionnaire.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-calculator"></i>
+                            <p>Master Kuesioner</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('zoom.master.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-calculator"></i>
+                            <p>Zoom Master</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('counselor.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-calculator"></i>
+                            <p>Counselor</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('pasien.tbc.mine') }}" class="nav-link">
+                            <i class="nav-icon fas fa-calculator"></i>
+                            <p>My Patient</p>
+                        </a>
+                    </li>
 
-                <li class="nav-header">Medication</li>
+                    <li class="nav-header">Medication</li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon far fa-envelope"></i>
-                        <p>
-                            Medication
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('drugs.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Daftar Obat</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Jenis Obat</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Sediaan Obat</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon far fa-envelope"></i>
+                            <p>
+                                Medication
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('drugs.index') }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Daftar Obat</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Jenis Obat</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Sediaan Obat</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                @endif
+
 
 
                 <li class="nav-item">

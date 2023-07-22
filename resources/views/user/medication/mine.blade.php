@@ -105,6 +105,7 @@
                                 <th>Drug</th>
                                 <th>Frequency</th>
                                 <th>Dosage</th>
+                                <th>Sisa Obat</th>
                                 <th>Detail</th>
                                 </thead>
                                 <tbody>
@@ -123,6 +124,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $data->dosage['dosage'] }} {{ $data->dosage['unit_dosage'] }}</td>
+                                    <td>{{ $data->qty['qty'] }}</td>
                                     <td><a href="{{ route('medication.show', ['id'=>$data->id]) }}" class="btn btn-sm btn-info">Detail</a></td>
                                 </tr>
                                 @endforeach

@@ -229,9 +229,11 @@ class AuthController extends Controller
             ]);
             $statusCode = $response->getStatusCode();
             if($statusCode == 200){
-                echo "Sukses aktivasi";
+                session()->flash('success', 'Akun berhasil diaktifkan');
+                return redirect()->route('auth.login');
             }else{
-                echo $statusCode;
+                session()->flash('danger', 'Akun gagal diaktifkan');
+                return redirect()->route('auth.login');
             }
         }
     }
