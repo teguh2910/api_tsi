@@ -36,8 +36,7 @@ class QuestionnaireController extends Controller
     }
     public function store(Request $request)
     {
-        $session        = json_decode(decrypt(session('body')));
-        $session_token  = $session->token->code;
+        $session_token  = decrypt(session('token'));
         $token          = 'Bearer '.$session_token;
 //        dd($token);
         $validator = Validator::make($request->all(), [

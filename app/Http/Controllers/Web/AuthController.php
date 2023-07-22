@@ -41,21 +41,11 @@ class AuthController extends Controller
         ];
         $credentials = $post;
         if (Auth::attempt($credentials)) {
-            $url        = "https://dev.atm-sehat.com/api/v1/auth/login";
-            $client = new Client();
-            $response = $client->post($url, [
-                'form_params' => $post
-            ]);
-            $statusCode = $response->getStatusCode();
-            $body = $response->getBody()->getContents();
-            $json_decode = json_decode($body);
-            if($statusCode == 200){
-                $encryptedData = encrypt($body);
-                session(['body' => $encryptedData]);
-//            return redirect()->route('profile.index');
-            }else{
-                return $json_decode;
-            }
+            $user           = User::where('username', $request['username'])->firstOrFail();
+            $token          = $user->createToken('web_token')->accessToken;
+            $data_token     = $token->id."|".$token->token;
+            $encryptedData  = encrypt($data_token);
+            session(['token' => $encryptedData]);
             $request->session()->regenerate();
             return redirect()->route('profile.index');
         }else{
@@ -235,8 +225,7 @@ class AuthController extends Controller
     }
     public function logout(Request $request)
     {
-        $session        = json_decode(decrypt(session('body')));
-        $session_token  = $session->token->code;
+        $session_token  = decrypt(session('token'));
         $words          = explode("|", $session_token);
         $id_token       =  $words['0'];
         $delete_token   = Personal_access_token::where('_id', $id_token)->delete();
@@ -246,29 +235,8 @@ class AuthController extends Controller
             return redirect()->route('auth.login');
         }else{
             return redirect()->route('auth.login');
-
         }
-
     }
 
-    private function guzzle($data_post, $url)
-    {
-        //blm diimpementasikan
-        $client = new Client();
-        $response = $client->post($url, [
-            'form_params' => $data_post
-        ]);
-        return $response;
-    }
-    public function token()
-    {
-        $token = "641654c99b95649322006944|Q2GWBEoZ8gnbeS3eS6XX1seAMdGHCaXpAgSgekcl";
-        $words = explode("|", $token);
-        echo $words['0'];
-
-//        foreach ($words as $word) {
-//            echo $word . "<br>";
-//        }
-    }
 
 }

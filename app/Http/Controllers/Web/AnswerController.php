@@ -27,8 +27,7 @@ class AnswerController extends Controller
                 'question_id'=> $request->question_id,
                 'answer'     => $request->answer,
             ];
-            $session        = json_decode(decrypt(session('body')));
-            $session_token  = $session->token->code;
+            $session_token  = decrypt(session('token'));
             $url            = env('APP_API_EXTERNAL'). "/api/v1/answer";
             $header = [
                 'Authorization' => "Bearer $session_token",
