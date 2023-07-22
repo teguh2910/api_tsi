@@ -115,6 +115,7 @@ class AuthController extends Controller
             'kontak.email'          => $request->email
         ]);
         $data_user = $user->first();
+//        dd($data_user);
         $post_data  = [
             'nomor_telepon' => $request->nomor_telepon,
             'email'         => $request->email

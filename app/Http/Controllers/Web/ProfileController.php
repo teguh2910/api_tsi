@@ -7,18 +7,27 @@ use App\Models\Drug;
 use App\Models\Medication;
 use App\Models\Observation;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function profile()
     {
-//        dd(session()->all());
-//        dd(decrypt(session('web_token')));
+        $url        = "https://dev.atm-sehat.com/api/v1/over-view/latest";
+        $client     = new Client();
+        $session_token = decrypt(session('web_token'));
+        $header = [
+            'Authorization' => "Bearer $session_token",
+        ];
+        $response   = $client->get($url, [
+            'headers'       => $header
+        ]);
+        $data = json_decode($response->getBody());
+//        dd($data->data);
         $user           = Auth::user();
         $observation    = Observation::where('id_pasien', Auth::id())->orderBy('time', 'DESC');
-        $medication     = Medication::where('id_pasien', Auth::id())->orderBy('time', 'DESC');
-        $drug           = Drug::all();
+        $family         = User::where('family.id_induk', Auth::id())->get();
         $data = [
             "title"         => "Profile",
             "class"         => "user",
@@ -26,8 +35,8 @@ class ProfileController extends Controller
             "content"       => "layout.user",
             "user"          => $user,
             "observation"   => $observation->get(),
-            "medication"    => $medication,
-            "drugs"         => $drug
+            "family"        => $family,
+            "resume"        => $data->data
         ];
         return view('user.profile.profile', $data);
     }
