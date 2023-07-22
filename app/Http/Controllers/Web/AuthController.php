@@ -45,7 +45,7 @@ class AuthController extends Controller
             $token          = $user->createToken('web_token')->accessToken;
             $data_token     = $token->id."|".$token->token;
             $encryptedData  = encrypt($data_token);
-            session(['token' => $encryptedData]);
+            session(['web_token' => $encryptedData]);
             $request->session()->regenerate();
             return redirect()->route('profile.index');
         }else{
@@ -225,7 +225,7 @@ class AuthController extends Controller
     }
     public function logout(Request $request)
     {
-        $session_token  = decrypt(session('token'));
+        $session_token  = decrypt(session('web_token'));
         $words          = explode("|", $session_token);
         $id_token       =  $words['0'];
         $delete_token   = Personal_access_token::where('_id', $id_token)->delete();
