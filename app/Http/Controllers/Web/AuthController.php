@@ -179,10 +179,11 @@ class AuthController extends Controller
                 ->withInput();
         }else{
             $user = User::where([
-                'forgot_password.code'  => $request->otp,
+                'forgot_password.code'  => (int) $request->otp,
                 'username'              => $request->username
             ]);
             $data_user = $user->first();
+//            dd($data_user);
             if($user->count() < 1){
                 session()->flash('danger', 'User tidak ditemukan');
                 return redirect()->back()->withInput();
