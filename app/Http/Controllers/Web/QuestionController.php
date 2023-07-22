@@ -28,7 +28,7 @@ class QuestionController extends Controller
                 'tipe_jawaban'      => $request->tipe_jawaban,
                 'bobot'             => $request->bobot
             ];
-            $session_token  = decrypt(session('token'));
+            $session_token  = decrypt(session('web_token'));
             $url        = "https://dev.atm-sehat.com/api/v1/questions";
             $header = [
                 'Authorization' => "Bearer $session_token",

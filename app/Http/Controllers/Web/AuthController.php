@@ -39,11 +39,22 @@ class AuthController extends Controller
             'username'  => $request->username,
             'password'  => $request->password
         ];
+        $post_json = json_encode($post);
         $credentials = $post;
         if (Auth::attempt($credentials)) {
-            $user           = User::where('username', $request['username'])->firstOrFail();
-            $token          = $user->createToken('web_token')->accessToken;
-            $data_token     = $token->id."|".$token->token;
+
+            $url        = "https://dev.atm-sehat.com/api/v1/auth/login";
+            $header = [];
+            $client     = new Client();
+            $response   = $client->post($url, [
+                'headers' => $header,
+                'form_params' => [
+                    'username'  => $request->username,
+                    'password'  => $request->password,
+                ]
+            ]);
+            $data = json_decode($response->getBody(), true);
+            $data_token     = $data['token']['code'];
             $encryptedData  = encrypt($data_token);
             session(['web_token' => $encryptedData]);
             $request->session()->regenerate();
