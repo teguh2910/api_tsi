@@ -14,7 +14,7 @@ class ProfileController extends Controller
     public function profile()
     {
 //        dd(session()->all());
-        dd(decrypt(session('web_token')));
+//        dd(decrypt(session('web_token')));
         $user           = Auth::user();
         $observation    = Observation::where('id_pasien', Auth::id())->orderBy('time', 'DESC');
         $medication     = Medication::where('id_pasien', Auth::id())->orderBy('time', 'DESC');
