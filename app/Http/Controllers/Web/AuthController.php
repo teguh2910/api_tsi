@@ -109,7 +109,6 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'nomor_telepon' => 'required|numeric',
             'email'         => 'required|email',
-
         ]);
         $user = User::where([
             'kontak.nomor_telepon'  => $request->nomor_telepon,
@@ -128,7 +127,7 @@ class AuthController extends Controller
             session()->flash('danger', 'User tidak ditemukan');
             return redirect()->route('auth.forgotPassword')
                 ->withInput();
-        }elseif (isset($data_user->forgot_password)){
+        }elseif ($data_user->forgot_password != null){
             $otp        = $data_user->forgot_password['code'];
             $exp_otp    = $data_user->forgot_password['exp'];
             if($exp_otp > time()){
@@ -137,7 +136,6 @@ class AuthController extends Controller
                 return redirect()->route('auth.forgotPassword')
                     ->withInput();
             }else{
-
                 $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
                 $client     = new Client();
                 $response   = $client->post($url, [
@@ -150,7 +148,6 @@ class AuthController extends Controller
                 }
             }
         }else{
-
             $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
             $client     = new Client();
             $response   = $client->post($url, [
