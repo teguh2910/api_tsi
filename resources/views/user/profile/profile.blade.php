@@ -160,7 +160,7 @@
                                     </div>
                                     <!-- /.tab-pane -->
                                     <div class="tab-pane" id="laporan">
-                                        {{ decrypt(session('web_token')) }}
+
                                         <table class="table table-sm table-striped table-responsive">
                                             <thead>
                                             <th>#</th>
@@ -175,18 +175,34 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>
-                                                        @if($data->coding != null)
+                                                        @if($data != null)
                                                             {{ $data->coding->display }}
                                                         @endif
 
                                                     </td>
-                                                    <td>{{ date('d-m-Y H:i', $data->time) }}</td>
-                                                    <td>{{ round($data->value,2) }}</td>
-                                                    <td>{{ $data->unit->display }}</td>
                                                     <td>
-                                                        @if($data->interpretation != null)
-                                                            {{ $data->interpretation->display }}
+                                                        @if($data != null)
+                                                            {{ date('d-m-Y H:i', $data->time) }}
                                                         @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($data != null)
+                                                            {{ round($data->value,2) }}
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($data != null)
+                                                            {{ $data->unit->display }}
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($data != null)
+                                                            @if($data->interpretation != null)
+                                                                {{ $data->interpretation->display }}
+                                                            @endif
+                                                        @endif
+
+
                                                     </td>
                                                 </tr>
                                             @endforeach
