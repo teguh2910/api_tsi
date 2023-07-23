@@ -18,6 +18,7 @@ use App\Http\Controllers\Web\MeetingController;
 use App\Http\Controllers\Web\MessageController;
 use App\Http\Controllers\web\ObservationController;
 use App\Http\Controllers\Web\PasienTbcController;
+use App\Http\Controllers\Web\PetugasController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\QuestionController;
 use App\Http\Controllers\Web\QuestionnaireController;
@@ -83,6 +84,10 @@ Route::get('counselors', [CounselorController::class, 'index'])->name('counselor
 Route::post('counselors', [CounselorController::class, 'store'])->name('counselor.store')->middleware('auth');
 Route::get('counselor/{id}/show', [CounselorController::class, 'show'])->name('counselor.show')->middleware('auth');
 Route::get('counselor/{id}/delete', [CounselorController::class, 'destroy'])->name('counselor.destroy')->middleware('auth');
+
+Route::get('petugas', [PetugasController::class, 'index'])->name('petugas.index')->middleware('auth');
+Route::get('petugas/create', [PetugasController::class, 'create'])->name('petugas.create')->middleware('auth');
+Route::post('petugas/store', [PetugasController::class, 'store'])->name('petugas.store')->middleware('auth');
 
 Route::get('patient/tbc/mine', [PasienTbcController::class, 'mine'])->name('pasien.tbc.mine')->middleware('auth');
 Route::get('patient/tbc/create/{id}/counselor', [PasienTbcController::class, 'create'])->name('pasien.tbc.create.counselor')->middleware('auth');

@@ -160,6 +160,7 @@
                                     </div>
                                     <!-- /.tab-pane -->
                                     <div class="tab-pane" id="laporan">
+                                        {{ decrypt(session('web_token')) }}
                                         <table class="table table-sm table-striped table-responsive">
                                             <thead>
                                             <th>#</th>
@@ -173,7 +174,12 @@
                                             @foreach($resume as $data)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $data->coding->display }}</td>
+                                                    <td>
+                                                        @if($data->coding != null)
+                                                            {{ $data->coding->display }}
+                                                        @endif
+
+                                                    </td>
                                                     <td>{{ date('d-m-Y H:i', $data->time) }}</td>
                                                     <td>{{ round($data->value,2) }}</td>
                                                     <td>{{ $data->unit->display }}</td>
