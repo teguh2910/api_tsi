@@ -17,6 +17,7 @@ class ProfileController extends Controller
         $url        = "https://dev.atm-sehat.com/api/v1/over-view/latest";
         $client     = new Client();
         $session_token = decrypt(session('web_token'));
+        dd($session_token);
         $header = [
             'Authorization' => "Bearer $session_token",
         ];
