@@ -588,20 +588,21 @@ class AuthController extends Controller
                     $response = $create_otp->getOriginalContent();
                 }
                 return response()->json($response);
-//                dd($response);
             }else{
                 $create_otp = $this->create_otp($user, $email, $nomor_telepon);
                 $response = $create_otp->getOriginalContent();
-//                return response()->json($response);
-                echo "Berhasil";
+                return response()->json($response);
             }
         }
     }
     private function create_otp($user, $email, $nomor_telepon){
         $forgot_password = [
-            'code'          => rand('100000', 999999),
-            'created_at'    => time(),
-            'exp'           => time()+(24*60*60)
+            'forgot_password'=>[
+                'code'          => rand('100000', 999999),
+                'created_at'    => time(),
+                'exp'           => time()+(5*60)
+            ]
+
         ];
         $data = [
             'status_code'   => 200,
