@@ -223,20 +223,36 @@ class AuthController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }else{
-            $post_data  = $request->all();
-            $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
-            $client     = new Client();
-            $response   = $client->put($url, [
-                'form_params' => $post_data
+            $user = User::where([
+                'kontak.email'      => $request->email
             ]);
-            $statusCode = $response->getStatusCode();
-            if($statusCode == 200){
-                session()->flash('success', 'Akun berhasil diaktifkan');
-                return redirect()->route('auth.login');
+            $user_data = $user->first();
+            if($user->count() < 1){
+                session()->flash('danger', 'Email tidak terdaftar');
+                return redirect()->back();
+            }elseif($user_data->aktifasi['exp'] < time()){
+                session()->flash('danger', 'OTP Sudah kadaluarsa');
+                return redirect()->back();
+            }elseif($user_data->active == true ) {
+                session()->flash('danger', 'User sudah aktif');
+                return redirect()->back();
             }else{
-                session()->flash('danger', 'Akun gagal diaktifkan');
-                return redirect()->route('auth.login');
+                $post_data  = $request->all();
+                $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
+                $client     = new Client();
+                $response   = $client->put($url, [
+                    'form_params' => $post_data
+                ]);
+                $statusCode = $response->getStatusCode();
+                if($statusCode == 200){
+                    session()->flash('success', 'Akun berhasil diaktifkan');
+                    return redirect()->route('auth.login');
+                }else{
+                    session()->flash('danger', 'Akun gagal diaktifkan');
+                    return redirect()->route('auth.login');
+                }
             }
+
         }
     }
     public function logout(Request $request)
