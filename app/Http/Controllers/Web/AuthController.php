@@ -235,7 +235,7 @@ class AuthController extends Controller
                 return redirect()->back();
             }elseif($user_data->active == true ) {
                 session()->flash('danger', 'User sudah aktif');
-                return redirect()->back();
+                return redirect()->back()->withInput();
             }else{
                 $post_data  = $request->all();
                 $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";

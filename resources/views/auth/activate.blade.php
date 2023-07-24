@@ -10,6 +10,8 @@
                 <p class="login-box-msg">Enter OTP and email to activate this account.</p>
                 @if(session('success') != null)
                     <p class="login-box-msg text-success">{{ session('success') }}</p>
+                @elseif(session('danger') != null)
+                    <p class="login-box-msg text-success">{{ session('danger') }}</p>
                 @endif
                 <form action="{{ route('auth.do_activate') }}" method="post">
                     @csrf
