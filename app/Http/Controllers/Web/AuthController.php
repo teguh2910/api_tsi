@@ -42,9 +42,8 @@ class AuthController extends Controller
         $post_json = json_encode($post);
         $credentials = $post;
         if (Auth::attempt($credentials)) {
-
             $url        = "https://dev.atm-sehat.com/api/v1/auth/login";
-            $header = [];
+            $header     = [];
             $client     = new Client();
             $response   = $client->post($url, [
                 'headers' => $header,
@@ -54,6 +53,11 @@ class AuthController extends Controller
                 ]
             ]);
             $data = json_decode($response->getBody(), true);
+//            dd($data);
+            if($data['status_code'] != 200){
+                session()->flash('danger', $data['message']);
+                return redirect()->back()->withInput();
+            }
             $data_token     = $data['token']['code'];
             $encryptedData  = encrypt($data_token);
             session(['web_token' => $encryptedData]);
@@ -62,7 +66,7 @@ class AuthController extends Controller
         }else{
             session()->flash('gagal_login', 'Wrong username or password');
 
-            return redirect()->route('auth.login');
+            return redirect()->route('auth.login')->withInput();
         }
 
     }
@@ -289,7 +293,14 @@ class AuthController extends Controller
             $response   = $client->post($url, [
                 'form_params' => $post_data
             ]);
+            $data = json_decode($response->getBody(),true);
             $statusCode = $response->getStatusCode();
+            if($statusCode != 200){
+                session()->flash('danger', $data['message']);
+                return redirect()->back()->withInput();
+            }
+            session()->flash('success', $data['message']);
+            return redirect()->route('auth.do_activate')->withInput();
         }
     }
     public function logout(Request $request)
