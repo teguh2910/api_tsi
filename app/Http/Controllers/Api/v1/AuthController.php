@@ -541,104 +541,82 @@ class AuthController extends Controller
             'email'     => 'required|email',
             'nomor_telepon'  => 'required|numeric'
         ]);
+        $email          = $request->email;
+        $nomor_telepon  = $request->nomor_telepon;
         if($validator->fails()){
             return response()->json([
                 'status_code'   => 203,
                 'message'       => 'Gagal validasi',
                 'errorrs'       => $validator->errors()
             ]);
-        }
-        $time   = time();
-        $user_data   = User::where([
-            'kontak.email'         => $request->email,
-            'kontak.nomor_telepon' => $request->nomor_telepon
-        ]);
-
-        $user_count = $user_data->count();
-        $user   = $user_data->first();
-        if($user_count < 1 ){
-            return response()->json([
-                'status_code'   => 404,
-                'message'       => 'User Not Found',
-                'data'          => [
+        }else{
+            $time   = time();
+            $user_data   = User::where([
+                'kontak.email'         => $email,
+                'kontak.nomor_telepon' => $nomor_telepon
+            ]);
+            $user_count = $user_data->count();
+            $user   = $user_data->first();
+            if($user_count < 1 ){
+                $status_code    = 404;
+                $message        = 'User Not Found';
+                $data           = [
                     'user'      => $user_data->first()
-                ]
-            ], 404);
-        }elseif($user->forgot_password['exp'] > $time){
-            return response()->json([
-                'status_code'   => 400,
-                'message'       => 'Anda masih memiliki OTP yang aktif',
-                'data'          => [
-                    'waiting_time'  => $user->forgot_password['exp']-$time,
-                    'unit'          => 'second'
-                ]
-            ], 400);
-        }else{
-            $user['forgot_password'] = [
-                'code'          => rand('100000', 999999),
-                'created_at'    => time(),
-                'exp'           => time()+(5*60)
-            ];
-            $data = [
-                'status_code'   => 200,
-                'message'       => 'Permohonan reset password telah dikirim ke alamat email terdaftar',
-                'data'          => [
-                    'email'         => $request->email,
-                    'nomor_telepon' => $request->nomor_telepon
-                ]
-            ];
-            $update     = $user->update();
-            $data_email = [
-                "content"     => $user
-            ];
-            $sending_email = dispatch(new ForgetPasswordJob($data_email));
-            return response()->json($data, 200);
-
-        }
-
-
-
-        if(isset($user->forgot_password['exp'])){
-            $exp_di_DB = $user->forgot_password['exp'];
-
-            if($exp_di_DB > $time){
-                return response()->json([
-                    'status_code'       => 400,
-                    'message'           => 'Anda mempuntai token yang masih aktif',
-                    'data'              => [
-                        'waktu_kadaluarsa'  => date('Y-m-d H:i:s', $user->forgot_password['exp'])
-                    ]
-                ],400);
-            }
-            if(empty($user)){
-                $data = [
-                    'status_code'   => 404,
-                    'message'       => "Data Not Found"
                 ];
-                return response()->json($data, 404);
+                $response = [
+                    'status_code'   => $status_code,
+                    'message'       => $message,
+                    'data'          => $data
+                ];
+                return response()->json($response);
+            }elseif($user->forgot_password != null){
+                if($user->forgot_password['exp'] > $time){
+                    $status_code    = 400;
+                    $message        = 'Anda masih memiliki OTP yang aktif';
+                    $data           = [
+                        'waiting_time'  => $user->forgot_password['exp']-$time,
+                        'unit'          => 'second'
+                    ];
+                    $response = [
+                        'status_code'   => $status_code,
+                        'message'       => $message,
+                        'data'          => $data
+                    ];
+                    return response()->json($response);
+                }else{
+                    $create_otp = $this->create_otp($user, $email, $nomor_telepon);
+                    $response = $create_otp->getOriginalContent();
+                }
+                return response()->json($response);
+//                dd($response);
             }else{
-
+                $create_otp = $this->create_otp($user, $email, $nomor_telepon);
+                $response = $create_otp->getOriginalContent();
+//                return response()->json($response);
+                echo "Berhasil";
             }
-
-        }else{
-            $user['forgot_password'] = [
-                'code'          => rand('100000', 999999),
-                'created_at'    => time(),
-                'exp'           => time()+(5*60)
-            ];
-            $data = [
-                'status_code'   => 200,
-                'message'       => 'Permohonan reset password telah dikirim ke alamat email terdaftar'
-            ];
-            $update     = $user->update();
-            $data_email = [
-                "content"     => $user
-            ];
-            $sending_email = dispatch(new ForgetPasswordJob($data_email));
-            return response()->json($data, 200);
         }
-
-
+    }
+    private function create_otp($user, $email, $nomor_telepon){
+        $forgot_password = [
+            'code'          => rand('100000', 999999),
+            'created_at'    => time(),
+            'exp'           => time()+(24*60*60)
+        ];
+        $data = [
+            'status_code'   => 200,
+            'message'       => 'Permohonan reset password telah dikirim ke alamat email terdaftar',
+            'data'          => [
+                'email'         => $email,
+                'nomor_telepon' => $nomor_telepon
+            ]
+        ];
+        $update     = $user->update($forgot_password);
+        $data_email = [
+            "content"     => $user
+        ];
+        $sending_email = dispatch(new ForgetPasswordJob($data_email));
+        return response($data);
     }
     /**
      * Update the specified resource in storage.
