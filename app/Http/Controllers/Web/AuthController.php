@@ -162,7 +162,6 @@ class AuthController extends Controller
         }
 
     }
-
     public function reset_password()
     {
         return view('auth.reset_password');
@@ -254,6 +253,15 @@ class AuthController extends Controller
             }
 
         }
+    }
+
+    public function new_otp()
+    {
+        return view('auth.new_otp');
+    }
+    public function create_new_otp(Request $request)
+    {
+        return view('auth.new_otp');
     }
     public function logout(Request $request)
     {

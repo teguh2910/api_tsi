@@ -42,16 +42,10 @@
                         </div>
                     </div>
                 </form>
-
-                <p class="mb-1">
-                    <a href="{{ route('auth.forgotPassword') }}">I forgot my password</a>
-                </p>
-                <p class="mb-0">
-                    <a href="{{ route('auth.register') }}" class="text-center">Register a new membership</a>
-                </p>
-                    <p class="mb-0">
-                        <a href="{{ route('auth.activate') }}" class="text-center">Activate Account</a>
-                    </p>
+                    <hr>
+                    <p class="mb-0"><a href="{{ route('auth.activate') }}" class="text-center">Account Activation</a></p>
+                    <p class="mb-0"><a href="{{ route('auth.forgotPassword') }}">I forgot my password</a></p>
+                    <p class="mb-0"><a href="{{ route('auth.register') }}" class="text-center">Register a new membership</a></p>
             </div>
 
         </div>

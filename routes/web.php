@@ -48,6 +48,8 @@ Route::get('register', [AuthController::class, 'register'])->name('auth.register
 Route::post('daftar', [AuthController::class, 'daftar'])->name('auth.daftar');
 Route::get('activate', [AuthController::class, 'activate'])->name('auth.activate');
 Route::post('activate', [AuthController::class, 'do_activate'])->name('auth.do_activate');
+Route::get('newOTP', [AuthController::class, 'new_otp'])->name('auth.new_otp');
+Route::post('newOTP', [AuthController::class, 'create_new_otp'])->name('auth.create.new_otp');
 
 //request otp untuk rest password
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware('guest');
