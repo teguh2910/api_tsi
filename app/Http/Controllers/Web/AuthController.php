@@ -261,7 +261,36 @@ class AuthController extends Controller
     }
     public function create_new_otp(Request $request)
     {
-        return view('auth.new_otp');
+        $validator = Validator::make($request->all(), [
+            'nomor_telepon' => 'required|numeric|min_digits:10',
+            'email'         => 'required|email',
+        ]);
+        $email = $request->email;
+        $nomor_telepon = $request->nomor_telepon;
+        $user = User::where([
+            'kontak.nomor_telepon'  => $nomor_telepon,
+            'kontak.email'          => $email
+        ]);
+        $data_user = $user->first();
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }elseif($user->count() < 1){
+            session()->flash('danger', 'User tidak ditemukan');
+            return redirect()->back()->withInput();
+        }elseif ($data_user->active == true){
+            session()->flash('danger', 'OTP gagal dibuat karena user sudah aktif');
+            return redirect()->back()->withInput();
+        }else{
+            $post_data  = $request->all();
+            $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
+            $client     = new Client();
+            $response   = $client->post($url, [
+                'form_params' => $post_data
+            ]);
+            $statusCode = $response->getStatusCode();
+        }
     }
     public function logout(Request $request)
     {
