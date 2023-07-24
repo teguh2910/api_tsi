@@ -230,12 +230,12 @@ class AuthController extends Controller
             if($user->count() < 1){
                 session()->flash('danger', 'Email tidak terdaftar');
                 return redirect()->back();
-            }elseif($user_data->aktifasi['exp'] < time()){
-                session()->flash('danger', 'OTP Sudah kadaluarsa');
-                return redirect()->back();
             }elseif($user_data->active == true ) {
                 session()->flash('danger', 'User sudah aktif');
                 return redirect()->back()->withInput();
+            }elseif($user_data->aktifasi['exp'] < time()){
+                session()->flash('danger', 'OTP Sudah kadaluarsa');
+                return redirect()->back();
             }else{
                 $post_data  = $request->all();
                 $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
