@@ -113,11 +113,9 @@ class MessageController extends Controller
             $chat_rooms = ChatRoom::where([
                 'user1' => $id,
                 'user2' => Auth::id()
-            ])->orWhere([
-                'user2' => $id,
-                'user1' => Auth::id()
             ]);
-            return redirect()->route('message.room', ['id'=>$chat_rooms->latest()->first()->_id]);
+            dd($chat_rooms->first());
+            return redirect()->route('message.room', ['id'=>$chat_rooms->first()->_id]);
         } else {
             return "Gagal mengirim formulir: ";
         }

@@ -64,20 +64,30 @@ class ChatRoomController extends Controller
                 'id_receiver'   => Auth::id(),
                 'id_sender'     => $request->id_receiver
                 ])->get();
-            $chat_rooms = ChatRoom::where([
+//            $chat_rooms = ChatRoom::where([
+//                'user1' => $request->id_receiver,
+//                'user2' => Auth::id()
+//            ])->orWhere([
+//                'user2' => $request->id_receiver,
+//                'user1' => Auth::id()
+//            ]);
+            $chat_rooms1 = ChatRoom::where([
                 'user1' => $request->id_receiver,
                 'user2' => Auth::id()
-            ])->orWhere([
+            ]);
+            $chat_rooms2 = ChatRoom::where([
                 'user2' => $request->id_receiver,
                 'user1' => Auth::id()
             ]);
-            if($chat_rooms->count() < 1){
+
+            if($chat_rooms1->count() < 1 or $chat_rooms2->count() < 1){
                 $this->store(Auth::id(), $request->id_receiver);
-                $status_code    = 204;
+                $this->store($request->id_receiver, Auth::id());
+                $status_code    = 201;
                 $message        = "chat room created";
                 $data = [
-                    'count'     => $chat_rooms->count(),
-                    'chat_rooms' => $chat_rooms->first(),
+                    'count'     => $chat_rooms1->count(),
+                    'chat_rooms' => $chat_rooms1->first(),
                 ];
             }else{
                 $status_code    = 200;
@@ -85,7 +95,7 @@ class ChatRoomController extends Controller
                 $data = [
                     'sending_chat'  => $sending_chat->count(),
                     'receive_chat'  => $received_chat->count(),
-                    'chat_rooms'    => $chat_rooms->first(),
+                    'chat_rooms'    => $chat_rooms1->first(),
                     'chat'          => $chat
                 ];
             }
