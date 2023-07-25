@@ -165,6 +165,7 @@ class UserController extends Controller
             'tempat_lahir'  => $user->lahir['tempat'],
             'email'         => $user->kontak['email'],
             'nomor_telepon' => $user->kontak['nomor_telepon'],
+            'foto'          => $user->foto
         ];
         $data = [
             "status_code"   => 200,
