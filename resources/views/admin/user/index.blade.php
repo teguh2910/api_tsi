@@ -36,7 +36,7 @@
                                         // hari
                                         $d = $today->diff($tanggal)->d;
                                         ?>
-                                    <tr>
+                                    <tr class="@if($user->active == false) bg-warning @endif">
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->nama['nama_depan'] }}</td>
                                         <td>{{  $y . " tahun " . $m . " bulan " . $d . " hari" }}</td>
