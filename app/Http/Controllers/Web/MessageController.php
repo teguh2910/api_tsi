@@ -79,7 +79,7 @@ class MessageController extends Controller
         $url        = "https://dev.atm-sehat.com/api/v1/chats";
         $method     = "POST";
         $client = new Client();
-        $session_token  = decrypt(session('token'));
+        $session_token  = decrypt(session('web_token'));
         $response = $client->post($url, [
             'headers' => [
                 'Authorization' => 'Bearer '.$session_token,
@@ -99,7 +99,7 @@ class MessageController extends Controller
     public function user($id)
     {
         $user           = User::find($id);
-        $session_token  = decrypt(session('token'));
+        $session_token  = decrypt(session('web_token'));
         $client         = new Client();
         $url            = "https://dev.atm-sehat.com/api/v1/chatRoom/user?id_receiver=$id";
         $header         = [
