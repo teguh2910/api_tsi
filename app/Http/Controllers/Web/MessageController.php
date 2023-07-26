@@ -109,7 +109,7 @@ class MessageController extends Controller
             'headers' => $header
         ]);
         $statusCode = $response->getStatusCode();
-        if ($statusCode == 200) {
+        if ($statusCode == 200 or $statusCode == 201) {
             $chat_rooms1 = ChatRoom::where([
                 'user1' => $id,
                 'user2' => Auth::id()
@@ -118,7 +118,7 @@ class MessageController extends Controller
                 'user1' => Auth::id(),
                 'user2' => $id
             ]);
-                dd($chat_rooms2->count());
+//                dd($chat_rooms1->count());
             if($chat_rooms1->count() > 0 ){
                 $chat_rooms = $chat_rooms1->first();
             }elseif($chat_rooms2->count() > 0 ){

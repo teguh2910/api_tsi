@@ -72,4 +72,31 @@ use Illuminate\Support\Facades\Auth;
                 </div>
 
             </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">My Pasien</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <ul class="nav nav-pills flex-column">
+                        <?php
+                        $counselor  = User::where('tbc.counselor', Auth::id())->get();
+                        ?>
+                        @foreach($counselor as  $couns)
+                            <li class="nav-item">
+                                <a href="{{ route('message.user', ['id'=>$couns->_id]) }}" class="nav-link">
+                                    <i class="far fa-circle text-danger"></i>
+                                    <strong> {{ $couns->nama['nama_depan'] }} </strong>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+            </div>
             @include('user.meeting.menu')
