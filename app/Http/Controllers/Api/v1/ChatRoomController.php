@@ -80,9 +80,9 @@ class ChatRoomController extends Controller
                 'user1' => Auth::id()
             ]);
 
-            if($chat_rooms1->count() < 1 or $chat_rooms2->count() < 1){
+            if(($chat_rooms1->count() + $chat_rooms2->count() )< 1){
                 $this->store(Auth::id(), $request->id_receiver);
-                $this->store($request->id_receiver, Auth::id());
+//                $this->store($request->id_receiver, Auth::id());
                 $status_code    = 201;
                 $message        = "chat room created";
                 $data = [
@@ -95,7 +95,7 @@ class ChatRoomController extends Controller
                 $data = [
                     'sending_chat'  => $sending_chat->count(),
                     'receive_chat'  => $received_chat->count(),
-                    'chat_rooms'    => $chat_rooms1->first(),
+                    'chat_rooms'    => $chat_rooms2->first(),
                     'chat'          => $chat
                 ];
             }

@@ -59,11 +59,11 @@ use Illuminate\Support\Facades\Auth;
                         <?php
                         $counselor  = User::where('counselor', true)->where('_id', "!=", Auth::id())->get();
                         ?>
-                        @foreach($counselor as  $counselor)
+                        @foreach($counselor as  $couns)
                             <li class="nav-item">
-                                <a href="{{ route('message.user', ['id'=>$counselor->_id]) }}" class="nav-link">
+                                <a href="{{ route('message.user', ['id'=>$couns->_id]) }}" class="nav-link">
                                     <i class="far fa-circle text-danger"></i>
-                                    <strong> {{ $counselor->nama['nama_depan'] }} </strong>
+                                    <strong> {{ $couns->nama['nama_depan'] }} </strong>
                                 </a>
                             </li>
                         @endforeach

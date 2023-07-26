@@ -110,12 +110,23 @@ class MessageController extends Controller
         ]);
         $statusCode = $response->getStatusCode();
         if ($statusCode == 200) {
-            $chat_rooms = ChatRoom::where([
+            $chat_rooms1 = ChatRoom::where([
                 'user1' => $id,
                 'user2' => Auth::id()
             ]);
-            dd($chat_rooms->first());
-            return redirect()->route('message.room', ['id'=>$chat_rooms->first()->_id]);
+            $chat_rooms2 = ChatRoom::where([
+                'user1' => Auth::id(),
+                'user2' => $id
+            ]);
+                dd($chat_rooms2->count());
+            if($chat_rooms1->count() > 0 ){
+                $chat_rooms = $chat_rooms1->first();
+            }elseif($chat_rooms2->count() > 0 ){
+                $chat_rooms = $chat_rooms2->first();
+            }else{
+
+            }
+            return redirect()->route('message.room', ['id'=>$chat_rooms->_id]);
         } else {
             return "Gagal mengirim formulir: ";
         }

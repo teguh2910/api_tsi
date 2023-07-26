@@ -97,6 +97,7 @@ Route::get('/file/private', [FileController::class, ''])->middleware('auth:sanct
 
 Route::resource('/v1/education', EducationController::class)->middleware('auth:sanctum');
 Route::resource('/v1/users', UserController::class)->middleware('auth:sanctum');
+Route::put('/v1/user/update', [UserController::class,'update'])->middleware('auth:sanctum');
 Route::get('/v1/user/{nik}', [UserController::class, 'showNik'])->middleware('auth:sanctum');
 Route::post('/v1/user/find/nik', [UserController::class, 'find'])->middleware('auth:sanctum');
 Route::post('/v1/user/find/email', [UserController::class, 'findByemail'])->middleware('auth:sanctum');
