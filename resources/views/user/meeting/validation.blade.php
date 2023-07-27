@@ -58,7 +58,8 @@
                                     <select class="form-control form-control-sm" name="zoom_master">
                                         <option>---pilih---</option>
                                         @foreach($zoom_master as $zoom)
-                                            <option value="{{ $zoom->id }}" @if($meeting->zoom['id'] == $zoom->id) selected @endif>{{ $zoom->room_name }}</option>
+                                            <option value="{{ $zoom->_id }}">
+                                                {{ $zoom->room_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
