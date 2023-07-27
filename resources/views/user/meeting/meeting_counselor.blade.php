@@ -3,7 +3,7 @@
         <h3 class="card-title">Video Conference</h3>
     </div>
     <div class="card-body bg-secondary">
-        <form action="{{ route('meeting.store_by_pasien') }}" method="post">
+        <form action="{{ route('meeting.store_by_counselor') }}" method="post">
             @csrf
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Date Start</label>

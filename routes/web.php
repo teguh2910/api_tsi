@@ -70,7 +70,7 @@ Route::get('message/user/{id}', [MessageController::class, 'user'])->name('messa
 
 Route::get('meetings', [MeetingController::class, 'index'])->name('meeting.index')->middleware('auth');
 Route::post('meeting/pasien/store', [MeetingController::class, 'store_by_pasien'])->name('meeting.store_by_pasien')->middleware('auth');
-Route::post('meeting/counselor/store', [MeetingController::class, 'store_by_counselor'])->name('meeting.store_by_pasien')->middleware('auth');
+Route::post('meeting/counselor/store', [MeetingController::class, 'store_by_counselor'])->name('meeting.store_by_counselor')->middleware('auth');
 Route::get('meeting/host/mine', [MeetingController::class, 'mine'])->name('meeting.host.mine')->middleware('auth');
 Route::get('meeting/{id}/show', [MeetingController::class, 'show'])->name('meeting.show')->middleware('auth');
 Route::get('meeting/{id}/validation', [MeetingController::class, 'validation'])->name('meeting.validation')->middleware('auth');
