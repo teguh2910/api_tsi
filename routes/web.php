@@ -51,6 +51,12 @@ Route::post('activate', [AuthController::class, 'do_activate'])->name('auth.do_a
 Route::get('newOTP', [AuthController::class, 'new_otp'])->name('auth.new_otp');
 Route::post('newOTP', [AuthController::class, 'create_new_otp'])->name('auth.create.new_otp');
 
+//profile
+Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
+Route::get('profile/edit', [ProfileController::class,'edit'])->name('profile.edit')->middleware('auth');
+Route::post('profile', [ProfileController::class,'update'])->name('profile.update')->middleware('auth');
+Route::get('/profile/{id}', [ProfileController::class,'user'])->name('user.profile')->middleware('auth');
+
 //request otp untuk rest password
 Route::get('forgotPassword', [AuthController::class, 'forgotPassword'])->name('auth.forgotPassword')->middleware('guest');
 Route::post('getPassword', [AuthController::class, 'getPassword'])->name('auth.getPassword');
@@ -117,8 +123,7 @@ Route::post('question/store', [QuestionController::class, 'store'])->name('quest
 
 Route::post('answer/store', [AnswerController::class, 'store'])->name('answer.store')->middleware('auth');
 
-Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
-Route::get('/profile/{id}', [ProfileController::class,'user'])->name('user.profile')->middleware('auth');
+
 Route::get('users', [UserController::class,'index'])->name('users.index');
 Route::get('user', [UserController::class,'create'])->name('users.create');
 Route::post('users', [UserController::class,'store'])->name('users.store');
