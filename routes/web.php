@@ -55,6 +55,7 @@ Route::post('newOTP', [AuthController::class, 'create_new_otp'])->name('auth.cre
 Route::get('profile', [ProfileController::class,'profile'])->name('profile.index')->middleware('auth');
 Route::get('profile/edit', [ProfileController::class,'edit'])->name('profile.edit')->middleware('auth');
 Route::post('profile', [ProfileController::class,'update'])->name('profile.update')->middleware('auth');
+Route::post('profile/foto', [ProfileController::class,'update_foto'])->name('profile.update.foto')->middleware('auth');
 Route::get('/profile/{id}', [ProfileController::class,'user'])->name('user.profile')->middleware('auth');
 
 //request otp untuk rest password

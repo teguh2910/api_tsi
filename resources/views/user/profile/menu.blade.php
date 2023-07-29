@@ -42,13 +42,23 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        ...
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
+                    <form action="{{ route('profile.update.foto') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label class="col-sm-2">Foto</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" name="file">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -95,7 +105,7 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer bg-primary">
-            <a href="" class="btn btn-sm btn-primary">Update Profile</a>
+            <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-primary"><strong>Update Profile</strong></a>
         </div>
 
 

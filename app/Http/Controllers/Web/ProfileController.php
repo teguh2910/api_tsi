@@ -127,15 +127,18 @@ class ProfileController extends Controller
                     'id'    => $data_agama->id,
                     'name'  => $data_agama->name
                 ];
+            }else{
+                $agama = $user->agama;
             }
             if($request->status_menikah != null){
-                $data_status_menikah = Marital_status::find($request->status_menikah);
+                $data_status_menikah = Marital_status::where('code',$request->status_menikah)->first();
                 $status_menikah = [
                     'code'      =>  $data_status_menikah->code,
                     'display'   => $data_status_menikah->display
                 ];
+            }else{
+                $status_menikah = $user->status_menikah;
             }
-            $user = Auth::user();
             $data_update = [
                 "nama.nama_depan"   => $nama_depan,
                 "nama.nama_belakang"=> $nama_belakang,
@@ -144,10 +147,63 @@ class ProfileController extends Controller
                 "lahir.tempat"      => $tempat_lahir,
                 "pendidikan"        => $pendidikan,
                 "agama"             => $agama,
-                "status_menikah"    => $status_menikah
+                "status_menikah"    => $status_menikah,
+                "suku"              => $request->suku
             ];
-            dd($data_update);
+//            dd($data_update);
             $update = $user->update($data_update);
+            session()->flash('success', 'Profile berhasil diupdate');
+            return redirect()->back();
+        }
+    }
+    public function update_foto(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file'  => 'required|mimes:jpg,bmp,png|max:1000',
+        ]);
+//        dd($request->all());
+        if ($validator->fails()) {
+            session()->flash('danger', "Gagal Validasi");
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }else{
+            $photo = $request->file('file');
+            // Upload the photo using Guzzle
+            $client = new Client();
+            $apiEndpoint = 'https://file.atm-sehat.com/api/profile/foto'; // Replace with your API endpoint
+            $session_token  = decrypt(session('web_token'));
+            $header = [
+                'Authorization' => "Bearer $session_token",
+            ];
+
+            try {
+                $response = $client->post($apiEndpoint, [
+                    'headers'   => $header,
+                    'multipart' => [
+                        [
+                            'name'     => 'file', // Name of the parameter in the API that expects the photo
+                            'contents' => fopen($photo->getPathname(), 'r'), // Open the photo in read mode and send it
+                            'filename' => $photo->getClientOriginalName(), // Use the original file name
+                        ],
+                    ],
+                ]);
+
+                // Handle the response if needed
+                $statusCode = $response->getStatusCode();
+                $responseData = json_decode($response->getBody(), true);
+
+                // Perform any other actions with the response data
+                // ...
+                session()->flash('success', $responseData['message']);
+                return redirect()->back();
+
+            } catch (\Exception $e) {
+                // Handle the error if an exception occurs
+                \Log::error('Error uploading photo: ' . $e->getMessage());
+                session()->flash('danger', 'Gagal Upload');
+                return redirect()->back();
+            }
         }
     }
 }
