@@ -22,6 +22,9 @@
                     @include('user.profile.menu')
                     <div class="col-lg-9 col-md-8 col-sm-6">
                         <div class="card">
+                            <div class="card-header bg-primary">
+                                <b>Update Profile</b>
+                            </div>
                             <div class="card-body">
                                 <form action="{{ route('profile.update') }}" method="post">
                                     @csrf
