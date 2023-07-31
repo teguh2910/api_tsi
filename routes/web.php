@@ -1,7 +1,7 @@
 <?php
 
 
-use App\Http\Controllers\Api\v1\CustomerController;
+use App\Http\Controllers\Web\CustomerController;
 use App\Http\Controllers\Web\AnswerController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BaseLineController;
@@ -168,7 +168,7 @@ Route::get('education/{id}/edit', [EducationController::class, 'edit'])->name('e
 Route::post('education/{id}', [EducationController::class, 'update'])->name('education.update');
 Route::post('education/{id}/delete', [EducationController::class, 'destroy'])->name('education.destroy');
 
-Route::get('/customers',[CustomerController::class,'index'])->name('customers');
+Route::get('/customers',[CustomerController::class, 'index'])->name('customers')->middleware('auth');
 Route::post('/customers',[CustomerController::class,'store'])->name('customers.store');
 Route::get('/customers/{id}',[CustomerController::class,'show'])->name('customers.show');
 
