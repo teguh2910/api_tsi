@@ -40,9 +40,10 @@ class QuestionnaireController extends Controller
     {
         $validator  = Validator::make($request->all(), [
             'judul'             => 'required',
-            'status'            => ['required',Rule::in(['draft', 'publish'])],
+            'url'               => 'url',
             'tanggal_mulai'     => 'date',
-            'tanggal_selesai'   => 'date'
+            'tanggal_selesai'   => 'date',
+            'status'            => ['required',Rule::in(['draft', 'publish'])],
         ]);
         if($validator->fails()){
             $satatus_code   = 422;
@@ -54,6 +55,7 @@ class QuestionnaireController extends Controller
             $kuesioner      = new Questionnaire();
             $data_kuesioner = [
                 "judul"             => $request->judul,
+                "url"               => $request->url,
                 "status"            => $request->status,
                 "tanggal_mulai"     => $request->tanggal_mulai,
                 "tanggal_selesai"   => $request->tanggal_selesai,

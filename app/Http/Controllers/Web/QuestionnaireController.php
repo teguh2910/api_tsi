@@ -24,6 +24,16 @@ class QuestionnaireController extends Controller
         ];
         return view('user.questionnaire.index', $data);
     }
+    public function external()
+    {
+        $data = [
+            "title"         => "Questionnaire",
+            "class"         => "Category",
+            "sub_class"     => "Get All",
+            "content"       => "layout.admin"
+        ];
+        return view('user.questionnaire.external', $data);
+    }
     public function create()
     {
         $data = [
@@ -41,6 +51,7 @@ class QuestionnaireController extends Controller
 //        dd($token);
         $validator = Validator::make($request->all(), [
             'judul'             => 'required',
+            'url'               => 'url',
             'tanggal_mulai'     => 'required|date',
             'tanggal_selesai'   => 'required|date',
             'status'            => 'required'
@@ -59,6 +70,7 @@ class QuestionnaireController extends Controller
                 'headers' => $header,
                 'form_params' => [
                     'judul'             => $request->judul,
+                    'url'               => $request->url,
                     'tanggal_mulai'     => $request->tanggal_mulai,
                     'tanggal_selesai'   => $request->tanggal_selesai,
                     'status'            => $request->status

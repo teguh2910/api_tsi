@@ -104,7 +104,8 @@ Route::post('patient/tbc/search/{id}/counselor', [PasienTbcController::class, 's
 Route::get('patient/tbc/{id}/destroy', [PasienTbcController::class, 'destroy'])->name('pasien.tbc.destroy')->middleware('auth');
 
 Route::get('questionnaire', [QuestionnaireController::class, 'index'])->name('questionnaire.index')->middleware('auth');
-Route::get('questionnaire/create', [QuestionnaireController::class, 'create'])->name('questionnaire.create')->middleware('auth');
+Route::get('questionnaire/create/external', [QuestionnaireController::class, 'external'])->name('questionnaire.create.external')->middleware('auth');
+Route::get('questionnaire/create/internal', [QuestionnaireController::class, 'create'])->name('questionnaire.create')->middleware('auth');
 Route::post('questionnaire/store', [QuestionnaireController::class, 'store'])->name('questionnaire.store')->middleware('auth');
 Route::get('questionnaire/{id}/view', [QuestionnaireController::class, 'show'])->name('questionnaire.show')->middleware('auth');
 Route::get('questionnaire/status/publish', [QuestionnaireController::class, 'publish'])->name('questionnaire.publish')->middleware('auth');
