@@ -20,7 +20,6 @@
                     @else
                         @include('user.meeting.meeting_pasien')
                     @endif
-
                 </div>
             </div>
         </section>

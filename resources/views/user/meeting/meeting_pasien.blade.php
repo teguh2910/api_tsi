@@ -42,6 +42,7 @@
             <thead>
             <th>#</th>
             <th>Topic</th>
+            <th>Time</th>
             <th>Detail</th>
             </thead>
             <tbody>
@@ -49,6 +50,7 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $meeting->topic }}</td>
+                    <td>{{ date('H:i', $meeting->time) }}</td>
                     <td><a href="{{ route('meeting.show', ['id'=>$meeting->id]) }}" class="btn btn-sm btn-warning">Detail</a></td>
                 </tr>
             @endforeach
