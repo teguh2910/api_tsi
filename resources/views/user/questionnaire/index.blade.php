@@ -23,27 +23,27 @@
                             </div>
                         @endif
                         <div class="card-body">
-                            <a href="{{ route('questionnaire.create') }}" class="btn btn-sm btn-primary mb-1">Add Data</a>
+                            @if($user['counselor'] == true)
+                            <a href="{{ route('questionnaire.create') }}" class="btn btn-sm btn-primary mb-1">Add Form Internal</a>
+                            <a href="{{ route('questionnaire.create.external') }}" class="btn btn-sm btn-primary mb-1">Add Form External</a>
+                            @endif
                             <table class="table table-sm mt-2" id="example1">
                                 <thead>
                                 <th>#</th>
                                 <th>Questionnaire</th>
-                                <th>Status</th>
-                                <th>Detail</th>
                                 </thead>
                                 <tbody>
                                 @foreach($questionnaire as $data)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $data->judul }}</td>
-                                        <td>{{ $data->status }}</td>
-
                                         <td>
-                                            <a href="{{ route('questionnaire.showByuser', ['id'=> $data->id]) }}" class="btn btn-sm btn-info">Detail</a>
-                                            @if(\Illuminate\Support\Facades\Auth::user()['counselor'] == true)
-                                                <a href="{{ route('questionnaire.show', ['id'=> $data->id]) }}" class="btn btn-sm btn-success">Edit</a>
+                                            @if(empty($data->url))
+                                                {{ $data->judul }}
+                                            @else
+                                                <a href = "{{ $data->url }}" target="_blank">{{ $data->judul }}</a>
                                             @endif
                                         </td>
+
                                     </tr>
                                 @endforeach
                                 </tbody>

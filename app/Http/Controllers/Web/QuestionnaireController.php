@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class QuestionnaireController extends Controller
@@ -105,7 +106,8 @@ class QuestionnaireController extends Controller
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
-            "questionnaire" => $questionnaire
+            "questionnaire" => $questionnaire,
+            "user"          => Auth::user()
         ];
         return view('user.questionnaire.index', $data);
     }
