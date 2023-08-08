@@ -24,6 +24,9 @@ class QuestionnaireController extends Controller
             "questionnaire" => $questionnaire,
             "user"          => Auth::user()
         ];
+        if(empty(Auth::user()['counselor'])){
+            return view('auth.forbiden');
+        }
         return view('user.questionnaire.index', $data);
     }
     public function external()
