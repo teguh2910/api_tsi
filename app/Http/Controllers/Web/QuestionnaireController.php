@@ -22,6 +22,7 @@ class QuestionnaireController extends Controller
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
             "questionnaire" => $questionnaire,
+            "user"          => Auth::user()
         ];
         return view('user.questionnaire.index', $data);
     }
