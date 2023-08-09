@@ -93,7 +93,7 @@ class FileController extends Controller
             'file'  => 'required|mimes:jpg,bmp,png|max:2000',
         ]);
         $file = $request->file('file');
-        if ($file->getSize() > 200000) {
+        if ($file->getSize() > 2000000) {
             $status_code    = 422;
             $message        = "Ukuran gambar terlalu besar";
             $data = [
