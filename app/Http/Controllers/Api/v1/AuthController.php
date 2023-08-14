@@ -205,6 +205,9 @@ class AuthController extends Controller
                         ]
                     ];
                     $sending_mail = dispatch(new LoginNotificationJob($data_email));
+                    $receiver   = $user->kontak['nomor_telepon'];
+                    $message    = 'Berhasil Login sebagai petugas pada waktu '. date('d-m-Y H:i');
+                    $sending_wa = $this->sending_whatsapp($receiver, $message);
                     return response()->json($data, 200);
                 }
             }else{
@@ -537,18 +540,10 @@ class AuthController extends Controller
             ], $status_code);
 
         }else{
-            $url_sending_wa = "https://wa.atm-sehat.com/send";
-            $header         = [];
-            $client         = new Client();
-            $sending        = $client->post($url_sending_wa, [
-                'headers' => $header,
-                'form_params'   => [
-                    'number'    => '6281213798746',
-                    'message'   => 'Berhasil Login',
-                    'to'        => '62'.(int) $user_demo->kontak['nomor_telepon'],
-                    'type'      => 'chat'
-                ]
-            ]);
+
+            $receiver   = $user_demo->kontak['nomor_telepon'];
+            $message    = 'Akun berhasil diaktifkan pada waktu '. date('d-m-Y H:i');
+            $sending_wa = $this->sending_whatsapp($receiver, $message);
             $this->activate($user_demo->_id);
             $data_email = [
                 'content' => $user_demo
@@ -634,9 +629,10 @@ class AuthController extends Controller
         }
     }
     private function create_otp($user, $email, $nomor_telepon){
+        $code = rand('100000', 999999);
         $forgot_password = [
             'forgot_password'=>[
-                'code'          => rand('100000', 999999),
+                'code'          => $code,
                 'created_at'    => time(),
                 'exp'           => time()+(5*60)
             ]
@@ -656,6 +652,9 @@ class AuthController extends Controller
             "content"     => $user
         ];
         $sending_email = dispatch(new ForgetPasswordJob($data_email));
+        $receiver   = $nomor_telepon;
+        $message    = 'OTP : '.$code;
+        $sending_wa = $this->sending_whatsapp($receiver, $message);
         return response($data);
     }
     /**
@@ -749,6 +748,9 @@ class AuthController extends Controller
                     "content"     => $user_demo
                 ];
                 dispatch(new UpdatePasswordNotificationJob($data_email));
+                $receiver   = $user_demo->kontak['nomor_telepon'];
+                $message    = 'password updated';
+                $sending_wa = $this->sending_whatsapp($receiver, $message);
                 $data = [
                     'status_code'   => 200,
                     'message'       => 'password updated',
