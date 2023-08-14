@@ -42,6 +42,9 @@ class AuthController extends Controller
         $post_json = json_encode($post);
         $credentials = $post;
         if (Auth::attempt($credentials)) {
+
+
+
             $url        = "https://dev.atm-sehat.com/api/v1/auth/login";
             $header     = [];
             $client     = new Client();

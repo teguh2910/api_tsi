@@ -16,6 +16,7 @@ use App\Jobs\Auth\UpdatePasswordNotificationJob;
 use App\Models\Kit;
 use App\Models\Log_kit;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -320,6 +321,7 @@ class AuthController extends Controller
         }else{
             $username = $request->email;
         }
+        $otp = rand(100000,999999)
         $input = [
             'nama'      => [
                 'nama_depan'    => $request->nama_depan,
@@ -338,7 +340,7 @@ class AuthController extends Controller
             'username'  => $username,
             'password'  => bcrypt($request->password),
             'aktifasi'  => [
-                'otp'   => rand(100000,999999),
+                'otp'   => $otp,
                 'exp'   => time()+(24*60*60)
             ],
             'family'    => $request->family,
@@ -354,6 +356,19 @@ class AuthController extends Controller
         if(!empty($request->email)){
             $sending_mail = dispatch(new RegistrationNotificationJob($data_email));
             $time_end   = microtime(true);
+        }else{
+            $url_sending_wa = "https://atm-sehat.com/send";
+            $header         = [];
+            $client         = new Client();
+            $sending        = $client->post($url_sending_wa, [
+                'headers' => $header,
+                'form_params'   => [
+                    'number'    => '6281213798746',
+                    'message'   => 'OTP'. $otp,
+                    'to'        => '62'.$request->nomor_telepon,
+                    'type'      => 'chat'
+                ]
+            ]);
         }
 
 
