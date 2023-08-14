@@ -366,7 +366,7 @@ class AuthController extends Controller
             'headers' => $header,
             'form_params'   => [
                 'number'    => '6281213798746',
-                'message'   => 'OTP'. $otp,
+                'message'   => 'OTP : '. $otp,
                 'to'        => '62'.$request->nomor_telepon,
                 'type'      => 'chat'
             ]
