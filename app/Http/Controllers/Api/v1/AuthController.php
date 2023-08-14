@@ -357,19 +357,20 @@ class AuthController extends Controller
             $sending_mail = dispatch(new RegistrationNotificationJob($data_email));
             $time_end   = microtime(true);
         }else{
-            $url_sending_wa = "https://atm-sehat.com/send";
-            $header         = [];
-            $client         = new Client();
-            $sending        = $client->post($url_sending_wa, [
-                'headers' => $header,
-                'form_params'   => [
-                    'number'    => '6281213798746',
-                    'message'   => 'OTP'. $otp,
-                    'to'        => '62'.$request->nomor_telepon,
-                    'type'      => 'chat'
-                ]
-            ]);
+
         }
+        $url_sending_wa = "https://atm-sehat.com/send";
+        $header         = [];
+        $client         = new Client();
+        $sending        = $client->post($url_sending_wa, [
+            'headers' => $header,
+            'form_params'   => [
+                'number'    => '6281213798746',
+                'message'   => 'OTP'. $otp,
+                'to'        => '62'.$request->nomor_telepon,
+                'type'      => 'chat'
+            ]
+        ]);
 
 
         if($add){
