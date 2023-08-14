@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Sanctum\PersonalAccessToken;
+use phpseclib3\Math\BigInteger;
 
 class AuthController extends Controller
 {
@@ -359,7 +360,7 @@ class AuthController extends Controller
         }else{
 
         }
-        $url_sending_wa = "https://atm-sehat.com/send";
+        $url_sending_wa = "https://wa.atm-sehat.com/send";
         $header         = [];
         $client         = new Client();
         $sending        = $client->post($url_sending_wa, [
@@ -367,7 +368,7 @@ class AuthController extends Controller
             'form_params'   => [
                 'number'    => '6281213798746',
                 'message'   => 'OTP : '. $otp,
-                'to'        => '62'.$request->nomor_telepon,
+                'to'        => '62'.(int) $request->nomor_telepon,
                 'type'      => 'chat'
             ]
         ]);
