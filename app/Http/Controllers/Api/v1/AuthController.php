@@ -321,7 +321,7 @@ class AuthController extends Controller
         }else{
             $username = $request->email;
         }
-        $otp = rand(100000,999999)
+        $otp = rand(100000,999999);
         $input = [
             'nama'      => [
                 'nama_depan'    => $request->nama_depan,
