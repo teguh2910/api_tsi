@@ -73,6 +73,9 @@ class AuthController extends Controller
                     'time'          => time()
                 ];
                 if(!empty($token)){
+                    $receiver   = $user->kontak['nomor_telepon'];
+                    $message    = 'Berhasil Login';
+                    $sending_wa = $this->sending_whatsapp($receiver, $message);
                     $data_email = [
                         'content'   => auth()->user(),
                         'server'    => [
@@ -360,18 +363,10 @@ class AuthController extends Controller
         }else{
 
         }
-        $url_sending_wa = "https://wa.atm-sehat.com/send";
-        $header         = [];
-        $client         = new Client();
-        $sending        = $client->post($url_sending_wa, [
-            'headers' => $header,
-            'form_params'   => [
-                'number'    => '6281213798746',
-                'message'   => 'OTP : '. $otp,
-                'to'        => '62'.(int) $request->nomor_telepon,
-                'type'      => 'chat'
-            ]
-        ]);
+
+        $receiver   = $request->nomor_telepon;
+        $message    = 'OTP : '. $otp;
+        $sending_wa = $this->sending_whatsapp($receiver, $message);
 
 
         if($add){
@@ -431,8 +426,9 @@ class AuthController extends Controller
             ], $status_code);
 
         }
+        $otp = rand(100000,999999);
         $user['aktifasi'] = [
-            'otp'   => rand(100000,999999),
+            'otp'   => $otp,
             'exp'   => time()+(5*60)
         ];
         $creating_code = $user->update();
@@ -440,6 +436,18 @@ class AuthController extends Controller
             'content'=> $user
         ];
         if($creating_code){
+            $url_sending_wa = "https://wa.atm-sehat.com/send";
+            $header         = [];
+            $client         = new Client();
+            $sending        = $client->post($url_sending_wa, [
+                'headers' => $header,
+                'form_params'   => [
+                    'number'    => '6281213798746',
+                    'message'   => 'OTP : '. $otp,
+                    'to'        => '62'.(int) $user->kontak['nomor_telepon'],
+                    'type'      => 'chat'
+                ]
+            ]);
             dispatch(new RequestActivationCodeJob($data_email));
             return response()->json([
                 'status_code'   => 200,
@@ -528,6 +536,18 @@ class AuthController extends Controller
             ], $status_code);
 
         }else{
+            $url_sending_wa = "https://wa.atm-sehat.com/send";
+            $header         = [];
+            $client         = new Client();
+            $sending        = $client->post($url_sending_wa, [
+                'headers' => $header,
+                'form_params'   => [
+                    'number'    => '6281213798746',
+                    'message'   => 'Berhasil Login',
+                    'to'        => '62'.(int) $user_demo->kontak['nomor_telepon'],
+                    'type'      => 'chat'
+                ]
+            ]);
             $this->activate($user_demo->_id);
             $data_email = [
                 'content' => $user_demo
@@ -621,6 +641,7 @@ class AuthController extends Controller
             ]
 
         ];
+
         $data = [
             'status_code'   => 200,
             'message'       => 'Permohonan reset password telah dikirim ke alamat email terdaftar',
@@ -770,6 +791,21 @@ class AuthController extends Controller
         ];
         $aktifasi           = $user->update();
         return response($aktifasi);
+    }
+    private function sending_whatsapp($receiver, $message)
+    {
+        $url_sending_wa = "https://wa.atm-sehat.com/send";
+        $header         = [];
+        $client         = new Client();
+        $sending        = $client->post($url_sending_wa, [
+            'headers' => $header,
+            'form_params'   => [
+                'number'    => '6281213798746',
+                'message'   => $message,
+                'to'        => '62'.(int) $receiver,
+                'type'      => 'chat'
+            ]
+        ]);
     }
     public function update_user(Request $request)
     {
