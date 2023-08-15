@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Meeting;
 use App\Models\User;
 use App\Models\ZoomMaster;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -43,6 +44,7 @@ class MeetingController extends Controller
             $date_start = $request->date_start;
             $time_start = $request->time_start;
             $host       = $request->host;
+            $user_host  = User::find($host);
             $time       = strtotime($request->date_start." ".$request->time_start);
             $date_time  = date('Y-m-d H:i:s', $time);
             $data_meeting = [
@@ -57,6 +59,12 @@ class MeetingController extends Controller
             $meeting    = new Meeting();
             $create     = $meeting->create($data_meeting);
             if($create){
+                $receiver   = $user_host->kontak['nomor_telepon'];
+                $message    = "Hallo ".$user_host->nama['nama_depan']."\r\n".
+                                "Terdapat $topic pada ".$date_time ."\r\n".
+                                "Silahkan validasi pertemuan ini pada E-TBC apps";
+                //sending whatsapp
+                $sending_wa = $this->sending_whatsapp($receiver, $message);
                 session()->flash('success', 'E Konsultasi TBC telah diajukan');
                 return redirect()->route('message.index');
             }
@@ -164,5 +172,23 @@ class MeetingController extends Controller
         if($update){
             return redirect()->route('meeting.show',['id'=>$id]);
         }
+    }
+    public function meeting($id){
+
+    }
+    private function sending_whatsapp($receiver, $message)
+    {
+        $url_sending_wa = "https://wa.atm-sehat.com/send";
+        $header         = [];
+        $client         = new Client();
+        $sending        = $client->post($url_sending_wa, [
+            'headers'       => $header,
+            'form_params'   => [
+                'number'    => '6281213798746',
+                'message'   => $message,
+                'to'        => '62'.(int) $receiver,
+                'type'      => 'chat'
+            ]
+        ]);
     }
 }
