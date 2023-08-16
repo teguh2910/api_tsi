@@ -91,7 +91,6 @@ class ProfileController extends Controller
 
         $validator      = Validator::make($request->all(), [
             'nama_depan'    => 'required',
-            'nama_belakang' => 'required',
             'gender'        => ['required',Rule::in(['male', 'female'])],
             'tanggal_lahir' => 'required|date',
             'tempat_lahir'  => 'required',
@@ -101,6 +100,12 @@ class ProfileController extends Controller
             'warga_negara'  => Rule::in(['WNI', 'WNA'])
         ]);
         $user           = Auth::user();
+        $request->nama_depan != null ? $nama_depan = $request->nama_depan : $nama_depan = $user->nama['nama_depan'];
+        $request->nama_belakang != null ? $nama_belakang = $request->nama_belakang : $nama_belakang = $user->nama['nama_belakang'];
+        $request->gender != null ? $gender = $request->gender : $gender = $user->gender;
+        $request->tanggal_lahir != null ? $tanggal_lahir = $request->tanggal_lahir : $tanggal_lahir = $user->tanggal_lahir;
+        $request->tempat_lahir != null ? $tempat_lahir = $request->tempat_lahir : $tempat_lahir = $user->tempat_lahir;
+
         $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
         $pendidikan     = Education::where('kode', $request->pendidikan)->first();
         $agama          = Religion::where('name', $request->agama)->first();
@@ -115,17 +120,17 @@ class ProfileController extends Controller
         }
         $data_update = [
             'nama'      => [
-                'nama_depan'    => $request->nama_depan,
-                'nama_belakang' => $request->nama_belakang,
+                'nama_depan'    => $nama_depan,
+                'nama_belakang' => $nama_belakang,
             ],
             'gelar'     => [
                 'gelar_depan'   => $request->gelar_depan,
                 'gelar_belakang'=> $request->gelar_belakang,
             ],
-            'gender'    => $request->gender,
+            'gender'    => $gender,
             'lahir'     => [
-                'tanggal'   => $request->tanggal_lahir,
-                'tempat'    => $request->tempat_lahir
+                'tanggal'   => $tanggal_lahir,
+                'tempat'    => $tempat_lahir
             ],
             'agama'     => [
                 'id'        => $agama->_id,
