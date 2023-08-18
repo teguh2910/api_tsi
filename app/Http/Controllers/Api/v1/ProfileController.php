@@ -90,25 +90,25 @@ class ProfileController extends Controller
     {
 
         $validator      = Validator::make($request->all(), [
-            'nama_depan'    => 'required',
-            'gender'        => ['required',Rule::in(['male', 'female'])],
-            'tanggal_lahir' => 'required|date',
-            'tempat_lahir'  => 'required',
-            'agama'         => ['required',Rule::in(['Islam', 'Kristen', 'Katholik', 'Hindu', 'Konghuchu', 'Buddha', 'Aliran Kepercayaan'])],
-            'status_menikah'=> 'required',
+            'gender'        => [Rule::in(['male', 'female'])],
+            'tanggal_lahir' => 'date',
+            'agama'         => [Rule::in(['Islam', 'Kristen', 'Katholik', 'Hindu', 'Konghuchu', 'Buddha', 'Aliran Kepercayaan'])],
             'pendidikan'    => 'required',
             'warga_negara'  => Rule::in(['WNI', 'WNA'])
         ]);
         $user           = Auth::user();
+        $agama          = Religion::where('name', $request->agama)->first();
+        $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
+        $pendidikan     = Education::where('kode', $request->pendidikan)->first();
+
         $request->nama_depan != null ? $nama_depan = $request->nama_depan : $nama_depan = $user->nama['nama_depan'];
         $request->nama_belakang != null ? $nama_belakang = $request->nama_belakang : $nama_belakang = $user->nama['nama_belakang'];
         $request->gender != null ? $gender = $request->gender : $gender = $user->gender;
         $request->tanggal_lahir != null ? $tanggal_lahir = $request->tanggal_lahir : $tanggal_lahir = $user->tanggal_lahir;
         $request->tempat_lahir != null ? $tempat_lahir = $request->tempat_lahir : $tempat_lahir = $user->tempat_lahir;
+        $request->agama != null ? $agama_user = ['id'=> $agama->_id, 'name' => $agama->name] : $agama_user = $user->agama;
+        $request->status_menikah != null ? $status_menikah_user = ['code' => $status_menikah->code, 'display' => $status_menikah->display] : $status_menikah_user = $user->status_menikah;
 
-        $status_menikah = Marital_status::where('code', $request->status_menikah)->first();
-        $pendidikan     = Education::where('kode', $request->pendidikan)->first();
-        $agama          = Religion::where('name', $request->agama)->first();
         if($validator->fails()){
             return response()->json([
                 'status_code'   => 422,
@@ -123,23 +123,14 @@ class ProfileController extends Controller
                 'nama_depan'    => $nama_depan,
                 'nama_belakang' => $nama_belakang,
             ],
-            'gelar'     => [
-                'gelar_depan'   => $request->gelar_depan,
-                'gelar_belakang'=> $request->gelar_belakang,
-            ],
+
             'gender'    => $gender,
             'lahir'     => [
                 'tanggal'   => $tanggal_lahir,
                 'tempat'    => $tempat_lahir
             ],
-            'agama'     => [
-                'id'        => $agama->_id,
-                'name'      => $agama->name
-            ],
-            'status_menikah'    => [
-                'code'      => $status_menikah->code,
-                'display'   => $status_menikah->display
-            ],
+            'agama'             => $agama_user,
+            'status_menikah'    => $status_menikah_user,
             'suku'          => $request->suku,
             'warga_negara'  => $request->warga_negara,
             'pendidikan'    => [
