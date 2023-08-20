@@ -47,8 +47,8 @@ class FileController extends Controller
             ];
         }else{
             $file = $request->file('file');
-            $result     = Storage::disk('public')->putFileAs('image', $file, $file->hashName());
-            $url        = Storage::disk('public')->url($result);
+            $result     = Storage::disk('s3')->putFileAs('image', $file, $file->hashName(), 'public');
+            $url        = Storage::disk('s3')->url($result);
             $data_file  = [
                 'name'      => $file->hashName(),
                 'extention' => $file->getClientOriginalExtension(),
@@ -107,8 +107,8 @@ class FileController extends Controller
             ];
         }else{
             $file = $request->file('file');
-            $result     = Storage::disk('public')->putFileAs('image', $file, $file->hashName());
-            $url        = Storage::disk('public')->url($result);
+            $result     = Storage::disk('s3')->putFileAs('image', $file, $file->hashName(),'public');
+            $url        = Storage::disk('s3')->url($result);
             $data_file  = [
                 'name'      => $file->hashName(),
                 'extention' => $file->getClientOriginalExtension(),
