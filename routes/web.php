@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Web\CodeMasterController;
 use App\Http\Controllers\Web\CustomerController;
 use App\Http\Controllers\Web\AnswerController;
 use App\Http\Controllers\Web\AuthController;
@@ -176,11 +177,11 @@ Route::get('/customers/{id}',[CustomerController::class,'show'])->name('customer
 
 Route::get('observation', [ObservationController::class, 'index'])->name('observation.index');
 
-Route::get('codes', [CodeController::class, 'index'])->name('code.index')->middleware('auth');
-Route::get('code', [CodeController::class, 'create'])->name('code.create')->middleware('auth');
-Route::post('code', [CodeController::class, 'store'])->name('code.store')->middleware('auth');
-Route::get('code/{id}/show', [CodeController::class, 'show'])->name('code.show')->middleware('auth');
-Route::post('code/{id}/update', [CodeController::class, 'update'])->name('code.update')->middleware('auth');
+Route::get('codes', [CodeMasterController::class, 'index'])->name('code.index')->middleware('auth');
+Route::get('code', [CodeMasterController::class, 'create'])->name('code.create')->middleware('auth');
+Route::post('code', [CodeMasterController::class, 'store'])->name('code.store')->middleware('auth');
+Route::get('code/{id}/show', [CodeMasterController::class, 'show'])->name('code.show')->middleware('auth');
+Route::post('code/{id}/update', [CodeMasterController::class, 'update'])->name('code.update')->middleware('auth');
 
 Route::get('kits', [KitController::class, 'index'])->name('kits.index');
 Route::get('kit', [KitController::class, 'create'])->name('kits.create');
