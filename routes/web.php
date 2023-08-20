@@ -11,7 +11,7 @@ use App\Http\Controllers\Web\DrugController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
 use App\Http\Controllers\Web\KitController;
-use App\Http\Controllers\web\MaritalStatusController;
+use App\Http\Controllers\web\MaritalStatusWebController;
 use App\Http\Controllers\Web\MedicationController;
 use App\Http\Controllers\Web\MedicationScheduleController;
 use App\Http\Controllers\Web\MeetingController;
@@ -137,13 +137,13 @@ Route::post('users/{id}/delete', [UserController::class,'destroy'])->name('users
 Route::get('users/{properti}/{value}', [UserController::class,'kode'])->name('users.kode');
 
 
-Route::get('marital-status', [MaritalStatusController::class,'index'])->name('marital_status');
-Route::get('marital-status/create', [MaritalStatusController::class,'create'])->name('marital_status.create');
-Route::post('marital-status/store', [MaritalStatusController::class,'store'])->name('marital_status.store');
-Route::get('marital-status/{id}', [MaritalStatusController::class,'show'])->name('marital_status.show');
-Route::get('marital-status/{id}/edit', [MaritalStatusController::class,'edit'])->name('marital_status.edit');
-Route::post('marital-status/{id}/update', [MaritalStatusController::class,'update'])->name('marital_status.update');
-Route::post('marital-status/{id}/destroy', [MaritalStatusController::class,'destroy'])->name('marital_status.destroy');
+Route::get('marital-status', [MaritalStatusWebController::class,'index'])->name('marital_status');
+Route::get('marital-status/create', [MaritalStatusWebController::class,'create'])->name('marital_status.create');
+Route::post('marital-status/store', [MaritalStatusWebController::class,'store'])->name('marital_status.store');
+Route::get('marital-status/{id}', [MaritalStatusWebController::class,'show'])->name('marital_status.show');
+Route::get('marital-status/{id}/edit', [MaritalStatusWebController::class,'edit'])->name('marital_status.edit');
+Route::post('marital-status/{id}/update', [MaritalStatusWebController::class,'update'])->name('marital_status.update');
+Route::post('marital-status/{id}/destroy', [MaritalStatusWebController::class,'destroy'])->name('marital_status.destroy');
 
 Route::get('ethnics', [EthnicController::class, 'index'])->name('ethnic');
 Route::get('ethnic', [EthnicController::class, 'create'])->name('ethnic.create');

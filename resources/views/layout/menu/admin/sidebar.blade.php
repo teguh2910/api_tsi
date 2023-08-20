@@ -13,7 +13,7 @@
                 <img src="https://ppni.or.id/simk/id/image/foto/31720126348.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Khairon</a>
+                <a href="#" class="d-block">{{ Auth::user()['nama']['nama_depan'] }} {{ Auth::user()['nama']['nama_belakang'] }}</a>
             </div>
         </div>
 

@@ -9,7 +9,7 @@ use App\Models\Marital_status;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class MaritalStatusController extends Controller
+class MaritalStatusWebController extends Controller
 {
     /**
      * Display a listing of the resource.
