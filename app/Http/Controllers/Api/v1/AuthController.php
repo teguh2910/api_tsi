@@ -82,10 +82,10 @@ class AuthController extends Controller
                             'time'      => time()
                         ]
                     ];
-                    $sending_mail = dispatch(new LoginNotificationJob($data_email));
-                    $receiver   = $user->kontak['nomor_telepon'];
-                    $message    = 'Berhasil Login';
-                    $sending_wa = $this->sending_whatsapp($receiver, $message);
+//                    $sending_mail = dispatch(new LoginNotificationJob($data_email));
+//                    $receiver   = $user->kontak['nomor_telepon'];
+//                    $message    = 'Berhasil Login';
+//                    $sending_wa = $this->sending_whatsapp($receiver, $message);
                     return response()->json($data, 200);
                 }
             }else{

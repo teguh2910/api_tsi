@@ -175,8 +175,12 @@ Route::get('/customers/{id}',[CustomerController::class,'show'])->name('customer
 
 Route::get('observation', [ObservationController::class, 'index'])->name('observation.index');
 
-Route::get('code', [CodeController::class, 'index'])->name('code.index');
-Route::get('code/vital-sign', [CodeController::class, 'vital-sign'])->name('code.vital-sign');
+Route::get('codes', [CodeController::class, 'index'])->name('code.index')->middleware('auth');
+Route::get('code', [CodeController::class, 'create'])->name('code.create')->middleware('auth');
+Route::post('code', [CodeController::class, 'store'])->name('code.store')->middleware('auth');
+Route::get('code/{id}/show', [CodeController::class, 'show'])->name('code.show')->middleware('auth');
+Route::post('code/{id}/update', [CodeController::class, 'update'])->name('code.update')->middleware('auth');
+Route::get('code/vital-sign', [CodeController::class, 'vital-sign'])->name('code.vital-sign')->middleware('auth');
 
 Route::get('kits', [KitController::class, 'index'])->name('kits.index');
 Route::get('kit', [KitController::class, 'create'])->name('kits.create');

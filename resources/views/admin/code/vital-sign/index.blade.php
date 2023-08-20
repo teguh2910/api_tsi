@@ -10,6 +10,7 @@
                         </div>
 
                         <div class="card-body">
+                            <a href="{{ route('code.create') }}" class="btn btn-sm btn-primary mb-3">Add Data</a>
                             <table class="table table-sm mt-2" id="example1">
                                 <thead>
                                 <th>#</th>
@@ -25,7 +26,7 @@
                                         <td>{{ $data->code }}</td>
                                         <td>{{ $data->display }}</td>
                                         <td>{{ $data->system }}</td>
-                                        <td><a href="" class="btn btn-sm btn-info">Detail</a></td>
+                                        <td><a href="{{ route('code.show', ['id'=>$data->id]) }}" class="btn btn-sm btn-info">Detail</a></td>
                                     </tr>
                                 @endforeach
                                 </tbody>
