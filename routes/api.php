@@ -210,3 +210,7 @@ Route::post('v1/drugs', [DrugController::class, 'store'])->middleware('auth:sanc
 
 Route::get('v1/counselors', [CounselorController::class, 'index'])->middleware('auth:sanctum');
 Route::post('v1/counselors', [CounselorController::class, 'store'])->middleware('auth:sanctum');
+
+
+
+Route::post('v1/foto/upload', [\App\Http\Controllers\Web\FotoController::class, 'store']);
