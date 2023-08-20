@@ -23,6 +23,7 @@ use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\QuestionController;
 use App\Http\Controllers\Web\QuestionnaireController;
 use App\Http\Controllers\Web\ReligionController;
+use App\Http\Controllers\Web\StatusMenikah;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\ZoomMasterController;
 use Illuminate\Support\Facades\Route;
@@ -137,13 +138,13 @@ Route::post('users/{id}/delete', [UserController::class,'destroy'])->name('users
 Route::get('users/{properti}/{value}', [UserController::class,'kode'])->name('users.kode');
 
 
-Route::get('marital-status', [MaritalStatusWebController::class,'index'])->name('marital_status');
-Route::get('marital-status/create', [MaritalStatusWebController::class,'create'])->name('marital_status.create');
-Route::post('marital-status/store', [MaritalStatusWebController::class,'store'])->name('marital_status.store');
-Route::get('marital-status/{id}', [MaritalStatusWebController::class,'show'])->name('marital_status.show');
-Route::get('marital-status/{id}/edit', [MaritalStatusWebController::class,'edit'])->name('marital_status.edit');
-Route::post('marital-status/{id}/update', [MaritalStatusWebController::class,'update'])->name('marital_status.update');
-Route::post('marital-status/{id}/destroy', [MaritalStatusWebController::class,'destroy'])->name('marital_status.destroy');
+Route::get('marital-status', [StatusMenikah::class,'index'])->name('marital_status');
+Route::get('marital-status/create', [StatusMenikah::class,'create'])->name('marital_status.create');
+Route::post('marital-status/store', [StatusMenikah::class,'store'])->name('marital_status.store');
+Route::get('marital-status/{id}', [StatusMenikah::class,'show'])->name('marital_status.show');
+Route::get('marital-status/{id}/edit', [StatusMenikah::class,'edit'])->name('marital_status.edit');
+Route::post('marital-status/{id}/update', [StatusMenikah::class,'update'])->name('marital_status.update');
+Route::post('marital-status/{id}/destroy', [StatusMenikah::class,'destroy'])->name('marital_status.destroy');
 
 Route::get('ethnics', [EthnicController::class, 'index'])->name('ethnic');
 Route::get('ethnic', [EthnicController::class, 'create'])->name('ethnic.create');
