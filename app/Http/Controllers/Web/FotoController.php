@@ -29,9 +29,9 @@ class FotoController extends Controller
                 $save = $create_file->create($data_file);
                 if($save){
                     $status_code    = 200;
-                    $message        = "Foto Profile updated";
+                    $message        = "Success File Saved";
                     $data = [
-                        'foto' => url($url),
+                        'file' => $url,
                     ];
                 }
             }

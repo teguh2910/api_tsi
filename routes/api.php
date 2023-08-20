@@ -92,7 +92,6 @@ Route::get('/v1/profile/systole', [ProfileController::class, 'systole'])->middle
 Route::get('/files', [FileController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/files', [FileController::class, 'store'])->middleware('auth:sanctum');
 Route::get('/file', [FileController::class, 'show'])->middleware('auth:sanctum');
-Route::get('/file/private', [FileController::class, ''])->middleware('auth:sanctum');
 
 
 Route::resource('/v1/education', EducationController::class)->middleware('auth:sanctum');
