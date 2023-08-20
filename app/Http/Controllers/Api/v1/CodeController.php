@@ -95,7 +95,7 @@ class CodeController extends Controller
                     'status_code'   => 201,
                     'message'       => 'success'
                 ];
-                return response()->json($data, 200);
+                return response()->json($data, 201);
             }
         }
     }
