@@ -735,7 +735,6 @@ class ObservationController extends Controller
         }
         $category_code      = 'laboratory';
         $observation_code   = "2093-3";
-        $id_pasien          = $request->id_pasien;
         $value_periksa      = (float) $request->cholesterol;
         $value_min      = 125;
         $value_max      = 200;
