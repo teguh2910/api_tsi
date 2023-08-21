@@ -914,7 +914,7 @@ class ObservationController extends Controller
     }
 
     private function bmi($berat_badan, $tinggi_badan, $id_pasien){
-        $value_periksa      = $berat_badan/(($tinggi_badan/100)*($tinggi_badan/100));
+        $value_periksa      = round($berat_badan/(($tinggi_badan/100)*($tinggi_badan/100)),2) ;
         $unit               = [
             'code'      => 'Kg/M2',
             'display'   => 'Kg/M2',
