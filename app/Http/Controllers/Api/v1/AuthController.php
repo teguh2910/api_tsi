@@ -369,7 +369,7 @@ class AuthController extends Controller
         }
 
         $receiver   = $request->nomor_telepon;
-        $message    = 'OTP : '. $otp;
+        $message    = 'OTP : '. $otp."\n".route('auth.activate.url', ['nik'=>(int) $request->nik, 'otp'=>$otp]);
         $sending_wa = $this->sending_whatsapp($receiver, $message);
 
 
