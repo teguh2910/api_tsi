@@ -47,6 +47,8 @@ Route::post('postLogin', [AuthController::class, 'postLogin'])->name('auth.postL
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('daftar', [AuthController::class, 'daftar'])->name('auth.daftar');
 Route::get('activate', [AuthController::class, 'activate'])->name('auth.activate');
+Route::get('activate/manual', [AuthController::class, 'activate_manual'])->name('auth.activate.manual');
+Route::get('activate/{nik}/{otp}', [AuthController::class, 'activate_url'])->name('auth.activate.url');
 Route::post('activate', [AuthController::class, 'do_activate'])->name('auth.do_activate');
 Route::get('newOTP', [AuthController::class, 'new_otp'])->name('auth.new_otp');
 Route::post('newOTP', [AuthController::class, 'create_new_otp'])->name('auth.create.new_otp');

@@ -213,6 +213,18 @@ class AuthController extends Controller
     {
         return view('auth.activate');
     }
+    public function activate_manual()
+    {
+        return view('auth.activate_manual');
+    }
+    public function activate_url($nik, $otp)
+    {
+        $user = User::where([
+            'nik'           => $nik,
+            'aktifasi.otp'  => $otp
+        ])->first();
+        dd($user);
+    }
     public function do_activate(Request $request)
     {
         $validator = Validator::make($request->all(), [
