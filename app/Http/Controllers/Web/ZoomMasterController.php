@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Meeting;
+use App\Models\User;
 use App\Models\ZoomMaster;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,12 +27,14 @@ class ZoomMasterController extends Controller
     public function create()
     {
         $zoomMaster = new ZoomMaster();
+        $counselors = User::where('counselor', true)->get();
         $data = [
             "title"         => "Master Zoom",
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
-            "zoom_master"   => $zoomMaster
+            "zoom_master"   => $zoomMaster,
+            "counselors"    => $counselors
         ];
 
         return view('user.zoom_master.create', $data);
@@ -50,13 +53,15 @@ class ZoomMasterController extends Controller
     public function edit($id)
     {
         $zoomMaster = ZoomMaster::find($id);
+        $counselors = User::where('counselor', true)->get();
 //        dd( $zoomMaster);
         $data = [
             "title"         => "Master Zoom",
             "class"         => "Marital Status",
             "sub_class"     => "Get All",
             "content"       => "layout.admin",
-            "zoom_master"   => $zoomMaster
+            "zoom_master"   => $zoomMaster,
+            "counselors"    => $counselors
         ];
 
         return view('user.zoom_master.edit', $data);

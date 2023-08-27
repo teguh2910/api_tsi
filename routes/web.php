@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\CounselorController;
 use App\Http\Controllers\Web\DrugController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
+use App\Http\Controllers\Web\FileController;
 use App\Http\Controllers\Web\KitController;
 use App\Http\Controllers\Web\MedicationController;
 use App\Http\Controllers\Web\MedicationScheduleController;
@@ -188,3 +189,6 @@ Route::get('kit', [KitController::class, 'create'])->name('kits.create');
 Route::post('kits', [KitController::class, 'store'])->name('kits.store');
 
 Route::get('baseLine', [BaseLineController::class, 'index'])->name('baseLine.index');
+
+Route::get('files', [FileController::class, 'index'])->name('file.index');
+

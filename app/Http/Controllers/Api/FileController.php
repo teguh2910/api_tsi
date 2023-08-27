@@ -12,19 +12,26 @@ use Illuminate\Support\Facades\Validator;
 
 class FileController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $file = File::all();
+        if(isset($_GET['id'])){
+            $file = File::where('user_id', $_GET['id'])->get();
+        }else{
+            $file = File::all();
+        }
+
         if(empty($file)){
             $status_code    = 404;
             $message        = "Not Found";
             $data           = [
+                'count'     => $file->count(),
                 'files'     => $file
             ];
         }else{
             $status_code    = 200;
             $message        = "success";
             $data           = [
+                'count'     => $file->count(),
                 'files'     => FileResource::collection($file)
             ];
         }
