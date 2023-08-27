@@ -44,6 +44,7 @@ class MeetingController extends Controller
             $date_start = $request->date_start;
             $time_start = $request->time_start;
             $host       = $request->host;
+            $master_zoom = ZoomMaster::where('counselor', $host)->first();
             $user_host  = User::find($host);
             $time       = strtotime($request->date_start." ".$request->time_start);
             $date_time  = date('Y-m-d H:i:s', $time);
@@ -143,23 +144,23 @@ class MeetingController extends Controller
     }
     public function validation($id)
     {
-        $zoom_master = ZoomMaster::all();
-        $meeting = Meeting::find($id);
-        $data = [
-            "title"     => "Meeting",
-            "class"     => "Meeting",
-            "sub_class" => "Show",
-            "content"   => "layout.admin",
-            "meeting"   => $meeting,
-            "zoom_master"=> $zoom_master
+        $zoom_master    = ZoomMaster::all();
+        $meeting        = Meeting::find($id);
+        $data           = [
+            "title"         => "Meeting",
+            "class"         => "Meeting",
+            "sub_class"     => "Show",
+            "content"       => "layout.admin",
+            "meeting"       => $meeting,
+            "zoom_master"   => $zoom_master
         ];
         return view('user.meeting.validation', $data);
     }
     public function update(Request $request, $id)
     {
-        $meeting = Meeting::find($id);
-        $zoom_master = ZoomMaster::find($request->zoom_master);
-        $data_update = [
+        $meeting        = Meeting::find($id);
+        $zoom_master    = ZoomMaster::find($request->zoom_master);
+        $data_update    = [
             'id_meeting'    => $zoom_master->id_meeting,
             'pass_code'     => $zoom_master->pass_code,
             'url'           => $zoom_master->url,
