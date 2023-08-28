@@ -653,7 +653,7 @@ class AuthController extends Controller
         ];
         $sending_email = dispatch(new ForgetPasswordJob($data_email));
         $receiver   = $nomor_telepon;
-        $message    = 'OTP : '.$code;
+        $message    = 'OTP : '.$code."\n url : ".route('auth.activate.url',['nik'=> 1233, 'otp'=>123]);
         $sending_wa = $this->sending_whatsapp($receiver, $message);
         return response($data);
     }
