@@ -32,11 +32,20 @@
                                 <th>Passcode</th>
                                 <th>Expired</th>
                                 <th>Status</th>
-                                <th>Url</th>
+                                <th>Counselor</th>
                                 <th>Detail</th>
                                 </thead>
                                 <tbody>
                                 @foreach($zoom_masters as $data)
+                                    @if(!empty($data->counselor))
+                                        @php
+                                            $user = \App\Models\User::find($data->counselor);
+                                        @endphp
+                                    @else
+                                        @php
+                                            $user = null
+                                        @endphp
+                                    @endif
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $data->room_name }}</td>
@@ -44,7 +53,14 @@
                                         <td>{{ $data->pass_code }}</td>
                                         <td>{{ $data->expired }}</td>
                                         <td>{{ $data->status }}</td>
-                                        <td>{{ $data->url }}</td>
+                                        <td>
+                                            @if($user != null)
+                                                {{ $user->nama['nama_depan'] }}
+                                            @else
+                                                {{ null }}
+                                            @endif
+
+                                        </td>
                                         <td><a href="{{ route('zoom.master.edit', ['id'=>$data->id]) }}" class="btn btn-sm btn-info">Edit</a> </td>
                                     </tr>
                                 @endforeach

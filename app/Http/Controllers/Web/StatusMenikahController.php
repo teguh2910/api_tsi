@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\web;
+namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Marital_status\StoreMaritalStatusRequest;
 use App\Http\Requests\Marital_status\UpdateMaritalStatusRequest;
 use App\Models\Marital_status;
-use App\Models\User;
 use Illuminate\Http\Request;
 
-class MaritalStatusController extends Controller
+class StatusMenikahController extends Controller
+
 {
     /**
      * Display a listing of the resource.

@@ -42,7 +42,8 @@ class AuthController extends Controller
         $post_json = json_encode($post);
         $credentials = $post;
         if (Auth::attempt($credentials)) {
-            $url        = "https://dev.atm-sehat.com/api/v1/auth/login";
+            $api_ext    = env('APP_API_EXTERNAL');
+            $url        = $api_ext."/v1/auth/login";
             $header     = [];
             $client     = new Client();
             $response   = $client->post($url, [
@@ -91,7 +92,8 @@ class AuthController extends Controller
                 ->withInput();
         }else{
             $post=$request->all();
-            $url        = "https://dev.atm-sehat.com/api/v1/auth/register";
+            $api_ext    = env('APP_API_EXTERNAL');
+            $url        = $api_ext."/v1/auth/register";
             $client = new Client();
             $response = $client->post($url, [
                 'form_params' => $post
@@ -140,7 +142,8 @@ class AuthController extends Controller
                 return redirect()->route('auth.forgotPassword')
                     ->withInput();
             }else{
-                $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
+                $api_ext    = env('APP_API_EXTERNAL');
+                $url        = $api_ext."/v1/auth/forgotpassword";
                 $client     = new Client();
                 $response   = $client->post($url, [
                     'form_params' => $post_data
@@ -152,7 +155,8 @@ class AuthController extends Controller
                 }
             }
         }else{
-            $url        = "https://dev.atm-sehat.com/api/v1/auth/forgotpassword";
+            $api_ext    = env('APP_API_EXTERNAL');
+            $url        = $api_ext."/v1/auth/forgotpassword";
             $client     = new Client();
             $response   = $client->post($url, [
                 'form_params' => $post_data
@@ -196,7 +200,8 @@ class AuthController extends Controller
                 return redirect()->back()->withInput();
             }else{
                 $post_data  = $request->all();
-                $url        = "https://dev.atm-sehat.com/api/v1/auth/resetpassword";
+                $api_ext    = env('APP_API_EXTERNAL');
+                $url        = $api_ext."/auth/resetpassword";
                 $client     = new Client();
                 $response   = $client->put($url, [
                     'form_params' => $post_data
@@ -212,6 +217,18 @@ class AuthController extends Controller
     public function activate()
     {
         return view('auth.activate');
+    }
+    public function activate_manual()
+    {
+        return view('auth.activate_manual');
+    }
+    public function activate_url($nik, $otp)
+    {
+        $user = User::where([
+            'nik'           => $nik,
+            'aktifasi.otp'  => $otp
+        ])->first();
+        dd($user);
     }
     public function do_activate(Request $request)
     {
@@ -240,7 +257,8 @@ class AuthController extends Controller
                 return redirect()->back();
             }else{
                 $post_data  = $request->all();
-                $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
+                $api_ext    = env('APP_API_EXTERNAL');
+                $url        = $api_ext."/v1/auth/aktifasi";
                 $client     = new Client();
                 $response   = $client->put($url, [
                     'form_params' => $post_data
@@ -286,7 +304,8 @@ class AuthController extends Controller
             return redirect()->back()->withInput();
         }else{
             $post_data  = $request->all();
-            $url        = "https://dev.atm-sehat.com/api/v1/auth/aktifasi";
+            $api_ext    = env('APP_API_EXTERNAL');
+            $url        = $api_ext."/v1/auth/aktifasi";
             $client     = new Client();
             $response   = $client->post($url, [
                 'form_params' => $post_data

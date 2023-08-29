@@ -82,10 +82,10 @@ class AuthController extends Controller
                             'time'      => time()
                         ]
                     ];
-                    $sending_mail = dispatch(new LoginNotificationJob($data_email));
-                    $receiver   = $user->kontak['nomor_telepon'];
-                    $message    = 'Berhasil Login';
-                    $sending_wa = $this->sending_whatsapp($receiver, $message);
+//                    $sending_mail = dispatch(new LoginNotificationJob($data_email));
+//                    $receiver   = $user->kontak['nomor_telepon'];
+//                    $message    = 'Berhasil Login';
+//                    $sending_wa = $this->sending_whatsapp($receiver, $message);
                     return response()->json($data, 200);
                 }
             }else{
@@ -369,7 +369,7 @@ class AuthController extends Controller
         }
 
         $receiver   = $request->nomor_telepon;
-        $message    = 'OTP : '. $otp;
+        $message    = 'OTP : '. $otp."\n".route('auth.activate.url', ['nik'=>(int) $request->nik, 'otp'=>$otp]);
         $sending_wa = $this->sending_whatsapp($receiver, $message);
 
 
@@ -653,7 +653,7 @@ class AuthController extends Controller
         ];
         $sending_email = dispatch(new ForgetPasswordJob($data_email));
         $receiver   = $nomor_telepon;
-        $message    = 'OTP : '.$code;
+        $message    = 'OTP : '.$code."\n url : ".route('auth.activate.url',['nik'=> 1233, 'otp'=>123]);
         $sending_wa = $this->sending_whatsapp($receiver, $message);
         return response($data);
     }

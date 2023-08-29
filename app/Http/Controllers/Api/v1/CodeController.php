@@ -57,13 +57,26 @@ class CodeController extends Controller
             'system'    => 'required',
             'display'   => 'required'
         ]);
+        if (! empty($request->category)){
+            $category_db = Code::where('code',$request->category)->first();
+            $category = [
+                'code'      => $category_db->code,
+                'system'    => $category_db->system,
+                'display'   => $category_db->display
+            ];
+            if (!empty($category)){
+                $category_input = $category;
+            }else{
+                $category_input = null;
+            }
+        }else{
+            $category_input = null;
+        }
         $input      = [
             'code'      => $request->code,
             'system'    => $request->system,
             'display'   => $request->display,
-            'category'  => $request->category,
-            'unit'      => $request->unit,
-            'base_line' => $request->base_line
+            'category'  => $category_input,
         ];
         if($validator->fails()){
             return response()->json([
@@ -82,7 +95,7 @@ class CodeController extends Controller
                     'status_code'   => 201,
                     'message'       => 'success'
                 ];
-                return response()->json($data, 200);
+                return response()->json($data, 201);
             }
         }
     }

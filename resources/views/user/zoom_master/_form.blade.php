@@ -50,5 +50,18 @@
             </select>
         </div>
     </div>
+    <div class="row mb-1">
+        <label class="col-sm-3">Counselor</label>
+        <div class="col-sm-9">
+            <select class="form-control" name="counselor">
+                <option>-----Pilih-----</option>
+                @foreach($counselors as $user)
+                    <option value="{{ $user->_id}}" @if($zoom_master->counselor == $user->_id) {{ "selected" }} @endif>{{ $user->nama['nama_depan'] }} {{ $user->nama['nama_belakang'] }}</option>
+                @endforeach
+
+
+            </select>
+        </div>
+    </div>
 
 </div>

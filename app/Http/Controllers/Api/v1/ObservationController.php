@@ -735,7 +735,6 @@ class ObservationController extends Controller
         }
         $category_code      = 'laboratory';
         $observation_code   = "2093-3";
-        $id_pasien          = $request->id_pasien;
         $value_periksa      = (float) $request->cholesterol;
         $value_min      = 125;
         $value_max      = 200;
@@ -914,7 +913,7 @@ class ObservationController extends Controller
     }
 
     private function bmi($berat_badan, $tinggi_badan, $id_pasien){
-        $value_periksa      = $berat_badan/(($tinggi_badan/100)*($tinggi_badan/100));
+        $value_periksa      = round($berat_badan/(($tinggi_badan/100)*($tinggi_badan/100)),2) ;
         $unit               = [
             'code'      => 'Kg/M2',
             'display'   => 'Kg/M2',
@@ -1019,8 +1018,33 @@ class ObservationController extends Controller
     private function nadi_private($hearth_rate, $id_pasien){
         $category_code      = (string) 'vital-signs';
         $observation_code   = (string) '8867-4';
-        $min                = 80;
-        $max                = 119;
+        $pasien = User::find($id_pasien);
+        $tgl_lahir = $pasien->lahir['tanggal'];
+        $usia = $this->usia($tgl_lahir)->getOriginalContent();
+        $usia_bulan = ($usia['tahun']*12)+($usia['bulan']);
+        if($usia_bulan <= 1 ){
+            $min                = 70;
+            $max                = 190;
+        }elseif ($usia_bulan <= 11){
+            $min                = 80;
+            $max                = 160;
+        }elseif ($usia_bulan <= 24){
+            $min                = 80;
+            $max                = 130;
+        }elseif ($usia_bulan <= 48){
+            $min                = 80;
+            $max                = 120;
+        }elseif ($usia_bulan <= 72){
+            $min                = 75;
+            $max                = 115;
+        }elseif ($usia_bulan <= 108){
+            $min                = 70;
+            $max                = 110;
+        }else{
+            $min                = 60;
+            $max                = 100;
+        }
+
         $base_line          = [
             'min'       => $min,
             'max'       => $max

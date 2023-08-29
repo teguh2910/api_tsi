@@ -12,19 +12,26 @@ use Illuminate\Support\Facades\Validator;
 
 class FileController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $file = File::all();
+        if(isset($_GET['id'])){
+            $file = File::where('user_id', $_GET['id'])->get();
+        }else{
+            $file = File::all();
+        }
+
         if(empty($file)){
             $status_code    = 404;
             $message        = "Not Found";
             $data           = [
+                'count'     => $file->count(),
                 'files'     => $file
             ];
         }else{
             $status_code    = 200;
             $message        = "success";
             $data           = [
+                'count'     => $file->count(),
                 'files'     => FileResource::collection($file)
             ];
         }
@@ -47,8 +54,8 @@ class FileController extends Controller
             ];
         }else{
             $file = $request->file('file');
-            $result     = Storage::disk('public')->putFileAs('image', $file, $file->hashName());
-            $url        = Storage::disk('public')->url($result);
+            $result     = Storage::disk('s3')->putFileAs('image', $file, $file->hashName(), 'public');
+            $url        = Storage::disk('s3')->url($result);
             $data_file  = [
                 'name'      => $file->hashName(),
                 'extention' => $file->getClientOriginalExtension(),
@@ -107,8 +114,8 @@ class FileController extends Controller
             ];
         }else{
             $file = $request->file('file');
-            $result     = Storage::disk('public')->putFileAs('image', $file, $file->hashName());
-            $url        = Storage::disk('public')->url($result);
+            $result     = Storage::disk('s3')->putFileAs('image', $file, $file->hashName(),'public');
+            $url        = Storage::disk('s3')->url($result);
             $data_file  = [
                 'name'      => $file->hashName(),
                 'extention' => $file->getClientOriginalExtension(),

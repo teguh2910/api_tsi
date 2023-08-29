@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "aws/aws-sdk-php": "^3.260",
+        "aws/aws-sdk-php": "^3.279",
         "google/cloud-firestore": "^1.35",
         "google/cloud-storage": "^1.33",
         "grpc/grpc": "^1.38",

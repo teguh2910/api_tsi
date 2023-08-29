@@ -1,17 +1,17 @@
 <?php
 
 
+use App\Http\Controllers\Web\CodeMasterController;
 use App\Http\Controllers\Web\CustomerController;
 use App\Http\Controllers\Web\AnswerController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BaseLineController;
-use App\Http\Controllers\web\CodeController;
 use App\Http\Controllers\Web\CounselorController;
 use App\Http\Controllers\Web\DrugController;
 use App\Http\Controllers\Web\EducationController;
 use App\Http\Controllers\Web\EthnicController;
+use App\Http\Controllers\Web\FileController;
 use App\Http\Controllers\Web\KitController;
-use App\Http\Controllers\web\MaritalStatusController;
 use App\Http\Controllers\Web\MedicationController;
 use App\Http\Controllers\Web\MedicationScheduleController;
 use App\Http\Controllers\Web\MeetingController;
@@ -23,6 +23,7 @@ use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\QuestionController;
 use App\Http\Controllers\Web\QuestionnaireController;
 use App\Http\Controllers\Web\ReligionController;
+use App\Http\Controllers\Web\StatusMenikahController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\ZoomMasterController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,8 @@ Route::post('postLogin', [AuthController::class, 'postLogin'])->name('auth.postL
 Route::get('register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('daftar', [AuthController::class, 'daftar'])->name('auth.daftar');
 Route::get('activate', [AuthController::class, 'activate'])->name('auth.activate');
+Route::get('activate/manual', [AuthController::class, 'activate_manual'])->name('auth.activate.manual');
+Route::get('activate/{nik}/{otp}', [AuthController::class, 'activate_url'])->name('auth.activate.url');
 Route::post('activate', [AuthController::class, 'do_activate'])->name('auth.do_activate');
 Route::get('newOTP', [AuthController::class, 'new_otp'])->name('auth.new_otp');
 Route::post('newOTP', [AuthController::class, 'create_new_otp'])->name('auth.create.new_otp');
@@ -137,13 +140,13 @@ Route::post('users/{id}/delete', [UserController::class,'destroy'])->name('users
 Route::get('users/{properti}/{value}', [UserController::class,'kode'])->name('users.kode');
 
 
-Route::get('marital-status', [MaritalStatusController::class,'index'])->name('marital_status');
-Route::get('marital-status/create', [MaritalStatusController::class,'create'])->name('marital_status.create');
-Route::post('marital-status/store', [MaritalStatusController::class,'store'])->name('marital_status.store');
-Route::get('marital-status/{id}', [MaritalStatusController::class,'show'])->name('marital_status.show');
-Route::get('marital-status/{id}/edit', [MaritalStatusController::class,'edit'])->name('marital_status.edit');
-Route::post('marital-status/{id}/update', [MaritalStatusController::class,'update'])->name('marital_status.update');
-Route::post('marital-status/{id}/destroy', [MaritalStatusController::class,'destroy'])->name('marital_status.destroy');
+Route::get('marital-status', [StatusMenikahController::class,'index'])->name('marital_status');
+Route::get('marital-status/create', [StatusMenikahController::class,'create'])->name('marital_status.create');
+Route::post('marital-status/store', [StatusMenikahController::class,'store'])->name('marital_status.store');
+Route::get('marital-status/{id}', [StatusMenikahController::class,'show'])->name('marital_status.show');
+Route::get('marital-status/{id}/edit', [StatusMenikahController::class,'edit'])->name('marital_status.edit');
+Route::post('marital-status/{id}/update', [StatusMenikahController::class,'update'])->name('marital_status.update');
+Route::post('marital-status/{id}/destroy', [StatusMenikahController::class,'destroy'])->name('marital_status.destroy');
 
 Route::get('ethnics', [EthnicController::class, 'index'])->name('ethnic');
 Route::get('ethnic', [EthnicController::class, 'create'])->name('ethnic.create');
@@ -175,11 +178,17 @@ Route::get('/customers/{id}',[CustomerController::class,'show'])->name('customer
 
 Route::get('observation', [ObservationController::class, 'index'])->name('observation.index');
 
-Route::get('code', [CodeController::class, 'index'])->name('code.index');
-Route::get('code/vital-sign', [CodeController::class, 'vital-sign'])->name('code.vital-sign');
+Route::get('codes', [CodeMasterController::class, 'index'])->name('code.index')->middleware('auth');
+Route::get('code', [CodeMasterController::class, 'create'])->name('code.create')->middleware('auth');
+Route::post('code', [CodeMasterController::class, 'store'])->name('code.store')->middleware('auth');
+Route::get('code/{id}/show', [CodeMasterController::class, 'show'])->name('code.show')->middleware('auth');
+Route::post('code/{id}/update', [CodeMasterController::class, 'update'])->name('code.update')->middleware('auth');
 
 Route::get('kits', [KitController::class, 'index'])->name('kits.index');
 Route::get('kit', [KitController::class, 'create'])->name('kits.create');
 Route::post('kits', [KitController::class, 'store'])->name('kits.store');
 
 Route::get('baseLine', [BaseLineController::class, 'index'])->name('baseLine.index');
+
+Route::get('files', [FileController::class, 'index'])->name('file.index');
+

@@ -171,7 +171,8 @@ class ProfileController extends Controller
             $photo = $request->file('file');
             // Upload the photo using Guzzle
             $client = new Client();
-            $apiEndpoint = 'https://file.atm-sehat.com/api/profile/foto'; // Replace with your API endpoint
+            $api_file = env('APP_API_FILE');
+            $apiEndpoint = $api_file.'/profile/foto'; // Replace with your API endpoint
             $session_token  = decrypt(session('web_token'));
             $header = [
                 'Authorization' => "Bearer $session_token",

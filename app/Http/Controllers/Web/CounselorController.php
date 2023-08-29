@@ -76,4 +76,6 @@ class CounselorController extends Controller
         session()->flash('success', 'Sukses menhapus konselor');
         return redirect()->back();
     }
+
+
 }

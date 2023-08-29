@@ -23,7 +23,7 @@ class ObservationResource extends JsonResource
             'coding'        => $this->coding,
             'time'          => $this->time,
             'hasil'         => [
-                'value'     => $this->value,
+                'value'     => round($this->value,2),
                 'unit'      => $this->unit
             ],
             'base_line'     => $this->base_line,
